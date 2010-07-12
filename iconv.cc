@@ -50,7 +50,7 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
   inbuf = data;
   inbytesleft = length;
 
-  char tmp[1024];
+  char tmp[4096];
   outbuf = tmp;
   outbytesleft = sizeof(tmp);
 
