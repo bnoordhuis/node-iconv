@@ -37,6 +37,6 @@ There. That wasn't so bad, was it?
 
 * Sparse documentation. Patches welcome.
 * If the recoded data is > 4K, it will likely throw E2BIG.
-* 'Rolling' encoding not yet supported. If the input ends in a partial character sequence, it'll throw EILSEQ.
+* 'Rolling' encoding not yet supported. If the input ends in a partial character sequence, it'll throw EINVAL.
 
 These are all on my TODO list. Pester me about them if I don't fix 'em quick enough.
