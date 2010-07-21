@@ -30,3 +30,7 @@ assert.throws(function() {
 // belongs to partial character sequence test - new input should be recoded without issues
 buffer = new Buffer(1); buffer[0] = 235; // ë
 assert.ok(buffer.inspect() == iconv.convert('ë').inspect());
+
+// input too big to fit in single (internal) buffer
+var s = 'x'; for (var i = 0; i < 14; i++) s = s + s; s += '1234'; // 16384 + 4 for good measure
+assert.ok(new Buffer(s).inspect() == iconv.convert(s).inspect());

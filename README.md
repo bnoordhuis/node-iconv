@@ -26,17 +26,14 @@ In the Platonic realm one only needs to type:
 	node-waf
 
 In the real world, however, node-waf appears to be broken more often than not
-and you will need to compile the source by hand. Fear not, it's easier than it sounds:
+and you will have to compile the source by hand. Fear not, it's easier than it sounds:
 
 	export NODE_PATH=/path/to/nodejs
 	g++ -I$NODE_PATH/include/node -O2 -fPIC -shared -Wall -ansi -o iconv.node iconv.cc
 
 There. That wasn't so bad, was it?
 
-## Known bugs / limitations
+## Notes
 
-* Sparse documentation. Patches welcome.
-* If the recoded data is > 4K, it will likely throw E2BIG.
-* 'Rolling' encoding not yet supported. If the input ends in a partial character sequence, it'll throw EINVAL.
-
-These are all on my TODO list. Pester me about them if I don't fix 'em quick enough.
+EINVAL is raised when the input ends in a partial character sequence. This is a feature,
+not a bug. 

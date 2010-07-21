@@ -6,7 +6,10 @@
 
 #include <cstring>
 #include <cerrno>
-#include <cstdio>
+
+// for stack-based placement new
+#include <alloca.h>
+#include <new>
 
 using namespace v8;
 using namespace node;
@@ -37,45 +40,59 @@ Iconv::~Iconv() {
   iconv_close(conv_);
 }
 
+// helper class: reverse linked list of dumb buffers
+struct chunk {
+  chunk *const prev;
+  size_t size;
+  char data[4096];
+
+  chunk(chunk *prev): prev(prev), size(0) {
+  }
+};
+
 // the actual conversion happens here
 Handle<Value> Iconv::Convert(char* data, size_t length) {
   assert(conv_ != (iconv_t) -1);
   assert(data != 0);
 
-  char *inbuf;
-  char *outbuf;
-  size_t inbytesleft;
-  size_t outbytesleft;
+  chunk *c = 0;
+  char *inbuf = data;
+  size_t inbytesleft = length;
+  size_t offset = 0;
 
-  inbuf = data;
-  inbytesleft = length;
+  while (true) {
+    // placement new on stack
+    c = new (alloca(sizeof *c)) chunk(c);
 
-  char tmp[4096];
-  outbuf = tmp;
-  outbytesleft = sizeof(tmp);
+    char *outbuf = c->data;
+    size_t outbytesleft = sizeof(c->data);
 
-  size_t n = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-  if (n == (size_t) -1) {
-    const char* message = "Unexpected error.";
+    size_t rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+    offset += (c->size = sizeof(c->data) - outbytesleft);
 
-    switch (errno) {
-    case E2BIG:
-      message = "Output buffer not large enough. This is a bug.";
-      break;
-    case EILSEQ:
-      message = "Illegal character sequence.";
-      break;
-    case EINVAL:
-      message = "Incomplete character sequence.";
-      break;
+    if (rv == (size_t) -1) {
+      if (errno == E2BIG) {
+        continue;
+      }
+      if (errno == EINVAL) {
+        return ThrowException(ErrnoException(errno, "iconv", "Incomplete character sequence."));
+      }
+      if (errno == EILSEQ) {
+        return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
+      }
+      return ThrowException(ErrnoException(errno, "iconv"));
     }
 
-    return ThrowException(ErrnoException(errno, "iconv", message));
+    assert(inbytesleft == 0);
+    break;
   }
 
-  n = sizeof(tmp) - outbytesleft;
-  Buffer& b = *Buffer::New(n);
-  memcpy(b.data(), tmp, n);
+  // copy linked list of chunks into Buffer in reverse order (last chunk at the top, second-to-last chunk below that, etc)
+  Buffer& b = *Buffer::New(offset);
+  for (; c != 0; c = c->prev) {
+    offset -= c->size;
+    memcpy(b.data() + offset, c->data, c->size);
+  }
 
   return b.handle_;
 }
@@ -105,6 +122,8 @@ Handle<Value> Iconv::Convert(const Arguments& args) {
 Handle<Value> Iconv::New(const Arguments& args) {
   HandleScope scope;
 
+  // inconsistency: node-iconv expects (source, target) while native iconv expects (target, source)
+  // wontfix for now, node-iconv's approach feels more intuitive
   String::AsciiValue sourceEncoding(args[0]->ToString());
   String::AsciiValue targetEncoding(args[1]->ToString());
 
