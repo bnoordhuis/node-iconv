@@ -7,10 +7,6 @@
 #include <cstring>
 #include <cerrno>
 
-// for stack-based placement new
-#include <alloca.h>
-#include <new>
-
 using namespace v8;
 using namespace node;
 
@@ -44,7 +40,7 @@ Iconv::~Iconv() {
 struct chunk {
   chunk *const prev;
   size_t size;
-  char data[4096];
+  char data[32 * 1024];
 
   chunk(chunk *prev): prev(prev), size(0) {
   }
@@ -62,13 +58,14 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 
   while (true) {
     // placement new on stack
-    c = new (alloca(sizeof *c)) chunk(c);
+    c = new chunk(c);
 
     char *outbuf = c->data;
     size_t outbytesleft = sizeof(c->data);
 
     size_t rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-    offset += (c->size = sizeof(c->data) - outbytesleft);
+    c->size = sizeof(c->data) - outbytesleft;
+    offset += c->size;
 
     if (rv == (size_t) -1) {
       if (errno == E2BIG) {
@@ -89,7 +86,7 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 
   // copy linked list of chunks into Buffer in reverse order (last chunk at the top, second-to-last chunk below that, etc)
   Buffer& b = *Buffer::New(offset);
-  for (; c != 0; c = c->prev) {
+  for (chunk *t; c != 0; t = c->prev, delete c, c = t) {
     offset -= c->size;
     memcpy(b.data() + offset, c->data, c->size);
   }
