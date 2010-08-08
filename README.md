@@ -2,6 +2,12 @@
 
 Text recoding in JavaScript for fun and profit!
 
+## Compiling
+
+Easy as pie:
+
+	node-waf configure build install
+
 ## Usage
 
 Encode from one character encoding to another:
@@ -18,20 +24,6 @@ Encode from one character encoding to another:
 	// do something useful with the buffers
 
 Look at test.js for more examples and node-iconv's behaviour under error conditions.
-
-## Compiling
-
-In the Platonic realm one only needs to type:
-
-	node-waf
-
-In the real world, however, node-waf appears to be broken more often than not
-and you will have to compile the source by hand. Fear not, it's easier than it sounds:
-
-	export NODE_PATH=/path/to/nodejs
-	g++ -I$NODE_PATH/include/node -O2 -fPIC -shared -Wall -ansi -o iconv.node iconv.cc
-
-There. That wasn't so bad, was it?
 
 ## Notes
 
