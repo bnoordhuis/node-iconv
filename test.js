@@ -1,4 +1,4 @@
-assert = require('assert'), Buffer = require('buffer').Buffer, Iconv = require('./iconv').Iconv;
+assert = require('assert'), Buffer = require('buffer').Buffer, Iconv = require('iconv').Iconv;
 
 // unknown source/target encoding
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });
