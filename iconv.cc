@@ -63,7 +63,7 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
     char *outbuf = c->data;
     size_t outbytesleft = sizeof(c->data);
 
-    size_t rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+    size_t rv = ::iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
     c->size = sizeof(c->data) - outbytesleft;
     offset += c->size;
 
