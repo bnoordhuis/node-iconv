@@ -33,7 +33,7 @@ Iconv::Iconv(iconv_t conv): conv_(conv) {
 }
 
 Iconv::~Iconv() {
-  iconv_close(conv_);
+  ::iconv_close(conv_);
 }
 
 // helper class: reverse linked list of dumb buffers
@@ -124,7 +124,7 @@ Handle<Value> Iconv::New(const Arguments& args) {
   String::AsciiValue sourceEncoding(args[0]->ToString());
   String::AsciiValue targetEncoding(args[1]->ToString());
 
-  iconv_t conv = iconv_open(*targetEncoding, *sourceEncoding);
+  iconv_t conv = ::iconv_open(*targetEncoding, *sourceEncoding);
   if (conv == (iconv_t) -1) {
     return ThrowException(ErrnoException(errno, "iconv_open", "Conversion not supported."));
   }
