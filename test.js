@@ -41,3 +41,8 @@ try {
 } catch (e) {
 	assert.equal(e.errno, process.EILSEQ);
 }
+
+// prototypical inheritance should work
+Foo = function() { Foo.prototype.call(this, 'utf-8', 'ascii'); };
+Foo.prototype = Iconv;
+new Foo();
