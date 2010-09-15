@@ -8,6 +8,10 @@ Easy as pie:
 
 	node-waf configure build install
 
+Mac OS X users need to supply the path to libiconv:
+
+	node-waf configure build install --libiconv=/usr
+
 ## Usage
 
 Encode from one character encoding to another:
