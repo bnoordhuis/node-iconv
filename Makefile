@@ -1,8 +1,9 @@
 NODE_PATH	=/usr/local
-CXXFLAGS	=-I$(NODE_PATH)/include/node -O2 -fPIC -Wall -ansi
 
 LIBICONV_DIR	=deps/libiconv-1.13.1
 LIBICONV	=$(LIBICONV_DIR)/lib/.libs/libiconv.a
+
+CXXFLAGS	=-I$(LIBICONV_DIR)/include -I$(NODE_PATH)/include/node -O2 -fPIC -Wall -ansi
 
 all:	$(LIBICONV) iconv.o
 	$(CXX) -shared -o iconv.node iconv.o $(LIBICONV)
