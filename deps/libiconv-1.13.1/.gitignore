@@ -71,3 +71,4 @@ srclib/xreadlink.o
 srclib/xstrdup.o
 stamp-h1
 tests/Makefile
+config.status.lineno
