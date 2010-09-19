@@ -9,8 +9,8 @@ assert.equal(iconv.convert(), undefined);
 assert.equal(iconv.convert(1), undefined);
 assert.equal(iconv.convert({}), undefined);
 
-assert.ok(iconv.convert('xxx') instanceof Buffer);
 assert.ok(iconv.convert(new Buffer('xxx')) instanceof Buffer);
+assert.ok(iconv.convert('xxx') instanceof Buffer);
 
 assert.equal(iconv.convert('xxx').inspect(), new Buffer('xxx').inspect());
 assert.equal(iconv.convert(new Buffer('xxx')).inspect(), new Buffer('xxx').inspect());
