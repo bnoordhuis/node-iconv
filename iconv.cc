@@ -57,7 +57,6 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
   size_t offset = 0;
 
   while (true) {
-    // placement new on stack
     c = new chunk(c);
 
     char *outbuf = c->data;
