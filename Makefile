@@ -9,7 +9,7 @@ all:	$(LIBICONV) iconv.o
 	$(CXX) -shared -o iconv.node iconv.o $(LIBICONV)
 
 install:	all
-	cp iconv.node $(HOME)/.node_libraries
+	mkdir -p $(HOME)/.node_libraries && cp iconv.node $(HOME)/.node_libraries
 
 clean:
 	rm -f iconv.o iconv.node
