@@ -1,4 +1,4 @@
-assert = require('assert'), Buffer = require('buffer').Buffer, Iconv = require('iconv').Iconv;
+assert = require('assert'), Buffer = require('buffer').Buffer, SlowBuffer = require('buffer').SlowBuffer, Iconv = require('iconv').Iconv;
 
 // unknown source/target encoding
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });
@@ -9,7 +9,7 @@ assert.equal(iconv.convert(), undefined);
 assert.equal(iconv.convert(1), undefined);
 assert.equal(iconv.convert({}), undefined);
 
-assert.ok(iconv.convert('xxx') instanceof Buffer);
+assert.ok(iconv.convert('xxx') instanceof SlowBuffer);
 assert.ok(iconv.convert(new Buffer('xxx')) instanceof Buffer);
 
 assert.equal(iconv.convert('xxx').inspect(), new Buffer('xxx').inspect());
