@@ -8,9 +8,17 @@ Easy as pie:
 
 	node-waf configure build install
 
-Mac OS X users need to supply the path to libiconv:
+Thanks to a bug in the system libiconv, Mac OS X users need to build a libiconv from source. It's not as complicated as it sounds:
 
-	node-waf configure build install --libiconv=/usr
+	wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.1.tar.gz
+	tar xzvf libiconv-1.13.1.tar.gz
+	cd libiconv-1.13.1
+	./configure --prefix=/usr/local
+	sudo make install
+	cd ..
+	node-waf configure build install --libiconv=/usr/local
+
+A workaround to this issue is forthcoming.
 
 ## Usage
 
