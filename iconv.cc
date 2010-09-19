@@ -105,9 +105,9 @@ Handle<Value> Iconv::Convert(const Arguments& args) {
   }
 
   if (arg->IsObject()) {
-    Handle<Value> object = arg->ToObject();
+    Local<Object> object = arg->ToObject();
     if (Buffer::HasInstance(object)) {
-      Buffer& buffer = *ObjectWrap::Unwrap<Buffer>(arg->ToObject());
+      Buffer& buffer = *ObjectWrap::Unwrap<Buffer>(object);
       return self->Convert(buffer.data(), buffer.length());
     }
   }
