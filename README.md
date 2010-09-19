@@ -10,6 +10,8 @@ To compile and install the module, type:
 
 NODE_PATH will default to `/usr/local` if omitted.
 
+Note that you do not need to have a copy of libiconv installed to use this module.
+
 ## Usage
 
 Encode from one character encoding to another:
