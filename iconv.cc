@@ -4,8 +4,9 @@
 #include <node.h>
 #include <node_buffer.h>
 
-#include <cstring>
-#include <cerrno>
+#include <strings.h>	// strcasecmp + strncasecmp
+#include <string.h>
+#include <errno.h>
 
 using namespace v8;
 using namespace node;
@@ -115,6 +116,34 @@ Handle<Value> Iconv::Convert(const Arguments& args) {
 	return Undefined();
 }
 
+// workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
+const char* fixEncodingName(const char* name) {
+	if (!strncasecmp(name, "UTF", 3) && name[3] != '-') {
+		const char* s = &name[3];
+
+		// this code is arguably too clever by half
+		switch (*s++) {
+		case '1':
+			if (!strcmp(s, "6"))       return "UTF-16";
+			if (!strcasecmp(s, "6LE")) return "UTF-16LE";
+			if (!strcasecmp(s, "6BE")) return "UTF-16BE";
+			break;
+		case '3':
+			if (!strcmp(s, "2"))       return "UTF-32";
+			if (!strcasecmp(s, "2LE")) return "UTF-32LE";
+			if (!strcasecmp(s, "2BE")) return "UTF-32BE";
+			break;
+		case '7':
+			if (!*s) return "UTF-7";
+			break;
+		case '8':
+			if (!*s) return "UTF-8";
+			break;
+		}
+	}
+	return name;
+}
+
 Handle<Value> Iconv::New(const Arguments& args) {
 	HandleScope scope;
 
@@ -123,7 +152,9 @@ Handle<Value> Iconv::New(const Arguments& args) {
 	String::AsciiValue sourceEncoding(args[0]->ToString());
 	String::AsciiValue targetEncoding(args[1]->ToString());
 
-	iconv_t conv = ::iconv_open(*targetEncoding, *sourceEncoding);
+	iconv_t conv = iconv_open(
+			fixEncodingName(*targetEncoding),
+			fixEncodingName(*sourceEncoding));
 	if (conv == (iconv_t) -1) {
 		return ThrowException(ErrnoException(errno, "iconv_open", "Conversion not supported."));
 	}

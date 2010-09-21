@@ -4,6 +4,13 @@ assert = require('assert'), Buffer = require('buffer').Buffer, SlowBuffer = requ
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });
 assert.throws(function() { new Iconv('xxx', 'utf-8'); });
 
+// 'utf8' etc. should not throw "EINVAL: Conversion not supported"
+new Iconv('utf7',    'utf8');
+new Iconv('utf8',    'utf16');
+new Iconv('utf16',   'utf32');
+new Iconv('utf16le', 'utf16be');
+new Iconv('utf32le', 'utf32be');
+
 iconv = new Iconv('utf-8', 'iso-8859-1');
 assert.equal(iconv.convert(), undefined);
 assert.equal(iconv.convert(1), undefined);
