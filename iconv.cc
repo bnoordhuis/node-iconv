@@ -67,21 +67,40 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 		c->size = sizeof(c->data) - outbytesleft;
 		offset += c->size;
 
-		if (rv == (size_t) -1) {
-			if (errno == E2BIG) {
-				continue;
-			}
-			if (errno == EINVAL) {
-				return ThrowException(ErrnoException(errno, "iconv", "Incomplete character sequence."));
-			}
-			if (errno == EILSEQ) {
-				return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
-			}
-			return ThrowException(ErrnoException(errno, "iconv"));
+		if (rv != (size_t) -1) {
+			assert(inbytesleft == 0);
+			break;
 		}
 
-		assert(inbytesleft == 0);
-		break;
+		if (errno == E2BIG) {
+			continue;
+		}
+
+		if (errno == EINVAL) {
+			// write out shift sequences (if any)
+			rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
+			if (errno == E2BIG) {
+				// chunk is too small to contain the shift sequence, retry with new chunk
+				c = new chunk(c);
+				outbuf = c->data;
+				outbytesleft = sizeof(c->data);
+				rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
+			}
+			// we're still in an error condition if iconv() hasn't written any bytes
+			if (rv != 0 && rv != (size_t) -1) {
+				break;
+			}
+			if (rv == 0 || errno == EINVAL) {
+				return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
+			}
+			// deliberate fall through
+		}
+
+		if (errno == EILSEQ) {
+			return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
+		}
+
+		return ThrowException(ErrnoException(errno, "iconv"));
 	}
 
 	// copy linked list of chunks into Buffer in reverse order (last chunk at the top, second-to-last chunk below that, etc)

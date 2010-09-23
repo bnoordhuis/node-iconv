@@ -37,6 +37,28 @@ try {
 buffer = new Buffer(1); buffer[0] = 235; // ë
 assert.equal(iconv.convert('ë').inspect(), buffer.inspect());
 
+// stateful encodings should do the Right Thing
+iconv = new Iconv('iso-2022-jp', 'utf-8');
+buffer = new Buffer(5);
+buffer[0] = 0x1b;  // start escape sequence
+buffer[1] = 0x24;
+buffer[2] = 0x40;
+buffer[3] = 0x24;  // start character sequence
+buffer[4] = 0x2c;
+assert.equal(iconv.convert(buffer).inspect(), new Buffer('が').inspect());
+
+buffer = new Buffer(4);
+buffer[0] = 0x1b;  // start escape sequence
+buffer[1] = 0x24;
+buffer[2] = 0x40;
+buffer[3] = 0x24;  // start character sequence
+//buffer[4] = 0x2c;
+try {
+	iconv.convert(buffer);
+} catch (e) {
+	assert.equal(e.errno, process.EINVAL);
+}
+
 // input too big to fit in single (internal) buffer
 s = 'x'; for (var i = 0; i < 14; i++) s = s + s; s += '1234'; // 16384 + 4 for good measure
 assert.ok(new Buffer(s).inspect() == iconv.convert(s).inspect());
