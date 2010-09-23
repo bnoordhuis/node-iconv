@@ -61,7 +61,9 @@ try {
 
 // input too big to fit in single (internal) buffer
 s = 'x'; for (var i = 0; i < 16; i++) s = s + s; s += '1234'; // 64K + 4B for good measure
-assert.ok(new Buffer(s).inspect() == iconv.convert(s).inspect());
+result = iconv.convert(s);
+assert.ok(new Buffer(s).inspect() == result.inspect());
+assert.equal(result.slice(65536, 65536 + 4).toString(), '1234');
 
 // non-convertible character sequence should throw EILSEQ
 iconv = new Iconv('utf-8', 'ascii');
