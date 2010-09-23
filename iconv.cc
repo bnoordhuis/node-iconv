@@ -8,6 +8,8 @@
 #include <string.h>
 #include <errno.h>
 
+#include <list>
+
 using namespace v8;
 using namespace node;
 
@@ -39,11 +41,10 @@ Iconv::~Iconv() {
 
 // helper class: reverse linked list of dumb buffers
 struct chunk {
-	chunk *const prev;
 	size_t size;
 	char data[32 * 1024];
 
-	chunk(chunk *prev): prev(prev), size(0) {
+	chunk(): size(0) {
 	}
 };
 
@@ -52,20 +53,25 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 	assert(conv_ != (iconv_t) -1);
 	assert(data != 0);
 
-	chunk *c = 0;
+	std::list<chunk> chunks;
+
 	char *inbuf = data;
 	size_t inbytesleft = length;
-	size_t offset = 0;
+	size_t size = 0;
 
+	int index = 0;
 	while (true) {
-		c = new chunk(c);
+		// smart compilers will optimize chunks.push_back(chunk()) down to a zero-copy operation
+		// but we'll assume the worst and do it manually
+		chunks.resize(++index);
+		chunk& c = chunks.back();
 
-		char *outbuf = c->data;
-		size_t outbytesleft = sizeof(c->data);
+		char *outbuf = c.data;
+		size_t outbytesleft = sizeof(c.data);
 
 		size_t rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-		c->size = sizeof(c->data) - outbytesleft;
-		offset += c->size;
+		c.size = sizeof(c.data) - outbytesleft;
+		size += c.size;
 
 		if (rv != (size_t) -1) {
 			assert(inbytesleft == 0);
@@ -81,15 +87,23 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 			rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
 			if (errno == E2BIG) {
 				// chunk is too small to contain the shift sequence, retry with new chunk
-				c = new chunk(c);
-				outbuf = c->data;
-				outbytesleft = sizeof(c->data);
+				chunks.resize(++index);
+				chunk& c = chunks.back();	// FIXME shadowing another variable is bad style
+
+				outbuf = c.data;
+				outbytesleft = sizeof(c.data);
+
 				rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
+				if (rv != (size) -1) {
+					c.size = rv;
+				}
 			}
+
 			// we're still in an error condition if iconv() hasn't written any bytes
 			if (rv != 0 && rv != (size_t) -1) {
 				break;
 			}
+
 			if (rv == 0 || errno == EINVAL) {
 				return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
 			}
@@ -103,11 +117,13 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 		return ThrowException(ErrnoException(errno, "iconv"));
 	}
 
-	// copy linked list of chunks into Buffer in reverse order (last chunk at the top, second-to-last chunk below that, etc)
-	Buffer& b = *Buffer::New(offset);
-	for (chunk *t; c != 0; t = c->prev, delete c, c = t) {
-		offset -= c->size;
-		memcpy(b.data() + offset, c->data, c->size);
+	// copy chunks into buffer
+	Buffer& b = *Buffer::New(size);
+
+	char* p = b.data();
+	for (std::list<chunk>::const_iterator chunk = chunks.begin(), end = chunks.end(); chunk != end; ++chunk) {
+		memcpy(p, chunk->data, chunk->size);
+		p += chunk->size;
 	}
 
 	return b.handle_;
