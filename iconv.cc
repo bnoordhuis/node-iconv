@@ -34,7 +34,7 @@ Iconv::Iconv(iconv_t conv): conv_(conv) {
 }
 
 Iconv::~Iconv() {
-	::iconv_close(conv_);
+	iconv_close(conv_);
 }
 
 // helper class: reverse linked list of dumb buffers
@@ -63,7 +63,7 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 		char *outbuf = c->data;
 		size_t outbytesleft = sizeof(c->data);
 
-		size_t rv = ::iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+		size_t rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
 		c->size = sizeof(c->data) - outbytesleft;
 		offset += c->size;
 
