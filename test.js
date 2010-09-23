@@ -60,7 +60,7 @@ try {
 }
 
 // input too big to fit in single (internal) buffer
-s = 'x'; for (var i = 0; i < 14; i++) s = s + s; s += '1234'; // 16384 + 4 for good measure
+s = 'x'; for (var i = 0; i < 16; i++) s = s + s; s += '1234'; // 64K + 4B for good measure
 assert.ok(new Buffer(s).inspect() == iconv.convert(s).inspect());
 
 // non-convertible character sequence should throw EILSEQ
