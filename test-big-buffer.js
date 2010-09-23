@@ -1,4 +1,4 @@
-var Iconv = require('./iconv').Iconv,
+var Iconv = require('iconv').Iconv,
    assert = require('assert');
 
 var iconv = new Iconv('UTF-8', 'UTF-16');
