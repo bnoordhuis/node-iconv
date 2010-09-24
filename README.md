@@ -18,7 +18,7 @@ Encode from one character encoding to another:
 
 	// convert from UTF-8 to ISO-8859-1
 	var Buffer = require('buffer').Buffer;
-	var Iconv  = require('./iconv').Iconv;
+	var Iconv  = require('iconv').Iconv;
 	var assert = require('assert');
 	
 	var iconv = new Iconv('UTF-8', 'ISO-8859-1');
