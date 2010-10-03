@@ -39,6 +39,8 @@ Say you are reading data in chunks from a HTTP stream. The logical input is a si
 
 You must accumulate the small buffers into a single large buffer before performing the conversion. If you don't, you will get unexpected results with multi-byte and stateful character sets like UTF-8 and ISO-2022-JP.
 
+[node-buffertools](http://github.com/bnoordhuis/node-buffertools) lets you concatenate buffers painlessly. See the description of `buffertools.concat()` for details.
+
 ### EINVAL
 
 EINVAL is raised when the input ends in a partial character sequence. This is a feature,
