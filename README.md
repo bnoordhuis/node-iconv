@@ -31,5 +31,15 @@ Look at test.js for more examples and node-iconv's behaviour under error conditi
 
 ## Notes
 
+Things to keep in mind when you work with node-iconv.
+
+### Chunked data
+
+Say you are reading data in chunks from a HTTP stream. The logical input is a single document (the full POST request data) but the physical input will be spread over several buffers (the request chunks).
+
+You must accumulate the small buffers into a single large buffer before performing the conversion. If you don't, you will get unexpected results with multi-byte and stateful character sets like UTF-8 and ISO-2022-JP.
+
+### EINVAL
+
 EINVAL is raised when the input ends in a partial character sequence. This is a feature,
-not a bug. 
+not a bug.
