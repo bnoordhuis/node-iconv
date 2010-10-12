@@ -120,7 +120,7 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 	// copy chunks into buffer
 	Buffer& b = *Buffer::New(size);
 
-	char* p = b.data();
+	char* p = Buffer::Data(b.handle_);
 	for (std::list<chunk>::const_iterator chunk = chunks.begin(), end = chunks.end(); chunk != end; ++chunk) {
 		memcpy(p, chunk->data, chunk->size);
 		p += chunk->size;
@@ -143,8 +143,8 @@ Handle<Value> Iconv::Convert(const Arguments& args) {
 	if (arg->IsObject()) {
 		Local<Object> object = arg->ToObject();
 		if (Buffer::HasInstance(object)) {
-			Buffer& buffer = *ObjectWrap::Unwrap<Buffer>(object);
-			return self->Convert(buffer.data(), buffer.length());
+			//Buffer& buffer = *ObjectWrap::Unwrap<Buffer>(object);
+			return self->Convert(Buffer::Data(object), Buffer::Length(object));
 		}
 	}
 
