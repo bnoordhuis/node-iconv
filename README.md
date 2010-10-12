@@ -2,6 +2,20 @@
 
 Text recoding in JavaScript for fun and profit!
 
+## Cloning the repository
+
+If you are developing against node.js v0.3.0:
+
+	git clone git://github.com/bnoordhuis/node-iconv.git
+
+If you are developing against the older but stable node.js v0.2.x:
+
+	git clone -b v0.2.x git://github.com/bnoordhuis/node-iconv.git
+
+Both versions of node.js are fully supported. Once v0.3.0 goes stable,
+support for v0.2.x will be slowly phased out but it will receive
+bug fixes and minor updates for the foreseeable future.
+
 ## Compiling
 
 To compile and install the module, type:
