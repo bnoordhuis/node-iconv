@@ -1,4 +1,21 @@
-assert = require('assert'), Buffer = require('buffer').Buffer, SlowBuffer = require('buffer').SlowBuffer, Iconv = require('iconv').Iconv;
+assert = require('assert');
+constants = require('constants');
+
+Iconv = require('iconv').Iconv;
+Buffer = require('buffer').Buffer;
+SlowBuffer = require('buffer').SlowBuffer;
+
+// hack to make the tests to pass with node v0.3.0's new buffer model
+assert.isBuffer = function(object) {
+	assert.ok(object instanceof Buffer || object instanceof SlowBuffer);
+};
+
+// hack to make the tests to pass with node v0.3.0's new buffer model
+assert.bufferEqual = function(a, b) {
+	assert.equal(
+		a.inspect().replace(/^<SlowBuffer/, '<Buffer'),
+		b.inspect().replace(/^<SlowBuffer/, '<Buffer'));
+};
 
 // unknown source/target encoding
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });
@@ -16,26 +33,26 @@ assert.equal(iconv.convert(), undefined);
 assert.equal(iconv.convert(1), undefined);
 assert.equal(iconv.convert({}), undefined);
 
-assert.ok(iconv.convert(new Buffer('xxx')) instanceof Buffer);
-assert.ok(iconv.convert('xxx') instanceof Buffer);
+assert.isBuffer(iconv.convert(new Buffer('xxx')));
+assert.isBuffer(iconv.convert('xxx'));
 
-assert.equal(iconv.convert('xxx').inspect(), new Buffer('xxx').inspect());
-assert.equal(iconv.convert(new Buffer('xxx')).inspect(), new Buffer('xxx').inspect());
+assert.bufferEqual(iconv.convert('xxx'), new Buffer('xxx'));
+assert.bufferEqual(iconv.convert(new Buffer('xxx')), new Buffer('xxx'));
 
 buffer = new Buffer(1); buffer[0] = 235; // ë
-assert.equal(iconv.convert('ë').inspect(), buffer.inspect());
+assert.bufferEqual(iconv.convert('ë'), buffer);
 
 // partial character sequence should throw EINVAL
 buffer = new Buffer(1); buffer[0] = 195;
 try {
 	iconv.convert(buffer);
 } catch (e) {
-	assert.equal(e.errno, process.EINVAL);
+	assert.equal(e.errno, constants.EINVAL || 22);
 }
 
 // belongs to partial character sequence test - new input should be recoded without issues
 buffer = new Buffer(1); buffer[0] = 235; // ë
-assert.equal(iconv.convert('ë').inspect(), buffer.inspect());
+assert.bufferEqual(iconv.convert('ë'), buffer);
 
 // stateful encodings should do the Right Thing
 iconv = new Iconv('iso-2022-jp', 'utf-8');
@@ -45,7 +62,7 @@ buffer[1] = 0x24;
 buffer[2] = 0x40;
 buffer[3] = 0x24;  // start character sequence
 buffer[4] = 0x2c;
-assert.equal(iconv.convert(buffer).inspect(), new Buffer('が').inspect());
+assert.bufferEqual(iconv.convert(buffer), new Buffer('が'));
 
 buffer = new Buffer(4);
 buffer[0] = 0x1b;  // start escape sequence
@@ -56,13 +73,13 @@ buffer[3] = 0x24;  // start character sequence
 try {
 	iconv.convert(buffer);
 } catch (e) {
-	assert.equal(e.errno, process.EINVAL);
+	assert.equal(e.errno, constants.EINVAL || 22);
 }
 
 // input too big to fit in single (internal) buffer
 s = 'x'; for (var i = 0; i < 16; i++) s = s + s; s += '1234'; // 64K + 4B for good measure
 result = iconv.convert(s);
-assert.ok(new Buffer(s).inspect() == result.inspect());
+assert.bufferEqual(new Buffer(s), result);
 assert.equal(result.slice(65536, 65536 + 4).toString(), '1234');
 
 // non-convertible character sequence should throw EILSEQ
@@ -70,7 +87,7 @@ iconv = new Iconv('utf-8', 'ascii');
 try {
 	iconv.convert('ë');
 } catch (e) {
-	assert.equal(e.errno, process.EILSEQ);
+	assert.equal(e.errno, constants.EILSEQ);
 }
 
 // prototypical inheritance should work
