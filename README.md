@@ -2,9 +2,16 @@
 
 Text recoding in JavaScript for fun and profit!
 
+## Installing with `npm`
+
+	npm install iconv
+
+Note that the npm-ified version of node-iconv only
+works with node.js >= v0.3.0.
+
 ## Cloning the repository
 
-If you are developing against node.js v0.3.0:
+If you are developing against node.js v0.3.0 or later:
 
 	git clone git://github.com/bnoordhuis/node-iconv.git
 
