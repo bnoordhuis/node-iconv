@@ -48,85 +48,128 @@ struct chunk {
 	}
 };
 
-// the actual conversion happens here
-Handle<Value> Iconv::Convert(char* data, size_t length) {
-	assert(conv_ != (iconv_t) -1);
-	assert(data != 0);
+class Transcoder {
+public:
+	Transcoder(iconv_t iv): iv_(iv), size_(0), errno_(0) {
+	}
 
-	std::list<chunk> chunks;
+	bool transcode(const char* data, size_t length) {
+		assert(errno_ == 0);
 
-	char *inbuf = data;
-	size_t inbytesleft = length;
-	size_t size = 0;
+		const char *inbuf = data;
+		size_t inbytesleft = length;
 
-	int index = 0;
-	while (true) {
-		// smart compilers will optimize chunks.push_back(chunk()) down to a zero-copy operation
-		// but we'll assume the worst and do it manually
-		chunks.resize(++index);
-		chunk& c = chunks.back();
+		int index = 0;
 
-		char *outbuf = c.data;
-		size_t outbytesleft = sizeof(c.data);
+		for (;;) {
+			// smart compilers will optimize chunks.push_back(chunk()) down to a zero-copy operation
+			// but we'll assume the worst and do it manually
+			chunks_.resize(++index);
+			chunk& c = chunks_.back();
 
-		size_t rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-		c.size = sizeof(c.data) - outbytesleft;
-		size += c.size;
+			char *outbuf = c.data;
+			size_t outbytesleft = sizeof(c.data);
 
-		if (rv != (size_t) -1) {
-			assert(inbytesleft == 0);
-			break;
-		}
+			size_t rv = iconv(
+					iv_, (char **) &inbuf, &inbytesleft, &outbuf, &outbytesleft);
 
-		if (errno == E2BIG) {
-			continue;
-		}
+			c.size = sizeof(c.data) - outbytesleft;
+			size_ += c.size;
 
-		if (errno == EINVAL) {
-			// write out shift sequences (if any)
-			rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
-			if (errno == E2BIG) {
-				// chunk is too small to contain the shift sequence, retry with new chunk
-				chunks.resize(++index);
-				chunk& c = chunks.back();	// FIXME shadowing another variable is bad style
-
-				outbuf = c.data;
-				outbytesleft = sizeof(c.data);
-
-				rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
-				if (rv != (size) -1) {
-					c.size = rv;
-				}
-			}
-
-			// we're still in an error condition if iconv() hasn't written any bytes
-			if (rv != 0 && rv != (size_t) -1) {
+			if (rv != (size_t) -1) {
+				assert(inbytesleft == 0);
 				break;
 			}
 
-			if (rv == 0 || errno == EINVAL) {
-				return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
+			if (errno == E2BIG) {
+				continue;
 			}
-			// deliberate fall through
+
+			if (errno == EINVAL) {
+				// write out shift sequences (if any)
+				rv = iconv(iv_, 0, 0, &outbuf, &outbytesleft);
+
+				if (errno == E2BIG) {
+					// chunk is too small to contain the shift sequence, retry with new chunk
+					chunks_.resize(++index);
+					chunk& c = chunks_.back();   // FIXME shadowing another variable is bad style
+
+					outbuf = c.data;
+					outbytesleft = sizeof(c.data);
+
+					rv = iconv(iv_, 0, 0, &outbuf, &outbytesleft);
+					if (rv != (size_t) -1) {
+						c.size = rv;
+					}
+				}
+
+				// check if iconv() has written data - if not, then we're still in an error condition
+				if (rv != 0 && rv != (size_t) -1) {
+					break;
+				}
+			}
+
+			errno_ = errno;
+			return false;
 		}
 
-		if (errno == EILSEQ) {
-			return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
+		return true;
+	}
+
+	bool isError() const {
+		return errno_ != 0;
+	}
+
+	int getErrorNumber() const {
+		return errno_;
+	}
+
+	const char* getErrorMessage() const {
+		switch (errno_) {
+		case EILSEQ: return "Illegal character sequence.";
+		case EINVAL: return "Incomplete character sequence.";
+		case E2BIG:  return "Ask your girlfriend where she was last night."; // not possible (or shouldn't be)
 		}
 
-		return ThrowException(ErrnoException(errno, "iconv"));
+		return "No error";
 	}
 
-	// copy chunks into buffer
-	Buffer& b = *Buffer::New(size);
+	Buffer* toBuffer() {
+		assert(errno_ == 0);
 
-	char* p = Buffer::Data(b.handle_);
-	for (std::list<chunk>::const_iterator chunk = chunks.begin(), end = chunks.end(); chunk != end; ++chunk) {
-		memcpy(p, chunk->data, chunk->size);
-		p += chunk->size;
+		Buffer* buffer = Buffer::New(size_);
+
+		char* data = Buffer::Data(buffer->handle_);
+
+		for (std::list<chunk>::const_iterator chunk = chunks_.begin(), end = chunks_.end(); chunk != end; ++chunk) {
+			memcpy(data, chunk->data, chunk->size);
+			data += chunk->size;
+		}
+
+		return buffer;
 	}
 
-	return b.handle_;
+private:
+	std::list<chunk> chunks_;
+	iconv_t iv_;
+	size_t size_;
+	int errno_;
+};
+
+// the actual conversion happens here
+Handle<Value> Iconv::Convert(char* data, size_t length) {
+	Transcoder tc(conv_);
+
+	if (tc.transcode(data, length)) {
+		return tc.toBuffer()->handle_;
+	}
+
+	HandleScope scope;
+
+	Local<Value> ex = ErrnoException(
+			tc.getErrorNumber(), "iconv", tc.getErrorMessage());
+
+	return ThrowException(ex);
 }
 
 Handle<Value> Iconv::Convert(const Arguments& args) {
@@ -190,8 +233,10 @@ Handle<Value> Iconv::New(const Arguments& args) {
 	iconv_t conv = iconv_open(
 			fixEncodingName(*targetEncoding),
 			fixEncodingName(*sourceEncoding));
+
 	if (conv == (iconv_t) -1) {
-		return ThrowException(ErrnoException(errno, "iconv_open", "Conversion not supported."));
+		return ThrowException(
+				ErrnoException(errno, "iconv_open", "Conversion not supported."));
 	}
 
 	Iconv* instance = new Iconv(conv);
