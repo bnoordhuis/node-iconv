@@ -1,5 +1,7 @@
 #include "iconv.h"
 
+#include "Recoder.h"
+
 #include <v8.h>
 #include <node.h>
 #include <node_buffer.h>
@@ -15,237 +17,144 @@ using namespace node;
 
 namespace {
 
+using Recode::Recoder;
+using Recode::RecoderResult;
+
+/**
+ * node.js glue, placeholder/proxy for the Recoder.
+ */
 class Iconv: public ObjectWrap {
 public:
-	static void Initialize(Handle<Object>& target);
 	static Handle<Value> New(const Arguments& args);
 	static Handle<Value> Convert(const Arguments& args);
 
-	Iconv(iconv_t conv);
-	~Iconv(); // destructor may not run if program is short-lived or aborted
-
-	// the actual conversion happens here
-	Handle<Value> Convert(char* data, size_t length);
-
 private:
-	iconv_t conv_;
+	static Handle<Value> ToBuffer(RecoderResult rr);
+	static Handle<Value> ToString(RecoderResult rr);
+
+	Iconv(Recoder* recoder): recoder_(recoder) {
+	}
+
+	// destructor may not run if program is short-lived or aborted
+	~Iconv() {
+		delete recoder_;
+	}
+
+	Handle<Value> Convert(const char* data, size_t size);
+
+	// used by Iconv::ToString()
+	class ExternalStringResource: public String::ExternalStringResource {
+	public:
+		ExternalStringResource(char* data, size_t size): data_(data), size_(size) {
+			assert(data_ != 0);
+	        assert(size_ != 0);
+		}
+		virtual ~ExternalStringResource() {
+			delete[] data_;
+		}
+		virtual const uint16_t* data() const {
+			return (const uint16_t *) data_;
+		}
+		virtual size_t length() const {
+			return size_;
+		}
+	private:
+		const char* data_;
+		const size_t size_;
+	};
+
+	// and this is what it's all about
+	Recoder* recoder_;
 };
 
-Iconv::Iconv(iconv_t conv): conv_(conv) {
-	assert(conv_ != (iconv_t) -1);
-}
-
-Iconv::~Iconv() {
-	iconv_close(conv_);
-}
-
-// helper class: reverse linked list of dumb buffers
-struct chunk {
-	size_t size;
-	char data[32 * 1024];
-
-	chunk(): size(0) {
-	}
-};
-
-class Transcoder {
-public:
-	Transcoder(iconv_t iv): iv_(iv), size_(0), errno_(0) {
-	}
-
-	bool transcode(const char* data, size_t length) {
-		assert(errno_ == 0);
-
-		const char *inbuf = data;
-		size_t inbytesleft = length;
-
-		int index = 0;
-
-		for (;;) {
-			// smart compilers will optimize chunks.push_back(chunk()) down to a zero-copy operation
-			// but we'll assume the worst and do it manually
-			chunks_.resize(++index);
-			chunk& c = chunks_.back();
-
-			char *outbuf = c.data;
-			size_t outbytesleft = sizeof(c.data);
-
-			size_t rv = iconv(
-					iv_, (char **) &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-
-			c.size = sizeof(c.data) - outbytesleft;
-			size_ += c.size;
-
-			if (rv != (size_t) -1) {
-				assert(inbytesleft == 0);
-				break;
-			}
-
-			if (errno == E2BIG) {
-				continue;
-			}
-
-			if (errno == EINVAL) {
-				// write out shift sequences (if any)
-				rv = iconv(iv_, 0, 0, &outbuf, &outbytesleft);
-
-				if (errno == E2BIG) {
-					// chunk is too small to contain the shift sequence, retry with new chunk
-					chunks_.resize(++index);
-					chunk& c = chunks_.back();   // FIXME shadowing another variable is bad style
-
-					outbuf = c.data;
-					outbytesleft = sizeof(c.data);
-
-					rv = iconv(iv_, 0, 0, &outbuf, &outbytesleft);
-					if (rv != (size_t) -1) {
-						c.size = rv;
-					}
-				}
-
-				// check if iconv() has written data - if not, then we're still in an error condition
-				if (rv != 0 && rv != (size_t) -1) {
-					break;
-				}
-			}
-
-			errno_ = errno;
-			return false;
-		}
-
-		return true;
-	}
-
-	bool isError() const {
-		return errno_ != 0;
-	}
-
-	int getErrorNumber() const {
-		return errno_;
-	}
-
-	const char* getErrorMessage() const {
-		switch (errno_) {
-		case EILSEQ: return "Illegal character sequence.";
-		case EINVAL: return "Incomplete character sequence.";
-		case E2BIG:  return "Ask your girlfriend where she was last night."; // not possible (or shouldn't be)
-		}
-
-		return "No error";
-	}
-
-	Buffer* toBuffer() {
-		assert(errno_ == 0);
-
-		Buffer* buffer = Buffer::New(size_);
-
-		char* data = Buffer::Data(buffer->handle_);
-
-		for (std::list<chunk>::const_iterator chunk = chunks_.begin(), end = chunks_.end(); chunk != end; ++chunk) {
-			memcpy(data, chunk->data, chunk->size);
-			data += chunk->size;
-		}
-
-		return buffer;
-	}
-
-private:
-	std::list<chunk> chunks_;
-	iconv_t iv_;
-	size_t size_;
-	int errno_;
-};
-
-// the actual conversion happens here
-Handle<Value> Iconv::Convert(char* data, size_t length) {
-	Transcoder tc(conv_);
-
-	if (tc.transcode(data, length)) {
-		return tc.toBuffer()->handle_;
-	}
-
+Handle<Value> Iconv::New(const Arguments& args) {
 	HandleScope scope;
 
-	Local<Value> ex = ErrnoException(
-			tc.getErrorNumber(), "iconv", tc.getErrorMessage());
+	String::Utf8Value sourceEncoding(args[0]->ToString());
+	String::Utf8Value targetEncoding(args[1]->ToString());
 
-	return ThrowException(ex);
+	Recoder* recoder = Recoder::New(*sourceEncoding, *targetEncoding);
+
+	if (recoder == 0) {
+		Local<String> message = String::New("Conversion not supported.");
+
+		return ThrowException(Exception::Error(message));
+	}
+
+	(new Iconv(recoder))->Wrap(args.Holder());
+
+	return args.This();
+}
+
+Handle<Value> Iconv::Convert(const char* data, size_t size) {
+	Handle<Value> rv;
+
+	if (recoder_->Recode(data, size)) {
+		rv = Iconv::ToBuffer(recoder_->GetResult());
+	}
+	else {
+		Local<Value> ex = ErrnoException(
+				recoder_->GetErrorNumber(), "iconv", recoder_->GetErrorMessage());
+
+		rv = ThrowException(ex);
+	}
+
+	recoder_->Reset();
+
+	return rv;
 }
 
 Handle<Value> Iconv::Convert(const Arguments& args) {
 	HandleScope scope;
 
 	Iconv* self = ObjectWrap::Unwrap<Iconv>(args.This());
+
 	Local<Value> arg = args[0];
 
 	if (arg->IsString()) {
 		String::Utf8Value string(arg->ToString());
-		return self->Convert(*string, string.length());
+
+		return self->Convert(
+				*string, string.length());
 	}
 
 	if (arg->IsObject()) {
 		Local<Object> object = arg->ToObject();
+
 		if (Buffer::HasInstance(object)) {
-			//Buffer& buffer = *ObjectWrap::Unwrap<Buffer>(object);
-			return self->Convert(Buffer::Data(object), Buffer::Length(object));
+			return self->Convert(
+					Buffer::Data(object), Buffer::Length(object));
 		}
 	}
 
+	// this should arguably throw an exception
+	// but let's keep it for backward compatibility's sake
 	return Undefined();
 }
 
-// workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
-const char* fixEncodingName(const char* name) {
-	if (!strncasecmp(name, "UTF", 3) && name[3] != '-') {
-		const char* s = &name[3];
-
-		// this code is arguably too clever by half
-		switch (*s++) {
-		case '1':
-			if (!strcmp(s, "6"))       return "UTF-16";
-			if (!strcasecmp(s, "6LE")) return "UTF-16LE";
-			if (!strcasecmp(s, "6BE")) return "UTF-16BE";
-			break;
-		case '3':
-			if (!strcmp(s, "2"))       return "UTF-32";
-			if (!strcasecmp(s, "2LE")) return "UTF-32LE";
-			if (!strcasecmp(s, "2BE")) return "UTF-32BE";
-			break;
-		case '7':
-			if (!*s) return "UTF-7";
-			break;
-		case '8':
-			if (!*s) return "UTF-8";
-			break;
-		}
-	}
-	return name;
+void FreeMemory(char* data, void* arg) {
+	delete[] data;
 }
 
-Handle<Value> Iconv::New(const Arguments& args) {
+Handle<Value> Iconv::ToBuffer(RecoderResult rr) {
+	Buffer* buffer = Buffer::New(
+			rr.Data(), rr.Size(), FreeMemory, NULL);
+
+	return buffer->handle_;
+}
+
+Handle<Value> Iconv::ToString(RecoderResult rr) {
 	HandleScope scope;
 
-	// inconsistency: node-iconv expects (source, target) while native iconv expects (target, source)
-	// wontfix for now, node-iconv's approach feels more intuitive
-	String::AsciiValue sourceEncoding(args[0]->ToString());
-	String::AsciiValue targetEncoding(args[1]->ToString());
+	String::ExternalStringResource* resource =
+			new Iconv::ExternalStringResource(rr.Data(), rr.Size());
 
-	iconv_t conv = iconv_open(
-			fixEncodingName(*targetEncoding),
-			fixEncodingName(*sourceEncoding));
+	Local<String> string = String::NewExternal(resource);
 
-	if (conv == (iconv_t) -1) {
-		return ThrowException(
-				ErrnoException(errno, "iconv_open", "Conversion not supported."));
-	}
-
-	Iconv* instance = new Iconv(conv);
-	instance->Wrap(args.Holder());
-
-	return args.This();
+	return scope.Close(string);
 }
 
-void Iconv::Initialize(Handle<Object>& target) {
+extern "C" void init(Handle<Object> target) {
 	HandleScope scope;
 
 	Local<FunctionTemplate> t = FunctionTemplate::New(Iconv::New);
@@ -254,10 +163,6 @@ void Iconv::Initialize(Handle<Object>& target) {
 	NODE_SET_PROTOTYPE_METHOD(t, "convert", Iconv::Convert);
 
 	target->Set(String::NewSymbol("Iconv"), t->GetFunction());
-}
-
-extern "C" void init(Handle<Object> target) {
-	Iconv::Initialize(target);
 }
 
 } // namespace
