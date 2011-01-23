@@ -18,13 +18,13 @@ bug fixes and minor updates for the foreseeable future.
 
 ## Compiling
 
+Ensure that you have libicu installed, including its development
+package. It is installed by default on ubuntu (libc6-dev must be
+installed).
+
 To compile and install the module, type:
 
-	make install NODE_PATH=/path/to/nodejs
-
-NODE_PATH will default to `/usr/local` if omitted.
-
-Note that you do not need to have a copy of libiconv installed to use this module.
+	make install
 
 ## Usage
 

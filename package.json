@@ -1,0 +1,13 @@
+{ "name": "iconv"
+, "description": "Text recoding in JavaScript for fun and profit!"
+, "version": "0.1.0"
+, "author": "Kris Kowal <kris@cixar.com> (http://github.com/kriskowal/)"
+, "contributors":
+  [ "Trevor Caira <trevor@caira.com> (http://trevor.caira.com/)" ]
+, "repository":
+  { "type": "git"
+  , "url": "http://github.com/bnoordhuis/node-iconv"
+  },
+  "main": "build/default/iconv",
+  "scripts": { "build": "make" }
+}
