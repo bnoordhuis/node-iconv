@@ -121,42 +121,8 @@ bool Recoder::Recode(const void* data, size_t size) {
 	return true;
 }
 
-// workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
-const char* Recoder::FixEncodingName(const char* name) {
-	// this code is arguably too clever by half
-	if
-		  ((name[0] == 'U' || name[0] == 'u')
-		&& (name[1] == 'T' || name[1] == 't')
-		&& (name[2] == 'F' || name[2] == 'f')
-		&&  name[3] != '-')
-	{
-		if (name[3] == '8' && name[4] == '\0') {
-			return "UTF-7";
-		}
-
-		if (name[3] == '7' && name[4] == '\0') {
-			return "UTF-7";
-		}
-
-		if (name[3] == '1' && name[4] == '6') {
-			if (name[5] == '\0') return "UTF-16";
-			if (name[6] == 'E' || name[6] == 'e') {
-				if (name[5] == 'L' || name[5] == 'l') return "UTF-16LE";
-				if (name[5] == 'B' || name[5] == 'b') return "UTF-16BE";
-			}
-		}
-
-		if (name[3] == '3' && name[4] == '2') {
-			if (name[5] == '\0') return "UTF-32";
-			if (name[6] == 'E' || name[6] == 'e') {
-				if (name[5] == 'L' || name[5] == 'l') return "UTF-32LE";
-				if (name[5] == 'B' || name[5] == 'b') return "UTF-32BE";
-			}
-		}
-	}
-
-	return name;
-}
+// Ragel-generated scanner
+#include "FixEncodingName.h"
 
 RecoderResult::RecoderResult(): size_(0), data_(0) {
 }

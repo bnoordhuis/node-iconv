@@ -25,9 +25,12 @@ clean:
 distclean:	clean
 	cd $(LIBICONV_DIR) && $(MAKE) distclean
 
-iconv.o:	Recoder.h iconv.cc
+src/iconv.o:	src/Recoder.h src/iconv.cc
 
-Recoder.o:	Recoder.h Recoder.cc
+src/Recoder.o:	src/Recoder.h src/FixEncodingName.h src/Recoder.cc
+
+src/FixEncodingName.h:	src/FixEncodingName.rl
+	ragel -G2 -o $@ $<
 
 $(LIBICONV_DIR)/Makefile:
 	cd $(LIBICONV_DIR) && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings
