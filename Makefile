@@ -7,7 +7,7 @@ LIBICONV	= $(LIBICONV_DIR)/lib/.libs/libiconv.a
 
 CXXFLAGS	= -I$(LIBICONV_DIR)/include -I$(NODE_PATH)/include/node -O2 -fPIC -Wall -ansi
 
-OBJS		= iconv.o Recoder.o
+OBJS		= src/iconv.o src/Recoder.o
 
 all:	$(LIBICONV) $(OBJS)
 ifeq ($(UNAME),Darwin)
