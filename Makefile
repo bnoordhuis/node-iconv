@@ -7,7 +7,7 @@ LIBICONV	= $(LIBICONV_DIR)/lib/.libs/libiconv.a
 
 CXXFLAGS	= -I$(LIBICONV_DIR)/include -I$(NODE_PATH)/include/node -O2 -fPIC -Wall -ansi
 
-OBJS		= iconv.o Recoder.o
+OBJS		= src/iconv.o src/Recoder.o
 
 all:	$(LIBICONV) $(OBJS)
 ifeq ($(UNAME),Darwin)
@@ -25,9 +25,9 @@ clean:
 distclean:	clean
 	cd $(LIBICONV_DIR) && $(MAKE) distclean
 
-iconv.o:	Recoder.h iconv.cc
+src/iconv.o:	src/Recoder.h src/iconv.cc
 
-Recoder.o:	Recoder.h Recoder.cc
+src/Recoder.o:	src/Recoder.h src/Recoder.cc
 
 $(LIBICONV_DIR)/Makefile:
 	cd $(LIBICONV_DIR) && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings
