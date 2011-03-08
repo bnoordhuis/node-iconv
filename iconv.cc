@@ -50,6 +50,8 @@ struct chunk {
 
 // the actual conversion happens here
 Handle<Value> Iconv::Convert(char* data, size_t length) {
+	HandleScope scope;
+
 	assert(conv_ != (iconv_t) -1);
 	assert(data != 0);
 
@@ -126,12 +128,21 @@ Handle<Value> Iconv::Convert(char* data, size_t length) {
 		p += chunk->size;
 	}
 
-	return b.handle_;
+	// [GH-12] return a fast buffer object
+	Function* fastBufferConstructor = Function::Cast(
+			*Context::GetCurrent()
+			->Global()
+			->Get(String::NewSymbol("Buffer")));
+
+	Handle<Value> argv[3] = {
+			b.handle_, Integer::New(Buffer::Length(b.handle_)), Integer::New(0)
+	};
+
+	return scope.Close(
+			fastBufferConstructor->NewInstance(3, argv));
 }
 
 Handle<Value> Iconv::Convert(const Arguments& args) {
-	HandleScope scope;
-
 	Iconv* self = ObjectWrap::Unwrap<Iconv>(args.This());
 	Local<Value> arg = args[0];
 
