@@ -96,3 +96,9 @@ if (false) {	// XXX disabled for now
 	Foo.prototype = Iconv;
 	new Foo();
 }
+
+// GH-14 encoder state should be reset between invocations
+iconv = new Iconv('utf-8', 'utf-7');
+for (i = 0; i < 100; i++) {
+	assert.equal(iconv.convert('ç').toString(), '+AOc');
+}
