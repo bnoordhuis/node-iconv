@@ -96,3 +96,9 @@ if (false) {	// XXX disabled for now
 	Foo.prototype = Iconv;
 	new Foo();
 }
+
+// GH-14 ensure that shift sequences are written out
+iconv = new Iconv('utf-8', 'utf-7');
+assert.equal(iconv.convert('ç').toString(), '+AOc-');
+assert.equal(iconv.convert('çç').toString(), '+AOcA5w-');
+assert.equal(iconv.convert('çxç').toString(), '+AOc-x+AOc-');

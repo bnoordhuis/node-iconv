@@ -4,11 +4,10 @@
 #include <node.h>
 #include <node_buffer.h>
 
+#include <stdlib.h>
 #include <strings.h>	// strcasecmp + strncasecmp
 #include <string.h>
 #include <errno.h>
-
-#include <list>
 
 using namespace v8;
 using namespace node;
@@ -39,94 +38,120 @@ Iconv::~Iconv() {
 	iconv_close(conv_);
 }
 
-// helper class: reverse linked list of dumb buffers
-struct chunk {
-	size_t size;
-	char data[32 * 1024];
+int grow(char** output, size_t* outlen, char** outbuf, size_t* outbufsz) {
+	size_t newlen;
+	char *newptr;
 
-	chunk(): size(0) {
+	newlen = *outlen ? (*outlen * 2) : 16;
+	if ((newptr = (char*) realloc(*output, newlen))) {
+		*outbufsz = newlen - *outlen;
+		*outbuf = newptr + (*outbuf - *output);
+
+		*outlen = newlen;
+		*output = newptr;
+
+		return 1;
 	}
-};
+
+	return 0;
+}
+
+/**
+ * This function will clobber `output` and `outlen` on both success and error.
+ */
+int convert(iconv_t iv, char* input, size_t inlen, char** output, size_t* outlen) {
+	char* inbuf;
+	char* outbuf;
+	size_t outbufsz;
+	size_t inbufsz;
+	size_t rv;
+
+	inbufsz = inlen;
+	inbuf = input;
+
+	*outlen = outbufsz = 0;
+	*output = outbuf = 0;
+
+	// reset to initial state
+	iconv(iv, 0, 0, 0, 0);
+
+	// convert input
+	do {
+		if (grow(output, outlen, &outbuf, &outbufsz)) {
+			rv = iconv(iv, &inbuf, &inbufsz, &outbuf, &outbufsz);
+		}
+		else {
+			goto error;
+		}
+	}
+	while (rv == (size_t) -1 && errno == E2BIG);
+
+	if (rv == (size_t) -1) {
+		goto error;
+	}
+
+	// write out shift sequence
+	rv = iconv(iv, 0, 0, &outbuf, &outbufsz);
+
+	if (rv == (size_t) -1) {
+		if (errno != E2BIG) {
+			goto error;
+		}
+		if (!grow(output, outlen, &outbuf, &outbufsz)) {
+			goto error;
+		}
+		if (iconv(iv, 0, 0, &outbuf, &outbufsz) == (size_t) -1) {
+			goto error;
+		}
+	}
+
+	// store length
+	*outlen = outbuf - *output;
+
+	// release unused trailing memory; this can't conceivably fail
+	// because newlen <= oldlen but let's take the safe route anyway
+	if ((outbuf = (char*) realloc(*output, *outlen))) {
+		*output = outbuf;
+	}
+
+	return 1;
+
+error:
+	free(*output);
+	*output = 0;
+	*outlen = 0;
+	return 0;
+}
+
+void FreeMemory(char *data, void *hint) {
+	(void) hint;
+	free(data);
+}
 
 // the actual conversion happens here
-Handle<Value> Iconv::Convert(char* data, size_t length) {
-	assert(conv_ != (iconv_t) -1);
-	assert(data != 0);
+Handle<Value> Iconv::Convert(char* input, size_t inlen) {
+	size_t outlen;
+	char *output;
 
-	std::list<chunk> chunks;
+	outlen = 0;
+	output = 0;
 
-	char *inbuf = data;
-	size_t inbytesleft = length;
-	size_t size = 0;
-
-	int index = 0;
-	while (true) {
-		// smart compilers will optimize chunks.push_back(chunk()) down to a zero-copy operation
-		// but we'll assume the worst and do it manually
-		chunks.resize(++index);
-		chunk& c = chunks.back();
-
-		char *outbuf = c.data;
-		size_t outbytesleft = sizeof(c.data);
-
-		size_t rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-		c.size = sizeof(c.data) - outbytesleft;
-		size += c.size;
-
-		if (rv != (size_t) -1) {
-			assert(inbytesleft == 0);
-			break;
-		}
-
-		if (errno == E2BIG) {
-			continue;
-		}
-
-		if (errno == EINVAL) {
-			// write out shift sequences (if any)
-			rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
-			if (errno == E2BIG) {
-				// chunk is too small to contain the shift sequence, retry with new chunk
-				chunks.resize(++index);
-				chunk& c = chunks.back();	// FIXME shadowing another variable is bad style
-
-				outbuf = c.data;
-				outbytesleft = sizeof(c.data);
-
-				rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
-				if (rv != (size) -1) {
-					c.size = rv;
-				}
-			}
-
-			// we're still in an error condition if iconv() hasn't written any bytes
-			if (rv != 0 && rv != (size_t) -1) {
-				break;
-			}
-
-			if (rv == 0 || errno == EINVAL) {
-				return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
-			}
-			// deliberate fall through
-		}
-
-		if (errno == EILSEQ) {
-			return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
-		}
-
+	if (convert(conv_, input, inlen, &output, &outlen)) {
+		return Buffer::New(output, outlen, FreeMemory, 0)->handle_;
+	}
+	else if (errno == EINVAL) {
+		return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
+	}
+	else if (errno == EILSEQ) {
+		return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
+	}
+	else if (errno == ENOMEM) {
+		V8::LowMemoryNotification();
+		return ThrowException(ErrnoException(errno, "iconv", "Out of memory."));
+	}
+	else {
 		return ThrowException(ErrnoException(errno, "iconv"));
 	}
-
-	// copy chunks into buffer
-	Buffer& b = *Buffer::New(size);
-
-	char* p = Buffer::Data(b.handle_);
-	for (std::list<chunk>::const_iterator chunk = chunks.begin(), end = chunks.end(); chunk != end; ++chunk) {
-		memcpy(p, chunk->data, chunk->size);
-		p += chunk->size;
-	}
-
-	return b.handle_;
 }
 
 Handle<Value> Iconv::Convert(const Arguments& args) {
