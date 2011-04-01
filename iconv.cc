@@ -20,6 +20,7 @@ public:
 	static void Initialize(Handle<Object>& target);
 	static Handle<Value> New(const Arguments& args);
 	static Handle<Value> Convert(const Arguments& args);
+	static Handle<Value> Configure(const Arguments& args);
 
 	Iconv(iconv_t conv);
 	~Iconv(); // destructor may not run if program is short-lived or aborted
@@ -151,6 +152,25 @@ Handle<Value> Iconv::Convert(const Arguments& args) {
 	return Undefined();
 }
 
+Handle<Value> Iconv::Configure(const Arguments& args) {
+	HandleScope scope;
+
+	Iconv* self = ObjectWrap::Unwrap<Iconv>(args.This());
+	
+	if (args.Length() >= 1 && args[0]->IsNumber()) {
+		int argument = 1;
+		if (args[1]->IsBoolean()) {
+			argument = args[1]->IsTrue() ? 1 : 0;
+		}
+		int request = args[0]->NumberValue();
+		iconvctl(self->conv_, request, &argument);
+		
+		return argument ? True() : False();
+	}
+	
+	return Undefined();
+}
+
 // workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
 const char* fixEncodingName(const char* name) {
 	if (!strncasecmp(name, "UTF", 3) && name[3] != '-') {
@@ -207,6 +227,12 @@ void Iconv::Initialize(Handle<Object>& target) {
 	t->InstanceTemplate()->SetInternalFieldCount(1);
 
 	NODE_SET_PROTOTYPE_METHOD(t, "convert", Iconv::Convert);
+	NODE_SET_PROTOTYPE_METHOD(t, "configure", Iconv::Configure);
+	NODE_DEFINE_CONSTANT(t, ICONV_TRIVIALP);
+	NODE_DEFINE_CONSTANT(t, ICONV_GET_TRANSLITERATE);
+	NODE_DEFINE_CONSTANT(t, ICONV_SET_TRANSLITERATE);
+	NODE_DEFINE_CONSTANT(t, ICONV_GET_DISCARD_ILSEQ);
+	NODE_DEFINE_CONSTANT(t, ICONV_SET_DISCARD_ILSEQ);
 
 	target->Set(String::NewSymbol("Iconv"), t->GetFunction());
 }
