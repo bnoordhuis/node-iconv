@@ -4,11 +4,10 @@
 #include <node.h>
 #include <node_buffer.h>
 
+#include <stdlib.h>
 #include <strings.h>	// strcasecmp + strncasecmp
 #include <string.h>
 #include <errno.h>
-
-#include <list>
 
 using namespace v8;
 using namespace node;
@@ -48,105 +47,75 @@ struct chunk {
 	}
 };
 
-// the actual conversion happens here
-Handle<Value> Iconv::Convert(char* data, size_t length) {
-	std::list<chunk> chunks;
-	size_t outbytesleft;
-	size_t inbytesleft;
-	char* outbuf;
+/**
+ * This function will clobber `output` and `outlen` on both success and error.
+ */
+int convert(iconv_t iv, char* input, size_t inlen, char** output, size_t *outlen) {
 	char* inbuf;
-	size_t size;
+	char* outbuf;
+	size_t outbufsz;
+	size_t inbufsz;
 	size_t rv;
-	int index;
-	chunk* ck;
 
-	assert(conv_ != (iconv_t) -1);
-	assert(data != 0);
+	inbufsz = inlen;
+	inbuf = input;
 
-	inbytesleft = length;
-	inbuf = data;
-	size = 0;
+	outbufsz = 4 * inlen;
+	outbuf = (char*) malloc(outbufsz);
 
-	outbytesleft = 0;
-	outbuf = 0;
-	rv = 0;
+	*outlen = 0;
+	*output = outbuf;
 
-	index = 0;
+	// reset to initial state
+	iconv(iv, 0, 0, 0, 0);
 
-	do {
-		errno = 0;
-
-		// smart compilers will optimize chunks.push_back(chunk()) down to a zero-copy operation
-		// but we'll assume the worst and do it manually
-		chunks.resize(++index);
-		ck = &chunks.back();
-
-		outbuf = ck->data;
-		outbytesleft = sizeof(ck->data);
-
-		rv = iconv(conv_, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
-
-		// update the indexes even on errors, iconv() may still have written data
-		ck->size = sizeof(ck->data) - outbytesleft;
-		size += ck->size;
-	}
-	while (errno == E2BIG);
-
-	//
-	// we're in one of three possible states now:
-	//
-	// 1. errno == 0      -> everything went okay
-	// 2. errno == EINVAL -> writing out the shift sequence might fix that
-	// 3. errno == EILSEQ -> bad input, non-recoverable
-	//
-
-	// remember if errno == EINVAL
-	const int saved_errno = errno;
-
-	if (errno == 0 || errno == EINVAL) {
-		// write out shift sequence
-		rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
-
-		if (errno == E2BIG) {
-			// chunk is too small to contain the shift sequence, retry with new chunk
-			chunks.resize(++index);
-			ck = &chunks.back();
-
-			outbuf = ck->data;
-			outbytesleft = sizeof(ck->data);
-
-			rv = iconv(conv_, 0, 0, &outbuf, &outbytesleft);
-		}
-
-		if (rv != (size_t) -1) {
-			ck->size += rv;
-		}
+	// convert input
+	rv = iconv(iv, &inbuf, &inbufsz, &outbuf, &outbufsz);
+	if (rv == (size_t) -1) {
+		goto error;
 	}
 
-	//
-	// we're still in an error condition if there was no shift sequence
-	// to write and the previous error was EINVAL
-	//
-	if (errno == EINVAL || (rv == 0 && saved_errno == EINVAL)) {
+	// write out shift sequence
+	rv = iconv(iv, 0, 0, &outbuf, &outbufsz);
+	if (rv == (size_t) -1) {
+		goto error;
+	}
+
+	// store length
+	*outlen = outbuf - *output;
+
+	return 1;
+
+error:
+	free(*output);
+	*output = 0;
+	*outlen = 0;
+	return 0;
+}
+
+void FreeMemory(char *data, void *hint) {
+	free(data);
+}
+
+// the actual conversion happens here
+Handle<Value> Iconv::Convert(char* input, size_t inlen) {
+	size_t outlen;
+	char *output;
+
+	outlen = 0;
+	output = 0;
+
+	if (convert(conv_, input, inlen, &output, &outlen)) {
+		return Buffer::New(output, outlen, FreeMemory, 0)->handle_;
+	}
+	else if (errno == EINVAL) {
 		return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
 	}
 	else if (errno == EILSEQ) {
 		return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
 	}
-	else if (errno != 0) {
-		return ThrowException(ErrnoException(errno, "iconv"));
-	}
 	else {
-		// copy chunks into buffer
-		Buffer& b = *Buffer::New(size);
-
-		char* p = Buffer::Data(b.handle_);
-		for (std::list<chunk>::const_iterator chunk = chunks.begin(), end = chunks.end(); chunk != end; ++chunk) {
-			memcpy(p, chunk->data, chunk->size);
-			p += chunk->size;
-		}
-
-		return b.handle_;
+		return ThrowException(ErrnoException(errno, "iconv"));
 	}
 }
 

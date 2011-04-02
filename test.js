@@ -97,8 +97,8 @@ if (false) {	// XXX disabled for now
 	new Foo();
 }
 
-// GH-14 encoder state should be reset between invocations
+// GH-14 ensure that shift sequences are written out
 iconv = new Iconv('utf-8', 'utf-7');
-for (i = 0; i < 100; i++) {
-	assert.equal(iconv.convert('ç').toString(), '+AOc');
-}
+assert.equal(iconv.convert('ç').toString(), '+AOc-');
+assert.equal(iconv.convert('çç').toString(), '+AOcA5w-');
+assert.equal(iconv.convert('çxç').toString(), '+AOc-x+AOc-');
