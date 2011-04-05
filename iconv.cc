@@ -9,6 +9,8 @@
 #include <string.h>
 #include <errno.h>
 
+#include <string>
+
 using namespace v8;
 using namespace node;
 
@@ -177,30 +179,14 @@ Handle<Value> Iconv::Convert(const Arguments& args) {
 }
 
 // workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
-const char* fixEncodingName(const char* name) {
-	if (!strncasecmp(name, "UTF", 3) && name[3] != '-') {
-		const char* s = &name[3];
+Handle<String> FixEncodingName(Handle<String> name) {
+	String::AsciiValue s(name);
 
-		// this code is arguably too clever by half
-		switch (*s++) {
-		case '1':
-			if (!strcmp(s, "6"))       return "UTF-16";
-			if (!strcasecmp(s, "6LE")) return "UTF-16LE";
-			if (!strcasecmp(s, "6BE")) return "UTF-16BE";
-			break;
-		case '3':
-			if (!strcmp(s, "2"))       return "UTF-32";
-			if (!strcasecmp(s, "2LE")) return "UTF-32LE";
-			if (!strcasecmp(s, "2BE")) return "UTF-32BE";
-			break;
-		case '7':
-			if (!*s) return "UTF-7";
-			break;
-		case '8':
-			if (!*s) return "UTF-8";
-			break;
-		}
+	if (!strncasecmp(*s, "UTF", 3) && (*s)[3] != '-') {
+		std::string rv = std::string("UTF-") + (*s + 3);
+		return String::New(rv.c_str());
 	}
+
 	return name;
 }
 
@@ -209,12 +195,10 @@ Handle<Value> Iconv::New(const Arguments& args) {
 
 	// inconsistency: node-iconv expects (source, target) while native iconv expects (target, source)
 	// wontfix for now, node-iconv's approach feels more intuitive
-	String::AsciiValue sourceEncoding(args[0]->ToString());
-	String::AsciiValue targetEncoding(args[1]->ToString());
+	String::AsciiValue sourceEncoding(FixEncodingName(args[0]->ToString()));
+	String::AsciiValue targetEncoding(FixEncodingName(args[1]->ToString()));
 
-	iconv_t conv = iconv_open(
-			fixEncodingName(*targetEncoding),
-			fixEncodingName(*sourceEncoding));
+	iconv_t conv = iconv_open(*targetEncoding, *sourceEncoding);
 	if (conv == (iconv_t) -1) {
 		return ThrowException(ErrnoException(errno, "iconv_open", "Conversion not supported."));
 	}

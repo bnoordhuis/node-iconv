@@ -61,6 +61,38 @@ You must accumulate the small buffers into a single large buffer before performi
 
 [node-buffertools](http://github.com/bnoordhuis/node-buffertools) lets you concatenate buffers painlessly. See the description of `buffertools.concat()` for details.
 
+### Dealing with untranslatable characters
+
+Characters are not always translatable to another encoding. The UTF-8 string
+"ça va が", for example, cannot be represented in plain 7-bits ASCII without
+some loss of fidelity.
+
+By default, node-iconv throws EILSEQ when untranslatabe characters are encountered
+but this can be customized. Quoting the `iconv_open(3)` man page:
+
+	//TRANSLIT
+		When  the  string  "//TRANSLIT"  is appended to tocode, transliteration is activated.
+		This means that when a character cannot be represented in the target character set,
+		it can be approximated through one or several similarly looking characters.
+
+	//IGNORE
+		When the string "//IGNORE" is appended to tocode, characters that cannot be represented
+		in the target character set will be silently discarded.
+
+Example usage:
+
+	var iconv = new Iconv('UTF-8', 'ASCII');
+	iconv.convert('ça va'); // throws EILSEQ
+
+	var iconv = new Iconv('UTF-8', 'ASCII//IGNORE');
+	iconv.convert('ça va'); // returns "a va"
+
+	var iconv = new Iconv('UTF-8', 'ASCII//TRANSLIT');
+	iconv.convert('ça va'); // "ca va"
+
+	var iconv = new Iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE');
+	iconv.convert('ça va が'); // "ca va "
+
 ### EINVAL
 
 EINVAL is raised when the input ends in a partial character sequence. This is a feature,

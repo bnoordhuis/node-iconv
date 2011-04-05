@@ -102,3 +102,19 @@ iconv = new Iconv('utf-8', 'utf-7');
 assert.equal(iconv.convert('ç').toString(), '+AOc-');
 assert.equal(iconv.convert('çç').toString(), '+AOcA5w-');
 assert.equal(iconv.convert('çxç').toString(), '+AOc-x+AOc-');
+
+// GH-15 document and support //TRANSLIT and //IGNORE
+iconv = new Iconv('utf-8', 'ascii');
+assert.throws(function() { iconv.convert('ça va'); }); // untranslatable
+
+iconv = new Iconv('utf-8', 'ascii//ignore');
+assert.equal(iconv.convert('ça va').toString(), 'a va');
+
+iconv = new Iconv('utf-8', 'ascii//translit');
+assert.equal(iconv.convert('ça va').toString(), 'ca va');
+
+iconv = new Iconv('utf-8', 'ascii//translit');
+assert.throws(function() { iconv.convert('ça va が'); }); // untranslatable
+
+iconv = new Iconv('utf-8', 'ascii//translit//ignore');
+assert.equal(iconv.convert('ça va が').toString(), 'ca va ');
