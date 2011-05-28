@@ -126,8 +126,8 @@ error:
 }
 
 void FreeMemory(char *data, void *hint) {
-	(void) hint;
 	free(data);
+	V8::AdjustAmountOfExternalAllocatedMemory(-(sizeof(Buffer) + (size_t) hint));
 }
 
 // the actual conversion happens here
@@ -139,7 +139,8 @@ Handle<Value> Iconv::Convert(char* input, size_t inlen) {
 	output = 0;
 
 	if (convert(conv_, input, inlen, &output, &outlen)) {
-		return Buffer::New(output, outlen, FreeMemory, 0)->handle_;
+		V8::AdjustAmountOfExternalAllocatedMemory(sizeof(Buffer) + outlen);
+		return Buffer::New(output, outlen, FreeMemory, (void *) outlen)->handle_;
 	}
 	else if (errno == EINVAL) {
 		return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
