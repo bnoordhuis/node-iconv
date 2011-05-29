@@ -112,7 +112,12 @@ int convert(iconv_t iv, char* input, size_t inlen, char** output, size_t* outlen
 
 	// release unused trailing memory; this can't conceivably fail
 	// because newlen <= oldlen but let's take the safe route anyway
-	if ((outbuf = (char*) realloc(*output, *outlen))) {
+	//
+	// realloc() may free the memory and return NULL if *outlen == 0
+	// but that's not an error, the caller should (and does) handle it
+	// graciously
+	//
+	if ((outbuf = (char*) realloc(*output, *outlen)) || *outlen == 0) {
 		*output = outbuf;
 	}
 
