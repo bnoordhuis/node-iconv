@@ -31,7 +31,7 @@ else
 endif
 
 install:	all
-	mkdir -p $(HOME)/.node_libraries && cp iconv.node $(HOME)/.node_libraries
+	mkdir -p $(HOME)/.node_libraries && cp iconv.js iconv.node $(HOME)/.node_libraries
 
 clean:
 	rm -f iconv.o iconv.node

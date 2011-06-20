@@ -118,3 +118,7 @@ assert.throws(function() { iconv.convert('ça va が'); }); // untranslatable
 
 iconv = new Iconv('utf-8', 'ascii//translit//ignore');
 assert.equal(iconv.convert('ça va が').toString(), 'ca va ');
+
+// stream test
+buffer = new Buffer(1); buffer[0] = 195;
+console.error(iconv.convert2(buffer));
