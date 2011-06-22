@@ -11,36 +11,30 @@
 
 #include <string>
 
+#define F_PARTIAL   1   // allow partial conversion
+
 using namespace v8;
 using namespace node;
 
 namespace {
 
-class Iconv: public ObjectWrap {
-public:
-  static void Initialize(Handle<Object>& target);
-  static Handle<Value> New(const Arguments& args);
-  static Handle<Value> Convert(const Arguments& args);
-  static Handle<Value> Convert2(const Arguments& args);
+Persistent<ObjectTemplate> handleTemplate;
+Persistent<String> unconvertedSymbol;
+Persistent<String> convertedSymbol;
+Persistent<String> errnoSymbol;
 
-  Iconv(iconv_t conv);
-  ~Iconv(); // destructor may not run if program is short-lived or aborted
+struct Iconv: public ObjectWrap {
+  Iconv(iconv_t iv, Handle<Object> target): iv_(iv) {
+    assert(iv_ != (iconv_t) -1);
+    Wrap(target);
+  }
 
-  // the actual conversion happens here
-  Handle<Value> Convert(char* data, size_t length);
-  Handle<Value> Convert2(char* data, size_t length);
+  virtual ~Iconv() {
+    iconv_close(iv_);
+  }
 
-private:
-  iconv_t conv_;
+  iconv_t iv_;
 };
-
-Iconv::Iconv(iconv_t conv): conv_(conv) {
-  assert(conv_ != (iconv_t) -1);
-}
-
-Iconv::~Iconv() {
-  iconv_close(conv_);
-}
 
 int grow(char** output, size_t* outlen, char** outbuf, size_t* outbufsz) {
   size_t newlen;
@@ -148,53 +142,24 @@ void FreeMemory(char *data, void *hint) {
   V8::AdjustAmountOfExternalAllocatedMemory(-(sizeof(Buffer) + (size_t) hint));
 }
 
-// the actual conversion happens here
-Handle<Value> Iconv::Convert(char* input, size_t inlen) {
-  size_t outlen = 0;
-  char *output = 0;
-
-  if (convert(conv_, &input, &inlen, &output, &outlen, /* free_on_error= */ true)) {
-    V8::AdjustAmountOfExternalAllocatedMemory(sizeof(Buffer) + outlen);
-    return Buffer::New(output, outlen, FreeMemory, (void *) outlen)->handle_;
-  }
-  else if (errno == EINVAL) {
-    return ThrowException(ErrnoException(EINVAL, "iconv", "Incomplete character sequence."));
-  }
-  else if (errno == EILSEQ) {
-    return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
-  }
-  else if (errno == ENOMEM) {
-    V8::LowMemoryNotification();
-    return ThrowException(ErrnoException(errno, "iconv", "Out of memory."));
-  }
-  else {
-    return ThrowException(ErrnoException(errno, "iconv"));
-  }
-}
-
-Handle<Value> Iconv::Convert(const Arguments& args) {
+Handle<Value> iconv_open_g(const Arguments& args) {
   HandleScope scope;
 
-  Iconv* const self = ObjectWrap::Unwrap<Iconv>(args.This());
-  Local<Value> arg = args[0];
+  iconv_t iv = iconv_open(
+      *String::Utf8Value(args[1]),  // targetEncoding
+      *String::Utf8Value(args[0])); // sourceEncoding
 
-  if (arg->IsString()) {
-    String::Utf8Value string(arg->ToString());
-    return self->Convert(*string, string.length());
+  if (iv == (iconv_t) -1) {
+    assert(errno == EINVAL);
+    return ThrowException(ErrnoException(errno, "iconv_open", "Conversion not supported."));
   }
-
-  if (arg->IsObject()) {
-    Local<Object> object = arg->ToObject();
-    if (Buffer::HasInstance(object)) {
-      //Buffer& buffer = *ObjectWrap::Unwrap<Buffer>(object);
-      return self->Convert(Buffer::Data(object), Buffer::Length(object));
-    }
+  else {
+    Iconv* w = new Iconv(iv, handleTemplate->NewInstance());
+    return scope.Close(w->handle_);
   }
-
-  return Undefined();
 }
 
-Handle<Value> Iconv::Convert2(char* input, size_t inlen) {
+Handle<Value> convert(iconv_t iv, char* input, size_t inlen, int flags) {
   HandleScope scope;
 
   size_t outlen = 0;
@@ -203,7 +168,11 @@ Handle<Value> Iconv::Convert2(char* input, size_t inlen) {
   Buffer* converted = 0;
   Buffer* unconverted = 0;
 
-  if (convert(conv_, &input, &inlen, &output, &outlen, /* free_on_error= */ false)) {
+  const bool free_on_error = !(flags & F_PARTIAL);
+
+  errno = 0;
+
+  if (convert(iv, &input, &inlen, &output, &outlen, free_on_error)) {
     V8::AdjustAmountOfExternalAllocatedMemory(sizeof(Buffer) + outlen);
     converted = Buffer::New(output, outlen, FreeMemory, (void *) outlen);
   }
@@ -212,90 +181,62 @@ Handle<Value> Iconv::Convert2(char* input, size_t inlen) {
     converted = Buffer::New(output, outlen, FreeMemory, (void *) outlen);
     unconverted = Buffer::New(input, inlen); // make a copy
   }
-  else if (errno == EILSEQ) {
-    return ThrowException(ErrnoException(errno, "iconv", "Illegal character sequence."));
-  }
   else if (errno == ENOMEM) {
     V8::LowMemoryNotification();
-    return ThrowException(ErrnoException(errno, "iconv", "Out of memory."));
-  }
-  else {
-    return ThrowException(ErrnoException(errno, "iconv"));
   }
 
-  // TODO make zero-length buffer a singleton
+  // stuff the result into a JS object
   Local<Object> rv = Object::New();
-  rv->Set(String::NewSymbol("unconverted"), (unconverted ? unconverted : Buffer::New(0))->handle_);
-  rv->Set(String::NewSymbol("converted"), (converted ? converted : Buffer::New(0))->handle_);
-  rv->Set(String::NewSymbol("errno"), Integer::New(errno));
+  rv->Set(errnoSymbol, Integer::New(errno));
+  if (converted) rv->Set(convertedSymbol, converted->handle_);
+  if (unconverted) rv->Set(unconvertedSymbol, unconverted->handle_);
 
   return scope.Close(rv);
 }
 
-Handle<Value> Iconv::Convert2(const Arguments& args) {
+Handle<Value> convert_g(const Arguments& args) {
   HandleScope scope;
 
-  Iconv* const self = ObjectWrap::Unwrap<Iconv>(args.This());
-  Local<Value> arg = args[0];
+  Iconv* w = Iconv::Unwrap<Iconv>(args[0]->ToObject());
+  Local<Value> data = args[1];
+  const int flags = args[2]->Int32Value();
 
-  if (arg->IsString()) {
-    String::Utf8Value string(arg->ToString());
-    return self->Convert2(*string, string.length());
+  assert(data->IsString() || Buffer::HasInstance(data));
+
+  if (args[1]->IsString()) {
+    String::Utf8Value string(args[1]->ToString());
+    return convert(w->iv_, *string, string.length(), flags);
   }
-
-  if (arg->IsObject()) {
-    Local<Object> object = arg->ToObject();
-    if (Buffer::HasInstance(object)) {
-      return self->Convert2(Buffer::Data(object), Buffer::Length(object));
-    }
+  else {
+    Local<Object> o = args[1]->ToObject();
+    return convert(w->iv_, Buffer::Data(o), Buffer::Length(o), flags);
   }
-
-  return Undefined();
 }
 
-// workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
-Handle<String> FixEncodingName(Handle<String> name) {
-  String::AsciiValue s(name);
-
-  if (!strncasecmp(*s, "UTF", 3) && (*s)[3] != '-') {
-    std::string rv = std::string("UTF-") + (*s + 3);
-    return String::New(rv.c_str());
-  }
-
-  return name;
+Handle<Value> NewErrnoException(const Arguments& args) {
+  HandleScope scope;
+  const int errorno = args[0]->Int32Value();
+  const char* syscall = args[1]->IsString() ? *String::Utf8Value(args[1]) : 0;
+  const char* message = args[2]->IsString() ? *String::Utf8Value(args[2]) : "";
+  return scope.Close(ErrnoException(errorno, syscall, message));
 }
 
-Handle<Value> Iconv::New(const Arguments& args) {
+void RegisterModule(Handle<Object> target) {
   HandleScope scope;
 
-  // inconsistency: node-iconv expects (source, target) while native iconv expects (target, source)
-  // wontfix for now, node-iconv's approach feels more intuitive
-  String::AsciiValue sourceEncoding(FixEncodingName(args[0]->ToString()));
-  String::AsciiValue targetEncoding(FixEncodingName(args[1]->ToString()));
+  handleTemplate = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
+  handleTemplate->SetInternalFieldCount(1);
 
-  iconv_t conv = iconv_open(*targetEncoding, *sourceEncoding);
-  if (conv == (iconv_t) -1) {
-    return ThrowException(ErrnoException(errno, "iconv_open", "Conversion not supported."));
-  }
+  unconvertedSymbol = Persistent<String>::New(String::NewSymbol("unconverted"));
+  convertedSymbol = Persistent<String>::New(String::NewSymbol("converted"));
+  errnoSymbol = Persistent<String>::New(String::NewSymbol("errno"));
 
-  Iconv* instance = new Iconv(conv);
-  instance->Wrap(args.Holder());
-
-  return args.This();
+  target->Set(String::NewSymbol("errnoException"), FunctionTemplate::New(NewErrnoException)->GetFunction());
+  target->Set(String::NewSymbol("iconv_open"), FunctionTemplate::New(iconv_open_g)->GetFunction());
+  target->Set(String::NewSymbol("convert"), FunctionTemplate::New(convert_g)->GetFunction());
+  target->Set(String::NewSymbol("PARTIAL"), Integer::NewFromUnsigned(F_PARTIAL));
 }
 
-void Iconv::Initialize(Handle<Object>& target) {
-  HandleScope scope;
+} // anonymous namespace
 
-  Local<FunctionTemplate> t = FunctionTemplate::New(Iconv::New);
-  t->InstanceTemplate()->SetInternalFieldCount(1);
-  NODE_SET_PROTOTYPE_METHOD(t, "convert", Iconv::Convert);
-  NODE_SET_PROTOTYPE_METHOD(t, "convert2", Iconv::Convert2);
-  target->Set(String::NewSymbol("Iconv"), t->GetFunction());
-}
-
-extern "C" void init(Handle<Object> target) {
-  Iconv::Initialize(target);
-}
-
-} // namespace
+NODE_MODULE(iconv, RegisterModule);

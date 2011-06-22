@@ -21,27 +21,87 @@
  */
 
 var bindings = require('./iconv.node');
+var constants = require('constants');
 var stream = require('stream');
 var util = require('util');
 
-// export old interface
-exports.Iconv = bindings.Iconv;
+var errorMessages = {};
+errorMessages[constants.EINVAL] = 'Incomplete character sequence.';
+errorMessages[constants.EILSEQ] = 'Illegal character sequence.';
+errorMessages[constants.ENOMEM] = 'Out of memory.';
+
+function errnoException(errno, message) {
+  return bindings.errnoException(errno, 'iconv', message || errorMessages[errno] || '');
+}
+
+// workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
+function fixEncodingName(encoding) {
+  if (typeof encoding != 'string') {
+    encoding = '' + encoding;
+  }
+  return /^UTF\d/i.test(encoding) ? ('UTF-' + encoding.slice(3)) : encoding;
+}
+
+function iconv_open(sourceEncoding, targetEncoding) {
+  sourceEncoding = fixEncodingName(sourceEncoding);
+  targetEncoding = fixEncodingName(targetEncoding);
+  return bindings.iconv_open(sourceEncoding, targetEncoding);
+}
+
+function Iconv(sourceEncoding, targetEncoding) {
+  // guard against non-constructor function calls
+  if (!(this instanceof Iconv)) {
+    return new Iconv(sourceEncoding, targetEncoding);
+  }
+
+  // may throw but that's okay
+  var iv_ = iconv_open(sourceEncoding, targetEncoding);
+
+  this.convert = function(data) {
+    if (typeof data != 'string' && !Buffer.isBuffer(data)) {
+      return undefined; // compatibility
+    }
+
+    var r = bindings.convert(iv_, data, 0);
+
+    if (r.errno) {
+      throw errnoException(r.errno);
+    }
+
+    return r.converted;
+  };
+}
 
 // pass-through stream that transcodes input and emits it
 function Stream(sourceEncoding, targetEncoding) {
+  // guard against non-constructor function calls
+  if (!(this instanceof Stream)) {
+    return new Stream(sourceEncoding, targetEncoding);
+  }
+
   stream.Stream.call(this);
 
   // may throw but that's okay
-  var iv = new Iconv(sourceEncoding, targetEncoding);
+  var iv_ = iconv_open(sourcEncoding, targetEncoding);
 
   this.readable = true;
   this.writable = true;
 
   this.write = function(data) {
-    
+    data = bindings.convert(iv_, data, bindings.PARTIAL);
+  };
+
+  this.end = function(data) {
+  };
+
+  this.destroy = function() {
+  };
+
+  this.destroySoon = function() {
   };
 }
 
 util.inherits(Stream, stream.Stream);
 
+exports.Iconv = Iconv;
 exports.Stream = Stream;
