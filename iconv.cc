@@ -67,6 +67,9 @@ bool convert(iconv_t iv, char** input, size_t* inlen, char** output, size_t* out
   // return value
   bool rv = false;
 
+  // we restore errno on success
+  const int saved_errno = errno;
+
   inbufsz = *inlen;
   inbuf = *input;
 
@@ -133,6 +136,11 @@ error:
 
   *input = inbuf;
   *inlen = inbufsz;
+
+  // restore errno but not on error, we want the caller to know what went wrong
+  if (rv == true) {
+    errno = saved_errno;
+  }
 
   return rv;
 }
@@ -214,11 +222,10 @@ Handle<Value> convert_g(const Arguments& args) {
 }
 
 Handle<Value> NewErrnoException(const Arguments& args) {
-  HandleScope scope;
-  const int errorno = args[0]->Int32Value();
-  const char* syscall = args[1]->IsString() ? *String::Utf8Value(args[1]) : 0;
-  const char* message = args[2]->IsString() ? *String::Utf8Value(args[2]) : "";
-  return scope.Close(ErrnoException(errorno, syscall, message));
+  return HandleScope().Close(ErrnoException(
+    args[0]->Int32Value(), // errno
+    args[1]->IsString() ? *String::Utf8Value(args[1]) : 0,      // syscall
+    args[2]->IsString() ? *String::Utf8Value(args[2]) : ""));   // message
 }
 
 void RegisterModule(Handle<Object> target) {

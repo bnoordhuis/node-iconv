@@ -28,6 +28,7 @@ var util = require('util');
 var errorMessages = {};
 errorMessages[constants.EINVAL] = 'Incomplete character sequence.';
 errorMessages[constants.EILSEQ] = 'Illegal character sequence.';
+errorMessages[constants.E2BIG]  = 'Output buffer too small.'; // shouldn't happen
 errorMessages[constants.ENOMEM] = 'Out of memory.';
 
 function errnoException(errno, message) {
@@ -59,7 +60,7 @@ function Iconv(sourceEncoding, targetEncoding) {
 
   this.convert = function(data) {
     if (typeof data != 'string' && !Buffer.isBuffer(data)) {
-      return undefined; // compatibility
+      return undefined; // backwards compatibility
     }
 
     var r = bindings.convert(iv_, data, 0);

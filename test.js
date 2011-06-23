@@ -5,6 +5,15 @@ Iconv = require('iconv').Iconv;
 Buffer = require('buffer').Buffer;
 SlowBuffer = require('buffer').SlowBuffer;
 
+function errno(errorno) {
+  return function(actual) {
+    return actual && actual.errno == errorno;
+  };
+}
+
+EINVAL = errno(constants.EINVAL);
+EILSEQ = errno(constants.EILSEQ);
+
 // hack to make the tests to pass with node v0.3.0's new buffer model
 assert.isBuffer = function(object) {
   assert.ok(object instanceof Buffer || object instanceof SlowBuffer);
@@ -18,8 +27,8 @@ assert.bufferEqual = function(a, b) {
 };
 
 // unknown source/target encoding
-assert.throws(function() { new Iconv('utf-8', 'xxx'); });
-assert.throws(function() { new Iconv('xxx', 'utf-8'); });
+assert.throws(function() { new Iconv('utf-8', 'xxx'); }, EINVAL);
+assert.throws(function() { new Iconv('xxx', 'utf-8'); }, EINVAL);
 
 // 'utf8' etc. should not throw "EINVAL: Conversion not supported"
 new Iconv('utf7',    'utf8');
@@ -70,11 +79,7 @@ buffer[1] = 0x24;
 buffer[2] = 0x40;
 buffer[3] = 0x24;  // start character sequence
 //buffer[4] = 0x2c;
-try {
-  iconv.convert(buffer);
-} catch (e) {
-  assert.equal(e.errno, constants.EINVAL || 22);
-}
+assert.throws(function() { iconv.convert(buffer); }, EINVAL);
 
 // input too big to fit in single (internal) buffer
 s = 'x'; for (var i = 0; i < 16; i++) s = s + s; s += '1234'; // 64K + 4B for good measure
@@ -84,11 +89,7 @@ assert.equal(result.slice(65536, 65536 + 4).toString(), '1234');
 
 // non-convertible character sequence should throw EILSEQ
 iconv = new Iconv('utf-8', 'ascii');
-try {
-  iconv.convert('ë');
-} catch (e) {
-  assert.equal(e.errno, constants.EILSEQ);
-}
+assert.throws(function() { iconv.convert('ë'); }, EILSEQ);
 
 // prototypical inheritance should work
 if (false) {  // XXX disabled for now
@@ -105,7 +106,7 @@ assert.equal(iconv.convert('çxç').toString(), '+AOc-x+AOc-');
 
 // GH-15 document and support //TRANSLIT and //IGNORE
 iconv = new Iconv('utf-8', 'ascii');
-assert.throws(function() { iconv.convert('ça va'); }); // untranslatable
+assert.throws(function() { iconv.convert('ça va'); }, EILSEQ); // untranslatable
 
 iconv = new Iconv('utf-8', 'ascii//ignore');
 assert.equal(iconv.convert('ça va').toString(), 'a va');
@@ -114,7 +115,7 @@ iconv = new Iconv('utf-8', 'ascii//translit');
 assert.equal(iconv.convert('ça va').toString(), 'ca va');
 
 iconv = new Iconv('utf-8', 'ascii//translit');
-assert.throws(function() { iconv.convert('ça va が'); }); // untranslatable
+assert.throws(function() { iconv.convert('ça va が'); }, EILSEQ); // untranslatable
 
 iconv = new Iconv('utf-8', 'ascii//translit//ignore');
 assert.equal(iconv.convert('ça va が').toString(), 'ca va ');
