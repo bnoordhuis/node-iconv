@@ -80,7 +80,7 @@ int convert(iconv_t iv, char* input, size_t inlen, char** output, size_t* outlen
   // convert input
   do {
     if (grow(output, outlen, &outbuf, &outbufsz)) {
-      rv = iconv(iv, &inbuf, &inbufsz, &outbuf, &outbufsz);
+      rv = iconv(iv, (const char**) &inbuf, &inbufsz, &outbuf, &outbufsz);
     }
     else {
       goto error;
