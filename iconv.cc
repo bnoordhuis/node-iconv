@@ -1,4 +1,5 @@
 #include "iconv.h"
+#include "config.h" // for ICONV_CONST
 
 #include <v8.h>
 #include <node.h>
@@ -80,7 +81,7 @@ int convert(iconv_t iv, char* input, size_t inlen, char** output, size_t* outlen
   // convert input
   do {
     if (grow(output, outlen, &outbuf, &outbufsz)) {
-      rv = iconv(iv, &inbuf, &inbufsz, &outbuf, &outbufsz);
+      rv = iconv(iv, (ICONV_CONST char **) &inbuf, &inbufsz, &outbuf, &outbufsz);
     }
     else {
       goto error;
