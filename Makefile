@@ -25,11 +25,6 @@ release:	CXXFLAGS += $(CXXFLAGS_RELEASE)
 release:	build
 release:	jp-patch
 
-jp-patch:
-	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings
-	cd $(LIBICONV_DIR) && make
-	make
-
 build:	$(LIBICONV) iconv.o
 ifeq ($(UNAME),Darwin)
 	$(CXX) -flat_namespace -undefined suppress -shared -o iconv-jp.node iconv.o $(LIBICONV)
@@ -53,3 +48,7 @@ $(LIBICONV_DIR)/Makefile:
 
 $(LIBICONV):	$(LIBICONV_DIR)/Makefile
 	$(MAKE) -C $(LIBICONV_DIR) CFLAGS+=-fPIC
+
+jp-patch:
+	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings && make && cd ../../ && make
+
