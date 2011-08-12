@@ -19,11 +19,9 @@ all:	release
 
 debug:	CXXFLAGS += $(CXXFLAGS_DEBUG)
 debug:	build
-debug:	jp-patch
 
 release:	CXXFLAGS += $(CXXFLAGS_RELEASE)
 release:	build
-release:	jp-patch
 
 build:	$(LIBICONV) iconv.o
 ifeq ($(UNAME),Darwin)
@@ -48,13 +46,4 @@ $(LIBICONV_DIR)/Makefile:
 
 $(LIBICONV):	$(LIBICONV_DIR)/Makefile
 	$(MAKE) -C $(LIBICONV_DIR) CFLAGS+=-fPIC
-
-jp-patch:
-	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1
-	$(LIBICONV)
-ifeq ($(UNAME),Darwin)
-	$(CXX) -flat_namespace -undefined suppress -shared -o iconv-jp.node iconv.o $(LIBICONV)
-else
-	$(CXX) -shared -o iconv-jp.node iconv.o $(LIBICONV)
-endif
 
