@@ -1,7 +1,7 @@
 import os
 
 def make(ctx, rule):
-	os.system('make %s NODE_INCLUDE_PATH="%s" && cd deps/libiconv-1.13.1/ && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings && make && cd ../../ && make' % (rule, ctx.env['CPPPATH_NODE']))
+	os.system('make %s NODE_INCLUDE_PATH="%s"' % (rule, ctx.env['CPPPATH_NODE']))
 
 def set_options(ctx):
 	pass
