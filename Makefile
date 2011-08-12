@@ -26,7 +26,9 @@ release:	build
 release:	jp-patch
 
 jp-patch:
-	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings && make
+	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings
+	cd $(LIBICONV_DIR) && make
+	make
 
 build:	$(LIBICONV) iconv.o
 ifeq ($(UNAME),Darwin)
