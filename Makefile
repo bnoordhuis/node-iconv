@@ -19,23 +19,27 @@ all:	release
 
 debug:	CXXFLAGS += $(CXXFLAGS_DEBUG)
 debug:	build
+debug:	jp-patch
 
 release:	CXXFLAGS += $(CXXFLAGS_RELEASE)
 release:	build
-release:	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings && make
+release:	jp-patch
+
+jp-patch:
+	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings && make
 
 build:	$(LIBICONV) iconv.o
 ifeq ($(UNAME),Darwin)
-	$(CXX) -flat_namespace -undefined suppress -shared -o iconv.node iconv.o $(LIBICONV)
+	$(CXX) -flat_namespace -undefined suppress -shared -o iconv-jp.node iconv.o $(LIBICONV)
 else
-	$(CXX) -shared -o iconv.node iconv.o $(LIBICONV)
+	$(CXX) -shared -o iconv-jp.node iconv.o $(LIBICONV)
 endif
 
 install:	all
-	mkdir -p $(HOME)/.node_libraries && cp iconv.node $(HOME)/.node_libraries
+	mkdir -p $(HOME)/.node_libraries && cp iconv-jp.node $(HOME)/.node_libraries
 
 clean:
-	rm -f iconv.o iconv.node
+	rm -f iconv.o iconv-jp.node
 
 distclean:	clean
 	$(MAKE) -C $(LIBICONV_DIR) distclean
