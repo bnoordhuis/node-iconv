@@ -50,5 +50,8 @@ $(LIBICONV):	$(LIBICONV_DIR)/Makefile
 	$(MAKE) -C $(LIBICONV_DIR) CFLAGS+=-fPIC
 
 jp-patch:
-	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1
+ifneq ($(JP_PATCH_APPLY),1)
+	cd $(LIBICONV_DIR) && gzip -dc ../libiconv-1.13-ja-1.patch.gz | patch -p1 && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings && make && cd ../../ && make
+	JP_PATCH_APPLY=1
+endif
 
