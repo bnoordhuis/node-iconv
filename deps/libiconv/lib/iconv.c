@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2008 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2008, 2011 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -24,6 +24,10 @@
 #include <string.h>
 #include "config.h"
 #include "localcharset.h"
+
+#ifdef __CYGWIN__
+#include <cygwin/version.h>
+#endif
 
 #if ENABLE_EXTRA
 /*
@@ -549,8 +553,22 @@ const char * iconv_canonicalize (const char * name)
     }
     if (ap->encoding_index == ei_local_wchar_t) {
       /* On systems which define __STDC_ISO_10646__, wchar_t is Unicode.
-         This is also the case on native Woe32 systems.  */
-#if __STDC_ISO_10646__ || ((defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__)
+         This is also the case on native Woe32 systems and Cygwin >= 1.7, where
+         we know that it is UTF-16.  */
+#if ((defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__) || (defined __CYGWIN__ && CYGWIN_VERSION_DLL_MAJOR >= 1007)
+      if (sizeof(wchar_t) == 4) {
+        index = ei_ucs4internal;
+        break;
+      }
+      if (sizeof(wchar_t) == 2) {
+# if WORDS_LITTLEENDIAN
+        index = ei_utf16le;
+# else
+        index = ei_utf16be;
+# endif
+        break;
+      }
+#elif __STDC_ISO_10646__
       if (sizeof(wchar_t) == 4) {
         index = ei_ucs4internal;
         break;

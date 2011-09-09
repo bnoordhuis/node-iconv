@@ -18,7 +18,8 @@ It provides support for the encodings:
         EUC-JP, SHIFT_JIS, CP932, ISO-2022-JP, ISO-2022-JP-2, ISO-2022-JP-1
     Chinese
         EUC-CN, HZ, GBK, CP936, GB18030, EUC-TW, BIG5, CP950, BIG5-HKSCS,
-        BIG5-HKSCS:2001, BIG5-HKSCS:1999, ISO-2022-CN, ISO-2022-CN-EXT
+        BIG5-HKSCS:2004, BIG5-HKSCS:2001, BIG5-HKSCS:1999, ISO-2022-CN,
+        ISO-2022-CN-EXT
     Korean
         EUC-KR, CP949, ISO-2022-KR, JOHAB
     Armenian
@@ -154,7 +155,7 @@ The iconv _program_ and the documentation are under GPL, see file COPYING.
 Download
 --------
 
-    http://ftp.gnu.org/gnu/libiconv/libiconv-1.13.1.tar.gz
+    http://ftp.gnu.org/gnu/libiconv/libiconv-1.14.tar.gz
 
 Homepage
 --------

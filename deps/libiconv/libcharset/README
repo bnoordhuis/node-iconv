@@ -11,8 +11,8 @@ encodings and locales than the currently selected one. Possible uses:
     any other given encoding).
   * Mail agents.
 
-In theory, this would be very simple: The Single Unix Specification (SUSV2)
-provides the nl_langinfo function, in such a way that
+In theory, this would be very simple: POSIX provides the nl_langinfo function,
+in such a way that
 
                   nl_langinfo (CODESET)
 
@@ -40,13 +40,15 @@ As usual for GNU packages:
 
 
 This library is used in
-  GNU sh-utils, fileutils, textutils
+  GNU coreutils
   GNU gettext
   GNU clisp
 
 
 To integrate this library into your package:
-See file INTEGRATE.
+- Either from this package. See file INTEGRATE.
+- Or from gnulib. See
+  <http://www.gnu.org/software/gnulib/MODULES.html#module=localcharset>
 
 
 Distribution:

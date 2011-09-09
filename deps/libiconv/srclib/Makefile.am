@@ -1,5 +1,5 @@
 ## Makefile for the srclib subdirectory of GNU libiconv
-## Copyright (C) 2003-2006 Free Software Foundation, Inc.
+## Copyright (C) 2003-2006, 2009 Free Software Foundation, Inc.
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ AUTOMAKE_OPTIONS = 1.5 gnits no-dependencies
 EXTRA_DIST =
 BUILT_SOURCES =
 MOSTLYCLEANFILES = core *.stackdump
+MOSTLYCLEANDIRS =
 
 noinst_LIBRARIES =
 

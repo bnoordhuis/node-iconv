@@ -1,6 +1,6 @@
 #!/bin/sh
 # install-reloc - install a program including a relocating wrapper
-# Copyright (C) 2003, 2005-2007, 2009 Free Software Foundation, Inc.
+# Copyright (C) 2003, 2005-2007, 2009-2011 Free Software Foundation, Inc.
 # Written by Bruno Haible <bruno@clisp.org>, 2003.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -156,6 +156,8 @@ func_verbose $compile_command \
              "$srcdir"/progname.c \
              "$srcdir"/progreloc.c \
              "$srcdir"/areadlink.c \
+             "$srcdir"/careadlinkat.c \
+             "$srcdir"/allocator.c \
              "$srcdir"/readlink.c \
              "$srcdir"/canonicalize-lgpl.c \
              "$srcdir"/malloca.c \
@@ -172,6 +174,8 @@ rm -f relocwrapper.o \
       progreloc.o \
       xreadlink.o \
       areadlink.o \
+      careadlinkat.o \
+      allocator.o \
       canonicalize-lgpl.o \
       malloca.o \
       relocatable.o \

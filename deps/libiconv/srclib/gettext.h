@@ -1,5 +1,6 @@
 /* Convenience header for conditional use of GNU <libintl.h>.
-   Copyright (C) 1995-1998, 2000-2002, 2004-2006, 2009 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2002, 2004-2006, 2009-2011 Free Software
+   Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -53,7 +54,7 @@
    it now, to make later inclusions of <libintl.h> a NOP.  */
 #if defined(__cplusplus) && defined(__GNUG__) && (__GNUC__ >= 3)
 # include <cstdlib>
-# if (__GLIBC__ >= 2) || _GLIBCXX_HAVE_LIBINTL_H
+# if (__GLIBC__ >= 2 && !defined __UCLIBC__) || _GLIBCXX_HAVE_LIBINTL_H
 #  include <libintl.h>
 # endif
 #endif
@@ -80,7 +81,7 @@
     ((void) (Domainname), ngettext (Msgid1, Msgid2, N))
 # undef dcngettext
 # define dcngettext(Domainname, Msgid1, Msgid2, N, Category) \
-    ((void) (Category), dngettext(Domainname, Msgid1, Msgid2, N))
+    ((void) (Category), dngettext (Domainname, Msgid1, Msgid2, N))
 # undef textdomain
 # define textdomain(Domainname) ((const char *) (Domainname))
 # undef bindtextdomain
@@ -90,6 +91,12 @@
 # define bind_textdomain_codeset(Domainname, Codeset) \
     ((void) (Domainname), (const char *) (Codeset))
 
+#endif
+
+/* Prefer gnulib's setlocale override over libintl's setlocale override.  */
+#ifdef GNULIB_defined_setlocale
+# undef setlocale
+# define setlocale rpl_setlocale
 #endif
 
 /* A pseudo function call that serves as a marker for the automated
@@ -140,8 +147,8 @@ inline
 #endif
 static const char *
 pgettext_aux (const char *domain,
-	      const char *msg_ctxt_id, const char *msgid,
-	      int category)
+              const char *msg_ctxt_id, const char *msgid,
+              int category)
 {
   const char *translation = dcgettext (domain, msg_ctxt_id, category);
   if (translation == msg_ctxt_id)
@@ -159,9 +166,9 @@ inline
 #endif
 static const char *
 npgettext_aux (const char *domain,
-	       const char *msg_ctxt_id, const char *msgid,
-	       const char *msgid_plural, unsigned long int n,
-	       int category)
+               const char *msg_ctxt_id, const char *msgid,
+               const char *msgid_plural, unsigned long int n,
+               int category)
 {
   const char *translation =
     dcngettext (domain, msg_ctxt_id, msgid_plural, n, category);
@@ -199,8 +206,8 @@ inline
 #endif
 static const char *
 dcpgettext_expr (const char *domain,
-		 const char *msgctxt, const char *msgid,
-		 int category)
+                 const char *msgctxt, const char *msgid,
+                 int category)
 {
   size_t msgctxt_len = strlen (msgctxt) + 1;
   size_t msgid_len = strlen (msgid) + 1;
@@ -222,10 +229,10 @@ dcpgettext_expr (const char *domain,
       translation = dcgettext (domain, msg_ctxt_id, category);
 #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS
       if (msg_ctxt_id != buf)
-	free (msg_ctxt_id);
+        free (msg_ctxt_id);
 #endif
       if (translation != msg_ctxt_id)
-	return translation;
+        return translation;
     }
   return msgid;
 }
@@ -244,9 +251,9 @@ inline
 #endif
 static const char *
 dcnpgettext_expr (const char *domain,
-		  const char *msgctxt, const char *msgid,
-		  const char *msgid_plural, unsigned long int n,
-		  int category)
+                  const char *msgctxt, const char *msgid,
+                  const char *msgid_plural, unsigned long int n,
+                  int category)
 {
   size_t msgctxt_len = strlen (msgctxt) + 1;
   size_t msgid_len = strlen (msgid) + 1;
@@ -268,10 +275,10 @@ dcnpgettext_expr (const char *domain,
       translation = dcngettext (domain, msg_ctxt_id, msgid_plural, n, category);
 #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS
       if (msg_ctxt_id != buf)
-	free (msg_ctxt_id);
+        free (msg_ctxt_id);
 #endif
       if (!(translation == msg_ctxt_id || translation == msgid_plural))
-	return translation;
+        return translation;
     }
   return (n == 1 ? msgid : msgid_plural);
 }

@@ -50,7 +50,7 @@ SHELL = /bin/sh
 
 # Before making a release, change this according to the libtool documentation,
 # section "Library interface versions".
-LIBICONV_VERSION_INFO = 7:0:5
+LIBICONV_VERSION_INFO = 7:1:5
 
 PACKAGE_VERSION = @VERSION@
 

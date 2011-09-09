@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2002, 2004-2009 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2002, 2004-2010 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -242,6 +242,7 @@ typedef struct {
 #include "big5hkscs1999.h"
 #include "big5hkscs2001.h"
 #include "big5hkscs2004.h"
+#include "big5hkscs2008.h"
 
 #include "euc_kr.h"
 #include "cp949.h"

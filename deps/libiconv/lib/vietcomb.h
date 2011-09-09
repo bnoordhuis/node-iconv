@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001, 2004 Free Software Foundation, Inc.
+ * Copyright (C) 2001, 2004, 2011 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -66,7 +66,7 @@ static const struct { unsigned short base; unsigned short composed; } viet_comp_
   { 0x01AF, 0x1EEA },
   { 0x01B0, 0x1EEB },
 #define viet_comp_table0301_idx (viet_comp_table0300_idx+viet_comp_table0300_len)
-#define viet_comp_table0301_len 64
+#define viet_comp_table0301_len 63
   { 0x0041, 0x00C1 },
   { 0x0043, 0x0106 },
   { 0x0045, 0x00C9 },
@@ -101,8 +101,7 @@ static const struct { unsigned short base; unsigned short composed; } viet_comp_
   { 0x0077, 0x1E83 },
   { 0x0079, 0x00FD },
   { 0x007A, 0x017A },
-  { 0x00A5, 0x0385 },
-  { 0x00A8, 0x1FEE },
+  { 0x00A8, 0x0385 }, /* prefer U+0385 over U+1FEE */
   { 0x00C2, 0x1EA4 },
   { 0x00C5, 0x01FA },
   { 0x00C6, 0x01FC },
@@ -321,7 +320,7 @@ static const struct viet_decomp viet_decomp_table[] = {
   { 0x01FE, 0x00D8, 1 },
   { 0x01FF, 0x00F8, 1 },
   { 0x02DC, 0x0020, 2 }, /* compatibility decomposition - for TCVN only */
-  { 0x0385, 0x00A5, 1 },
+  { 0x0385, 0x00A8, 1 },
   { 0x1E04, 0x0042, 4 },
   { 0x1E05, 0x0062, 4 },
   { 0x1E08, 0x00C7, 1 },
@@ -461,7 +460,7 @@ static const struct viet_decomp viet_decomp_table[] = {
   { 0x1EF8, 0x0059, 2 },
   { 0x1EF9, 0x0079, 2 },
   { 0x1FED, 0x00A8, 0 },
-  { 0x1FEE, 0x00A8, 1 },
+  { 0x1FEE, 0x00A8, 1 }, /* U+1FEE => U+0385 => U+00A8 U+0301 */
 };
 
 #endif /* _VIETCOMB_H */

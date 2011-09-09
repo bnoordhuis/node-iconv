@@ -1,4 +1,4 @@
-/* Copyright (C) 1999-2003, 2005 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2003, 2005, 2011 Free Software Foundation, Inc.
    This file is part of the GNU LIBICONV Library.
 
    The GNU LIBICONV Library is free software; you can redistribute it
@@ -183,11 +183,11 @@ int main (int argc, char *argv[])
       if (tables[t].usecount > 1) {
         char* s;
         if (p == tables[t].minline >> 5) {
-          s = (char*) malloc(5+1);
+          s = (char*) malloc(4+1+2+1);
           sprintf(s, "%02x_%d", p, ++i);
         } else {
           p = tables[t].minline >> 5;
-          s = (char*) malloc(2+1);
+          s = (char*) malloc(4+1);
           sprintf(s, "%02x", p);
         }
         tables[t].suffix = s;

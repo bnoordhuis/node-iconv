@@ -1,4 +1,4 @@
-/* Copyright (C) 1999-2003, 2005, 2007 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2003, 2005, 2007, 2010 Free Software Foundation, Inc.
    This file is part of the GNU LIBICONV Library.
 
    The GNU LIBICONV Library is free software; you can redistribute it
@@ -59,6 +59,9 @@
 
 /* Define if you have the wcrtomb() function. */
 #undef HAVE_WCRTOMB
+
+/* Define to 1 if O_NOFOLLOW works. */
+#undef HAVE_WORKING_O_NOFOLLOW
 
 /* Define if the machine's byte ordering is little endian. */
 #undef WORDS_LITTLEENDIAN

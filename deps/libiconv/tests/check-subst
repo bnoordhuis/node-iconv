@@ -52,6 +52,8 @@ Böse Bübchen
 EOF
 $iconv --byte-subst='<0x%010000x>' -f ASCII -t ASCII < tmp-in > tmp-out
 # This printf command crashes on Solaris 10.
+# See <http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=6550204>.
+# Likewise on OSF/1 5.1.
 if printf 'B<0x%010000x><0x%010000x>se B<0x%010000x><0x%010000x>bchen\n' 0xC3 0xB6 0xC3 0xBC > tmp-ok 2>/dev/null; then
   cmp tmp-out tmp-ok
 fi
@@ -97,6 +99,7 @@ Böse Bübchen
 EOF
 $iconv --unicode-subst='<U+%010000X>' -f UTF-8 -t ASCII < tmp-in > tmp-out
 # This printf command crashes on Solaris 10.
+# See <http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=6550204>.
 if printf 'B<U+%010000X>se B<U+%010000X>bchen\n' 0x00F6 0x00FC > tmp-ok 2>/dev/null; then
   cmp tmp-out tmp-ok
 fi
@@ -106,6 +109,8 @@ Böse Bübchen
 EOF
 $iconv --byte-subst='<0x%010000x>' -f ASCII -t ASCII < tmp-in > tmp-out
 # This printf command crashes on Solaris 10.
+# See <http://bugs.opensolaris.org/bugdatabase/view_bug.do?bug_id=6550204>.
+# Likewise on OSF/1 5.1.
 if printf 'B<0x%010000x><0x%010000x>se B<0x%010000x><0x%010000x>bchen\n' 0xC3 0xB6 0xC3 0xBC > tmp-ok 2>/dev/null; then
   cmp tmp-out tmp-ok
 fi

@@ -1,4 +1,4 @@
-/* Copyright (C) 1999-2009 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2010 Free Software Foundation, Inc.
    This file is part of the GNU LIBICONV Library.
 
    The GNU LIBICONV Library is free software; you can redistribute it
@@ -968,12 +968,17 @@ DEFENCODING(( "BIG5-HKSCS:2001",
             big5hkscs2001,
             { big5hkscs2001_mbtowc, big5hkscs2001_flushwc }, { big5hkscs2001_wctomb, big5hkscs2001_reset })
 
-DEFENCODING(( "BIG5-HKSCS",             /* IANA */
-              "BIG5HKSCS",              /* glibc */
-              "BIG5-HKSCS:2004",
+DEFENCODING(( "BIG5-HKSCS:2004",
             ),
             big5hkscs2004,
             { big5hkscs2004_mbtowc, big5hkscs2004_flushwc }, { big5hkscs2004_wctomb, big5hkscs2004_reset })
+
+DEFENCODING(( "BIG5-HKSCS",             /* IANA */
+              "BIG5HKSCS",              /* glibc */
+              "BIG5-HKSCS:2008",
+            ),
+            big5hkscs2008,
+            { big5hkscs2008_mbtowc, big5hkscs2008_flushwc }, { big5hkscs2008_wctomb, big5hkscs2008_reset })
 
 DEFENCODING(( "EUC-KR",                 /* IANA, RFC 1557 */
               "EUCKR",                  /* glibc, HP-UX, IRIX, OSF/1 */

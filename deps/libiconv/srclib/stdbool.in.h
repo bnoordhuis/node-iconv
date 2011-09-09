@@ -1,4 +1,4 @@
-/* Copyright (C) 2001-2003, 2006-2008 Free Software Foundation, Inc.
+/* Copyright (C) 2001-2003, 2006-2011 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
    This program is free software; you can redistribute it and/or modify
@@ -49,6 +49,9 @@
          to 'true', and zero gets converted to 'false'.  This doesn't work
          with this substitute.  With this substitute, only the values 0 and 1
          give the expected result when converted to _Bool' or 'bool'.
+
+       - C99 allows the use of (_Bool)0.0 in constant expressions, but
+         this substitute cannot always provide this property.
 
    Also, it is suggested that programs use 'bool' rather than '_Bool';
    this isn't required, but 'bool' is more common.  */

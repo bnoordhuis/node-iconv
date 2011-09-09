@@ -346,9 +346,10 @@ CSBIG5, ei_ces_big5
 CP950, ei_cp950
 BIG5-HKSCS:1999, ei_big5hkscs1999
 BIG5-HKSCS:2001, ei_big5hkscs2001
-BIG5-HKSCS, ei_big5hkscs2004
-BIG5HKSCS, ei_big5hkscs2004
 BIG5-HKSCS:2004, ei_big5hkscs2004
+BIG5-HKSCS, ei_big5hkscs2008
+BIG5HKSCS, ei_big5hkscs2008
+BIG5-HKSCS:2008, ei_big5hkscs2008
 EUC-KR, ei_euc_kr
 EUCKR, ei_euc_kr
 CSEUCKR, ei_euc_kr

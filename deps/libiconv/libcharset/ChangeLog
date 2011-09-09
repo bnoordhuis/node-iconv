@@ -1,3 +1,76 @@
+2010-09-23  Bruno Haible  <bruno@clisp.org>
+
+	Switch to autoconf 2.68.
+	* autogen.sh: Update comment.
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Switch to version 2.68.
+
+2010-09-23  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from libtool-2.4, with modifications:
+	2008-04-06  Bruno Haible  <bruno@clisp.org>
+		* m4/libtool.m4 (LT_INIT): When setting LIBTOOL, use
+		CONFIG_SHELL; don't assume that the Makefile.in will set SHELL
+		to ${CONFIG_SHELL}.
+	* m4/ltversion.m4: Update from libtool-2.4.
+	* build-aux/ltmain.sh: Likewise.
+
+2010-07-31  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Switch to version 2.67.
+
+2010-07-03  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Switch to version 2.66.
+
+2010-06-04  Bruno Haible  <bruno@clisp.org>
+
+	Addendum to 2009-10-18 commit.
+	* m4/fcntl-o.m4: New file, from gnulib.
+	* m4/fcntl_h.m4: Remove file.
+
+2010-06-04  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from libtool-2.2.8, with modifications:
+	2008-04-06  Bruno Haible  <bruno@clisp.org>
+		* m4/libtool.m4 (LT_INIT): When setting LIBTOOL, use
+		CONFIG_SHELL; don't assume that the Makefile.in will set SHELL
+		to ${CONFIG_SHELL}.
+	* m4/ltoptions.m4: Update from libtool-2.2.8.
+	* m4/ltversion.m4: Likewise.
+	* m4/lt~obsolete.m4: Likewise.
+	* build-aux/ltmain.sh: Likewise.
+
+2010-05-08  Bruno Haible  <bruno@clisp.org>
+
+	* tools/cygwin-1.7.2: New file.
+	* lib/config.charset: Update comments for Cygwin 1.7.
+	* lib/localcharset.c: Likewise.
+
+2010-03-30  Bruno Haible  <bruno@clisp.org>
+
+	* README.woe32: Mention Cygwin.
+
+2009-12-11  Bruno Haible  <bruno@clisp.org>
+
+	* include/libcharset.h.in: Untabify.
+
+2009-12-11  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Switch to version 2.65.
+
+2009-10-18  Bruno Haible  <bruno@clisp.org>
+
+	* README: Update.
+
+2009-10-18  Bruno Haible  <bruno@clisp.org>
+
+	* configure.ac: Invoke gl_FCNTL_O_FLAGS.
+	* INTEGRATE: Mention fcntl_h.m4 and the gl_FCNTL_O_FLAGS invocation.
+
+2009-08-15  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Switch to version 2.64.
+
 2009-05-19  Bruno Haible  <bruno@clisp.org>
 
 	* Makefile.devel (AUTOMAKE, ACLOCAL): Switch to version 1.11.

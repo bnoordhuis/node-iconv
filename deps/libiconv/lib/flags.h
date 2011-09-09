@@ -117,6 +117,7 @@
 #define ei_big5hkscs1999_oflags (HAVE_QUOTATION_MARKS)
 #define ei_big5hkscs2001_oflags (HAVE_QUOTATION_MARKS)
 #define ei_big5hkscs2004_oflags (HAVE_QUOTATION_MARKS)
+#define ei_big5hkscs2008_oflags (HAVE_QUOTATION_MARKS)
 #define ei_euc_kr_oflags (HAVE_ACCENTS | HAVE_QUOTATION_MARKS | HAVE_HANGUL_JAMO)
 #define ei_cp949_oflags (HAVE_ACCENTS | HAVE_QUOTATION_MARKS | HAVE_HANGUL_JAMO)
 #define ei_johab_oflags (HAVE_ACCENTS | HAVE_QUOTATION_MARKS | HAVE_HANGUL_JAMO)

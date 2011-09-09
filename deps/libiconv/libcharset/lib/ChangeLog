@@ -1,3 +1,40 @@
+2011-08-07  Bruno Haible  <bruno@clisp.org>
+
+	* relocatable.c: Update from gnulib.
+
+2011-02-28  Bruno Haible  <bruno@clisp.org>
+
+	Assume ANSI C behaviour of free().
+	* localcharset.c (get_charset_aliases): Remove NULL test before calling
+	free().
+	Suggested by Simon Josefsson <simon@josefsson.org>.
+
+2011-02-28  Bruno Haible  <bruno@clisp.org>
+
+	* relocatable.h: Update from gnulib.
+	* relocatable.c: Likewise.
+
+2009-12-13  Bruno Haible  <bruno@clisp.org>
+
+	* localcharset.c (locale_charset): Fix comment about use of GetACP.
+
+2009-12-12  Bruno Haible  <bruno@clisp.org>
+
+	* localcharset.c (locale_charset): Add comment about use of GetACP.
+
+2009-12-12  Bruno Haible  <bruno@clisp.org>
+
+	* config.charset: Untabify.
+	* localcharset.c: Untabify.
+
+2009-10-18  Bruno Haible  <bruno@clisp.org>
+
+	Avoid symlink attack in localcharset module.
+	* localcharset.c: Include <fcntl.h>, <unistd.h>.
+	(O_NOFOLLOW): Define fallback.
+	(get_charset_aliases): Don't open the file if it is a symbolic link.
+	Reported by Fergal Glynn <fglynn@veracode.com>.
+
 2009-03-26  Bruno Haible  <bruno@clisp.org>
 
 	* Makefile.in (install, installdir): Ensure that $(DESTDIR)$(libdir)

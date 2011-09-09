@@ -1,5 +1,5 @@
 /* Provide relocatable packages.
-   Copyright (C) 2003, 2005, 2008 Free Software Foundation, Inc.
+   Copyright (C) 2003, 2005, 2008-2011 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
    This program is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ extern "C" {
    instead of "/").  */
 extern RELOCATABLE_DLL_EXPORTED void
        set_relocation_prefix (const char *orig_prefix,
-			      const char *curr_prefix);
+                              const char *curr_prefix);
 
 /* Returns the pathname, relocated according to the current installation
    directory.
@@ -65,8 +65,8 @@ extern const char * relocate (const char *pathname);
    file, and the current pathname of this file.
    Returns it, freshly allocated.  Returns NULL upon failure.  */
 extern char * compute_curr_prefix (const char *orig_installprefix,
-				   const char *orig_installdir,
-				   const char *curr_pathname);
+                                   const char *orig_installdir,
+                                   const char *curr_pathname);
 
 #else
 

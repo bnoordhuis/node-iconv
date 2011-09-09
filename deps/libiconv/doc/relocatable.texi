@@ -15,7 +15,7 @@ privileges to install a binary package, and prevents installing two
 different versions of the same binary package.
 
 A relocatable program can be moved or copied to a different location
-on the filesystem.  It is possible to make symlinks to the installed
+on the file system.  It is possible to make symlinks to the installed
 and moved programs, and invoke them through the symlink. It is
 possible to do the same thing with a hard link @emph{only} if the hard
 link file is in the same directory as the real program.

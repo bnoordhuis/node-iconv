@@ -84,8 +84,8 @@ extern void xalloc_die (void)
    known at compile-time.  */
 # define XNMALLOC(N,T) \
    ((T *) (sizeof (T) == 1 \
-	   ? xmalloc (N) \
-	   : xnboundedmalloc(N, (size_t) (sizeof (ptrdiff_t) <= sizeof (size_t) ? -1 : -2) / sizeof (T), sizeof (T))))
+           ? xmalloc (N) \
+           : xnboundedmalloc(N, (size_t) (sizeof (ptrdiff_t) <= sizeof (size_t) ? -1 : -2) / sizeof (T), sizeof (T))))
 static inline void *
 xnboundedmalloc (size_t n, size_t bound, size_t s)
 {

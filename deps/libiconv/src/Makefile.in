@@ -70,11 +70,11 @@ OBJECTS_RES_no =
 # i.e. during "make install". The intermediate 'iconv' executable is built
 # without internationalization and not linked with libintl.
 
-all : iconv_no_i18n iconv.@OBJEXT@ $(OBJECTS_RES_@WOE32@)
+all : iconv_no_i18n$(EXEEXT) iconv.@OBJEXT@ $(OBJECTS_RES_@WOE32@)
 	test `ls -ld . | sed -e 's/^d\(.........\).*/\1/'` = rwxrwxrwx || chmod 777 .
 
 # This is the temporary iconv executable, without internationalization.
-iconv_no_i18n : iconv_no_i18n.@OBJEXT@ ../lib/libiconv.la $(OBJECTS_RES_@WOE32@)
+iconv_no_i18n$(EXEEXT) : iconv_no_i18n.@OBJEXT@ ../lib/libiconv.la $(OBJECTS_RES_@WOE32@)
 	$(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) iconv_no_i18n.@OBJEXT@ ../srclib/libicrt.a ../lib/libiconv.la $(OBJECTS_RES_@WOE32@) -o $@
 
 iconv_no_i18n.@OBJEXT@ : $(srcdir)/iconv_no_i18n.c $(srcdir)/iconv.c

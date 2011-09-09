@@ -28,7 +28,7 @@ top_builddir = ..
 
 all :
 
-check : all table-from table-to ../src/iconv_no_i18n test-shiftseq
+check : all table-from table-to ../src/iconv_no_i18n test-shiftseq test-to-wchar
 	$(srcdir)/check-stateless $(srcdir) ASCII
 #	/* General multi-byte encodings */
 	$(CC) $(LDFLAGS) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(srcdir)/genutf8.c ../srclib/libicrt.a -o genutf8 && \
@@ -142,6 +142,8 @@ check : all table-from table-to ../src/iconv_no_i18n test-shiftseq
 	$(srcdir)/check-stateful $(srcdir) BIG5-HKSCS:2001
 	$(srcdir)/check-stateless $(srcdir) BIG5-HKSCS:2004
 	$(srcdir)/check-stateful $(srcdir) BIG5-HKSCS:2004
+	$(srcdir)/check-stateless $(srcdir) BIG5-HKSCS:2008
+	$(srcdir)/check-stateful $(srcdir) BIG5-HKSCS:2008
 	$(srcdir)/check-stateless $(srcdir) EUC-KR
 	$(srcdir)/check-stateless $(srcdir) CP949
 	$(srcdir)/check-stateless $(srcdir) JOHAB
@@ -157,6 +159,8 @@ check : all table-from table-to ../src/iconv_no_i18n test-shiftseq
 	$(srcdir)/check-subst
 #	/* shift sequence before invalid multibyte character */
 	./test-shiftseq
+#	/* conversion to wchar_t */
+	./test-to-wchar
 
 check-extra: check-extra-@USE_EXTRA_ENCODINGS@
 check-extra-no:
@@ -217,6 +221,12 @@ test-shiftseq : test-shiftseq.@OBJEXT@ ../lib/libiconv.la
 test-shiftseq.@OBJEXT@ : $(srcdir)/test-shiftseq.c
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(srcdir)/test-shiftseq.c
 
+test-to-wchar : test-to-wchar.@OBJEXT@ ../lib/libiconv.la
+	$(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) test-to-wchar.@OBJEXT@ ../srclib/libicrt.a ../lib/libiconv.la -o $@
+
+test-to-wchar.@OBJEXT@ : $(srcdir)/test-to-wchar.c
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(srcdir)/test-to-wchar.c
+
 # The following rule is necessary to avoid a toplevel "make -n check" failure.
 ../lib/libiconv.la :
 	cd ../lib && $(MAKE) libiconv.la
@@ -224,7 +234,7 @@ test-shiftseq.@OBJEXT@ : $(srcdir)/test-shiftseq.c
 mostlyclean : clean
 
 clean : force
-	$(RM) *.@OBJEXT@ *.lo table-from table-from@EXEEXT@ table-to table-to@EXEEXT@ test-shiftseq test-shiftseq@EXEEXT@ tmp-* genutf8 genutf8@EXEEXT@ UTF-8.TXT gengb18030z gengb18030z@EXEEXT@ GB18030.TXT core *.stackdump
+	$(RM) *.@OBJEXT@ *.lo table-from table-from@EXEEXT@ table-to table-to@EXEEXT@ test-shiftseq test-shiftseq@EXEEXT@ test-to-wchar test-to-wchar@EXEEXT@ tmp-* genutf8 genutf8@EXEEXT@ UTF-8.TXT gengb18030z gengb18030z@EXEEXT@ GB18030.TXT core *.stackdump
 	$(RM) -r .libs _libs
 
 distclean : clean

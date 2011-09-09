@@ -1,4 +1,4 @@
-/* Copyright (C) 1999-2001, 2003 Bruno Haible.
+/* Copyright (C) 1999-2001, 2003, 2011 Bruno Haible.
    This file is not part of the GNU LIBICONV Library.
    This file is put into the public domain.  */
 
@@ -76,14 +76,10 @@ int iconv_string (const char* tocode, const char* fromcode,
       size_t outsize = tmpbufsize;
       size_t res = iconv(cd,&inptr,&insize,&outptr,&outsize);
       if (res == (size_t)(-1) && errno != E2BIG) {
-        if (errno == EINVAL)
-          break;
-        else {
-          int saved_errno = errno;
-          iconv_close(cd);
-          errno = saved_errno;
-          return -1;
-        }
+        int saved_errno = (errno == EINVAL ? EILSEQ : errno);
+        iconv_close(cd);
+        errno = saved_errno;
+        return -1;
       }
       count += outptr-tmpbuf;
     }

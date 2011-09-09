@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.11 -*- Autoconf -*-
+# generated automatically by aclocal 1.11.1 -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
 # 2005, 2006, 2007, 2008, 2009  Free Software Foundation, Inc.
@@ -13,8 +13,8 @@
 
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
-m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.63],,
-[m4_warning([this file was generated for autoconf 2.63.
+m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.68],,
+[m4_warning([this file was generated for autoconf 2.68.
 You have another version of autoconf.  It may work, but is not guaranteed to.
 If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically `autoreconf'.])])
@@ -34,7 +34,7 @@ AC_DEFUN([AM_AUTOMAKE_VERSION],
 [am__api_version='1.11'
 dnl Some users find AM_AUTOMAKE_VERSION and mistake it for a way to
 dnl require some minimum version.  Point them to the right macro.
-m4_if([$1], [1.11], [],
+m4_if([$1], [1.11.1], [],
       [AC_FATAL([Do not call $0, use AM_INIT_AUTOMAKE([$1]).])])dnl
 ])
 
@@ -50,7 +50,7 @@ m4_define([_AM_AUTOCONF_VERSION], [])
 # Call AM_AUTOMAKE_VERSION and AM_AUTOMAKE_VERSION so they can be traced.
 # This function is AC_REQUIREd by AM_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-[AM_AUTOMAKE_VERSION([1.11])dnl
+[AM_AUTOMAKE_VERSION([1.11.1])dnl
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
 _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
@@ -986,13 +986,16 @@ AC_SUBST([am__untar])
 
 m4_include([srcm4/00gnulib.m4])
 m4_include([srcm4/alloca.m4])
-m4_include([srcm4/canonicalize-lgpl.m4])
+m4_include([srcm4/asm-underscore.m4])
+m4_include([srcm4/canonicalize.m4])
 m4_include([srcm4/codeset.m4])
+m4_include([srcm4/double-slash-root.m4])
 m4_include([srcm4/eealloc.m4])
 m4_include([srcm4/environ.m4])
 m4_include([srcm4/errno_h.m4])
 m4_include([srcm4/error.m4])
 m4_include([srcm4/extensions.m4])
+m4_include([srcm4/fcntl_h.m4])
 m4_include([srcm4/gettext.m4])
 m4_include([srcm4/gnulib-common.m4])
 m4_include([srcm4/gnulib-comp.m4])
@@ -1002,39 +1005,48 @@ m4_include([srcm4/intlmacosx.m4])
 m4_include([srcm4/lib-ld.m4])
 m4_include([srcm4/lib-link.m4])
 m4_include([srcm4/lib-prefix.m4])
+m4_include([srcm4/libunistring-base.m4])
 m4_include([srcm4/longlong.m4])
-m4_include([srcm4/malloc.m4])
+m4_include([srcm4/lstat.m4])
 m4_include([srcm4/malloca.m4])
 m4_include([srcm4/mbstate_t.m4])
 m4_include([srcm4/memmove.m4])
 m4_include([srcm4/multiarch.m4])
 m4_include([srcm4/nls.m4])
+m4_include([srcm4/nocrash.m4])
 m4_include([srcm4/pathmax.m4])
 m4_include([srcm4/po.m4])
 m4_include([srcm4/progtest.m4])
+m4_include([srcm4/read.m4])
 m4_include([srcm4/readlink.m4])
 m4_include([srcm4/relocatable-lib.m4])
 m4_include([srcm4/relocatable.m4])
+m4_include([srcm4/safe-read.m4])
 m4_include([srcm4/setenv.m4])
 m4_include([srcm4/signal_h.m4])
 m4_include([srcm4/signalblocking.m4])
 m4_include([srcm4/sigpipe.m4])
 m4_include([srcm4/ssize_t.m4])
+m4_include([srcm4/stat.m4])
 m4_include([srcm4/stdbool.m4])
+m4_include([srcm4/stddef_h.m4])
 m4_include([srcm4/stdint.m4])
 m4_include([srcm4/stdio_h.m4])
 m4_include([srcm4/stdlib_h.m4])
 m4_include([srcm4/strerror.m4])
 m4_include([srcm4/string_h.m4])
+m4_include([srcm4/sys_socket_h.m4])
+m4_include([srcm4/sys_stat_h.m4])
+m4_include([srcm4/time_h.m4])
 m4_include([srcm4/unistd_h.m4])
 m4_include([srcm4/unlocked-io.m4])
 m4_include([srcm4/visibility.m4])
-m4_include([srcm4/wchar.m4])
+m4_include([srcm4/warn-on-use.m4])
 m4_include([srcm4/wchar_t.m4])
-m4_include([srcm4/wint_t.m4])
 m4_include([m4/cp.m4])
 m4_include([m4/eilseq.m4])
 m4_include([m4/endian.m4])
+m4_include([m4/fcntl-o.m4])
 m4_include([m4/libtool.m4])
 m4_include([m4/ln.m4])
 m4_include([m4/ltoptions.m4])

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libiconv 1.11-pre1\n"
 "Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
-"POT-Creation-Date: 2009-06-30 22:53+0200\n"
+"POT-Creation-Date: 2011-08-07 15:24+0200\n"
 "PO-Revision-Date: 2006-09-05 12:58-0400\n"
 "Last-Translator: Aleksandar Jelenak <jelenak@verizon.net>\n"
 "Language-Team: Serbian <gnu@prevod.org>\n"
@@ -16,24 +16,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. TRANSLATORS: The first line of the short usage message.
-#: src/iconv.c:103
+#: src/iconv.c:104
 msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
 msgstr "Употреба: iconv [-c] [-s] [-f изкод] [-t укод] [датотека ...]"
 
 #. TRANSLATORS: The second line of the short usage message.
 #. Align it correctly against the first line.
-#: src/iconv.c:107
+#: src/iconv.c:108
 msgid "or:    iconv -l"
 msgstr "или:      iconv -l"
 
-#: src/iconv.c:109
+#: src/iconv.c:110
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Покушај „%s --help“ за више информација.\n"
 
 #. TRANSLATORS: The first line of the long usage message.
 #. The %s placeholder expands to the program name.
-#: src/iconv.c:114
+#: src/iconv.c:115
 #, c-format, no-wrap
 msgid "Usage: %s [OPTION...] [-f ENCODING] [-t ENCODING] [INPUTFILE...]\n"
 msgstr "Употреба: %s [ОПЦИЈА...] [-f КОД] [-t КОД] [УЛАЗДАТОТЕКА...]\n"
@@ -41,23 +41,23 @@ msgstr "Употреба: %s [ОПЦИЈА...] [-f КОД] [-t КОД] [УЛАЗ
 #. TRANSLATORS: The second line of the long usage message.
 #. Align it correctly against the first line.
 #. The %s placeholder expands to the program name.
-#: src/iconv.c:121
+#: src/iconv.c:122
 #, c-format, no-wrap
 msgid "or:    %s -l\n"
 msgstr "или:      %s -l\n"
 
 #. TRANSLATORS: Description of the iconv program.
-#: src/iconv.c:127
+#: src/iconv.c:128
 #, c-format, no-wrap
 msgid "Converts text from one encoding to another encoding.\n"
 msgstr "Претвара текст из једног кодовања у друго.\n"
 
-#: src/iconv.c:131
+#: src/iconv.c:132
 #, c-format, no-wrap
 msgid "Options controlling the input and output format:\n"
 msgstr "Опције контролисања улазног и излазног формата:\n"
 
-#: src/iconv.c:134
+#: src/iconv.c:135
 #, c-format, no-wrap
 msgid ""
 "  -f ENCODING, --from-code=ENCODING\n"
@@ -66,7 +66,7 @@ msgstr ""
 "  -f КОДОВАЊЕ, --from-code=КОДОВАЊЕ\n"
 "                              улазно кодовање\n"
 
-#: src/iconv.c:138
+#: src/iconv.c:139
 #, c-format, no-wrap
 msgid ""
 "  -t ENCODING, --to-code=ENCODING\n"
@@ -75,17 +75,17 @@ msgstr ""
 "  -t КОДОВАЊЕ, --to-code=КОДОВАЊЕ\n"
 "                              излазно кодовање\n"
 
-#: src/iconv.c:143
+#: src/iconv.c:144
 #, c-format, no-wrap
 msgid "Options controlling conversion problems:\n"
 msgstr "Опције контролисања проблема претварања:\n"
 
-#: src/iconv.c:146
+#: src/iconv.c:147
 #, c-format, no-wrap
 msgid "  -c                          discard unconvertible characters\n"
 msgstr "  -c                          одбаци непретворљиве знакове\n"
 
-#: src/iconv.c:149
+#: src/iconv.c:150
 #, c-format, no-wrap
 msgid ""
 "  --unicode-subst=FORMATSTRING\n"
@@ -94,12 +94,12 @@ msgstr ""
 "  --unicode-subst=ФОРМАТНИСКА\n"
 "                              замена за непретворљиве Уникод знакове\n"
 
-#: src/iconv.c:153
+#: src/iconv.c:154
 #, c-format, no-wrap
 msgid "  --byte-subst=FORMATSTRING   substitution for unconvertible bytes\n"
 msgstr "  --byte-subst=ФОРМАТНИСКА    замена за непретворљиве бајтове\n"
 
-#: src/iconv.c:156
+#: src/iconv.c:157
 #, c-format, no-wrap
 msgid ""
 "  --widechar-subst=FORMATSTRING\n"
@@ -108,32 +108,32 @@ msgstr ""
 "  --widechar-subst=ФОРМАТНИСКА\n"
 "                              замена за непретворљиве широке знакове\n"
 
-#: src/iconv.c:161
+#: src/iconv.c:162
 #, c-format, no-wrap
 msgid "Options controlling error output:\n"
 msgstr "Опције контролисања исписа грешака:\n"
 
-#: src/iconv.c:164
+#: src/iconv.c:165
 #, c-format, no-wrap
 msgid "  -s, --silent                suppress error messages about conversion problems\n"
 msgstr "  -s, --silent                спречи поруке грешака о проблемима претварања\n"
 
-#: src/iconv.c:168
+#: src/iconv.c:169
 #, c-format, no-wrap
 msgid "Informative output:\n"
 msgstr "Информативни испис:\n"
 
-#: src/iconv.c:171
+#: src/iconv.c:172
 #, c-format, no-wrap
 msgid "  -l, --list                  list the supported encodings\n"
 msgstr "  -l, --list                  прикажи подржана кодовања\n"
 
-#: src/iconv.c:174
+#: src/iconv.c:175
 #, c-format, no-wrap
 msgid "  --help                      display this help and exit\n"
 msgstr "  --help                      прикажи ово објашњење и заврши\n"
 
-#: src/iconv.c:177
+#: src/iconv.c:178
 #, c-format, no-wrap
 msgid "  --version                   output version information and exit\n"
 msgstr "  --version                   испиши верзију и заврши\n"
@@ -142,11 +142,11 @@ msgstr "  --version                   испиши верзију и заврш�
 #. for this package.  Please add _another line_ saying
 #. "Report translation bugs to <...>\n" with the address for translation
 #. bugs (typically your translation team's web or email address).
-#: src/iconv.c:184
+#: src/iconv.c:185
 msgid "Report bugs to <bug-gnu-libiconv@gnu.org>.\n"
 msgstr "Пријава грешака на <bug-gnu-libiconv@gnu.org>.\n"
 
-#: src/iconv.c:195
+#: src/iconv.c:196
 #, no-wrap
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
@@ -155,14 +155,14 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: The %s placeholder expands to an author's name.
-#: src/iconv.c:201
+#: src/iconv.c:202
 #, c-format
 msgid "Written by %s.\n"
 msgstr "Написао %s.\n"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:295
+#: src/iconv.c:296
 #, c-format
 msgid ""
 "%s argument: A format directive with a variable width is not allowed here."
@@ -171,7 +171,7 @@ msgstr ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:310
+#: src/iconv.c:311
 #, c-format
 msgid ""
 "%s argument: A format directive with a variable precision is not allowed "
@@ -181,14 +181,14 @@ msgstr ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:326
+#: src/iconv.c:327
 #, c-format
 msgid "%s argument: A format directive with a size is not allowed here."
 msgstr "%s аргумент: Наредба формата са величином није дозвољена овде."
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:368
+#: src/iconv.c:369
 #, c-format
 msgid "%s argument: The string ends in the middle of a directive."
 msgstr "%s аргумент: Ниска завршава у сред наредбе."
@@ -196,14 +196,14 @@ msgstr "%s аргумент: Ниска завршава у сред наред�
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
 #. The %c placeholder expands to an unknown format directive.
-#: src/iconv.c:375
+#: src/iconv.c:376
 #, c-format
 msgid "%s argument: The character '%c' is not a valid conversion specifier."
 msgstr "%s аргумент:  Знак „%c“ неважећи при задавању претварања."
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:381
+#: src/iconv.c:382
 #, c-format
 msgid ""
 "%s argument: The character that terminates the format directive is not a "
@@ -214,7 +214,7 @@ msgstr ""
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
 #. The %u placeholder expands to the number of arguments consumed by the format string.
-#: src/iconv.c:397
+#: src/iconv.c:398
 #, fuzzy, c-format
 msgid ""
 "%s argument: The format string consumes more than one argument: %u argument."
@@ -227,42 +227,42 @@ msgstr[1] ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --byte-subst.
-#: src/iconv.c:455
+#: src/iconv.c:456
 #, c-format
 msgid "cannot convert byte substitution to Unicode: %s"
 msgstr "не може претворити бајт замене у Уникод: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --unicode-subst.
-#: src/iconv.c:495
+#: src/iconv.c:496
 #, c-format
 msgid "cannot convert unicode substitution to target encoding: %s"
 msgstr "не може претворити Уникод замену у циљно кодовање: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --byte-subst.
-#: src/iconv.c:536
+#: src/iconv.c:537
 #, c-format
 msgid "cannot convert byte substitution to wide string: %s"
 msgstr "не може претворити бајт замене у широку ниску: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --widechar-subst.
-#: src/iconv.c:577
+#: src/iconv.c:578
 #, fuzzy, c-format
 msgid "cannot convert widechar substitution to target encoding: %s"
 msgstr "iconv: не може претворити широки знак замене у циљно кодовање: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --byte-subst.
-#: src/iconv.c:618
+#: src/iconv.c:619
 #, fuzzy, c-format
 msgid "cannot convert byte substitution to target encoding: %s"
 msgstr "iconv: не може претворити бајт замене у циљно кодовање: %s"
 
 #. TRANSLATORS: An error message.
 #. The placeholders expand to the input file name, a line number, and a column number.
-#: src/iconv.c:637
+#: src/iconv.c:638
 #, c-format
 msgid "%s:%u:%u: cannot convert"
 msgstr "%s:%u:%u: не може претворити"
@@ -271,7 +271,7 @@ msgstr "%s:%u:%u: не може претворити"
 #. The placeholders expand to the input file name, a line number, and a column number.
 #. A "shift sequence" is a sequence of bytes that changes the state of the converter;
 #. this concept exists only for "stateful" encodings like ISO-2022-JP.
-#: src/iconv.c:651
+#: src/iconv.c:652
 #, c-format
 msgid "%s:%u:%u: incomplete character or shift sequence"
 msgstr "%s:%u:%u: непотпуни знаковни или шифт низ"
@@ -279,61 +279,61 @@ msgstr "%s:%u:%u: непотпуни знаковни или шифт низ"
 #. TRANSLATORS: The first part of an error message.
 #. It is followed by a colon and a detail message.
 #. The placeholders expand to the input file name, a line number, and a column number.
-#: src/iconv.c:664
+#: src/iconv.c:665
 #, c-format
 msgid "%s:%u:%u"
 msgstr "%s:%u:%u"
 
 #. TRANSLATORS: An error message.
 #. The placeholder expands to the input file name.
-#: src/iconv.c:819
+#: src/iconv.c:826
 #, c-format
 msgid "%s: I/O error"
 msgstr "%s: У/И грешка"
 
 #. TRANSLATORS: An error message.
 #. The placeholder expands to the encoding name, specified through --from-code.
-#: src/iconv.c:1007
+#: src/iconv.c:1014
 #, c-format
 msgid "conversion from %s unsupported"
 msgstr "претварање из %s није подржано"
 
 #. TRANSLATORS: An error message.
 #. The placeholder expands to the encoding name, specified through --to-code.
-#: src/iconv.c:1013
+#: src/iconv.c:1020
 #, c-format
 msgid "conversion to %s unsupported"
 msgstr "претварање у %s није подржано"
 
 #. TRANSLATORS: An error message.
 #. The placeholders expand to the encoding names, specified through --from-code and --to-code, respectively.
-#: src/iconv.c:1019
+#: src/iconv.c:1026
 #, c-format
 msgid "conversion from %s to %s unsupported"
 msgstr "претварање из %s у %s није подржано"
 
 #. TRANSLATORS: Additional advice after an error message.
 #. The %s placeholder expands to the program name.
-#: src/iconv.c:1024
+#: src/iconv.c:1031
 #, c-format
 msgid "try '%s -l' to get the list of supported encodings"
 msgstr "покушати '%s -l' за списак подржаних кодовања"
 
 #. TRANSLATORS: A filename substitute denoting standard input.
-#: src/iconv.c:1081
+#: src/iconv.c:1088
 msgid "(stdin)"
 msgstr "(стдул)"
 
 #. TRANSLATORS: The first part of an error message.
 #. It is followed by a colon and a detail message.
 #. The %s placeholder expands to the input file name.
-#: src/iconv.c:1093
+#: src/iconv.c:1100
 #, c-format
 msgid "%s"
 msgstr "%s"
 
 #. TRANSLATORS: An error message.
-#: src/iconv.c:1107
+#: src/iconv.c:1114
 #, c-format
 msgid "I/O error"
 msgstr "У/И грешка"

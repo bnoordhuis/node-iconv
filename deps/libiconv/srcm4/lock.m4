@@ -1,5 +1,5 @@
-# lock.m4 serial 10 (gettext-0.18)
-dnl Copyright (C) 2005-2009 Free Software Foundation, Inc.
+# lock.m4 serial 11 (gettext-0.18.2)
+dnl Copyright (C) 2005-2011 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -18,13 +18,17 @@ AC_DEFUN([gl_LOCK],
       [],
       [#include <pthread.h>])
     # glibc defines PTHREAD_MUTEX_RECURSIVE as enum, not as a macro.
-    AC_TRY_COMPILE([#include <pthread.h>],
-      [#if __FreeBSD__ == 4
+    AC_COMPILE_IFELSE([
+      AC_LANG_PROGRAM(
+        [[#include <pthread.h>]],
+        [[
+#if __FreeBSD__ == 4
 error "No, in FreeBSD 4.0 recursive mutexes actually don't work."
 #else
 int x = (int)PTHREAD_MUTEX_RECURSIVE;
 return !x;
-#endif],
+#endif
+        ]])],
       [AC_DEFINE([HAVE_PTHREAD_MUTEX_RECURSIVE], [1],
          [Define if the <pthread.h> defines PTHREAD_MUTEX_RECURSIVE.])])
   fi

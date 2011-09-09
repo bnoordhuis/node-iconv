@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libiconv 1.12\n"
 "Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
-"POT-Creation-Date: 2009-06-30 22:53+0200\n"
+"POT-Creation-Date: 2011-08-07 15:24+0200\n"
 "PO-Revision-Date: 2008-12-31 14:30+0700\n"
 "Last-Translator: Arif E. Nugroho <arif_endro@yahoo.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
@@ -19,24 +19,24 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. TRANSLATORS: The first line of the short usage message.
-#: src/iconv.c:103
+#: src/iconv.c:104
 msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
 msgstr "Penggunaan: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
 
 #. TRANSLATORS: The second line of the short usage message.
 #. Align it correctly against the first line.
-#: src/iconv.c:107
+#: src/iconv.c:108
 msgid "or:    iconv -l"
 msgstr "atau:    iconv -l"
 
-#: src/iconv.c:109
+#: src/iconv.c:110
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Coba `%s --help' untuk informasi lebih lanjut.\n"
 
 #. TRANSLATORS: The first line of the long usage message.
 #. The %s placeholder expands to the program name.
-#: src/iconv.c:114
+#: src/iconv.c:115
 #, c-format, no-wrap
 msgid "Usage: %s [OPTION...] [-f ENCODING] [-t ENCODING] [INPUTFILE...]\n"
 msgstr "Penggunaan: %s [OPSI...] [-f PENGKODEAN] [-e PENGKODEAN] [BERKAS MASUKAN...]\n"
@@ -44,23 +44,23 @@ msgstr "Penggunaan: %s [OPSI...] [-f PENGKODEAN] [-e PENGKODEAN] [BERKAS MASUKAN
 #. TRANSLATORS: The second line of the long usage message.
 #. Align it correctly against the first line.
 #. The %s placeholder expands to the program name.
-#: src/iconv.c:121
+#: src/iconv.c:122
 #, c-format, no-wrap
 msgid "or:    %s -l\n"
 msgstr "atau:  %s -l\n"
 
 #. TRANSLATORS: Description of the iconv program.
-#: src/iconv.c:127
+#: src/iconv.c:128
 #, c-format, no-wrap
 msgid "Converts text from one encoding to another encoding.\n"
 msgstr "Ubah teks dari satu pengkodean ke pengkodean yang lain.\n"
 
-#: src/iconv.c:131
+#: src/iconv.c:132
 #, c-format, no-wrap
 msgid "Options controlling the input and output format:\n"
 msgstr "Opsi mengontrol format masukan dan keluaran:\n"
 
-#: src/iconv.c:134
+#: src/iconv.c:135
 #, c-format, no-wrap
 msgid ""
 "  -f ENCODING, --from-code=ENCODING\n"
@@ -69,7 +69,7 @@ msgstr ""
 "  -f PENGKODEAN, --from-code=PENGKODEAN\n"
 "                              pengkodean dari masukan\n"
 
-#: src/iconv.c:138
+#: src/iconv.c:139
 #, c-format, no-wrap
 msgid ""
 "  -t ENCODING, --to-code=ENCODING\n"
@@ -78,17 +78,17 @@ msgstr ""
 "  -t PENGKODEAN, --to-code=PENGKODEAN\n"
 "                              pengkodean dari keluaran\n"
 
-#: src/iconv.c:143
+#: src/iconv.c:144
 #, c-format, no-wrap
 msgid "Options controlling conversion problems:\n"
 msgstr "Opsi mengontrol masalah pengubahan:\n"
 
-#: src/iconv.c:146
+#: src/iconv.c:147
 #, c-format, no-wrap
 msgid "  -c                          discard unconvertible characters\n"
 msgstr "  -c                          abaikan karakter yang tidak dapat diubah\n"
 
-#: src/iconv.c:149
+#: src/iconv.c:150
 #, c-format, no-wrap
 msgid ""
 "  --unicode-subst=FORMATSTRING\n"
@@ -97,12 +97,12 @@ msgstr ""
 "  --unicode-subst=FORMATSTRING\n"
 "                              substitusi untuk karakter Unicode yang tidak dapat diubah\n"
 
-#: src/iconv.c:153
+#: src/iconv.c:154
 #, c-format, no-wrap
 msgid "  --byte-subst=FORMATSTRING   substitution for unconvertible bytes\n"
 msgstr "  --byte-subst=FORMATSTRING   substitusi untuk byte tidak terubah\n"
 
-#: src/iconv.c:156
+#: src/iconv.c:157
 #, c-format, no-wrap
 msgid ""
 "  --widechar-subst=FORMATSTRING\n"
@@ -111,32 +111,32 @@ msgstr ""
 "  --widechar-subst=FORMATSTRING\n"
 "                              substitusi untuk karakter lebar tidak terubah\n"
 
-#: src/iconv.c:161
+#: src/iconv.c:162
 #, c-format, no-wrap
 msgid "Options controlling error output:\n"
 msgstr "Opsi mengontrol keluaran error:\n"
 
-#: src/iconv.c:164
+#: src/iconv.c:165
 #, c-format, no-wrap
 msgid "  -s, --silent                suppress error messages about conversion problems\n"
 msgstr "  -s, --silent                tekan pesan error mengenai masalah konversi\n"
 
-#: src/iconv.c:168
+#: src/iconv.c:169
 #, c-format, no-wrap
 msgid "Informative output:\n"
 msgstr "Keluaran informasi:\n"
 
-#: src/iconv.c:171
+#: src/iconv.c:172
 #, c-format, no-wrap
 msgid "  -l, --list                  list the supported encodings\n"
 msgstr "  -l, --list                  daftar dari pengkodean yang didukung\n"
 
-#: src/iconv.c:174
+#: src/iconv.c:175
 #, c-format, no-wrap
 msgid "  --help                      display this help and exit\n"
 msgstr "  --help                      tampilkan bantuan ini dan keluar\n"
 
-#: src/iconv.c:177
+#: src/iconv.c:178
 #, c-format, no-wrap
 msgid "  --version                   output version information and exit\n"
 msgstr "  --version                   keluarkan informasi versi dan keluar\n"
@@ -145,11 +145,11 @@ msgstr "  --version                   keluarkan informasi versi dan keluar\n"
 #. for this package.  Please add _another line_ saying
 #. "Report translation bugs to <...>\n" with the address for translation
 #. bugs (typically your translation team's web or email address).
-#: src/iconv.c:184
+#: src/iconv.c:185
 msgid "Report bugs to <bug-gnu-libiconv@gnu.org>.\n"
 msgstr "Laporkan bugs ke <bug-gnu-libiconv@gnu.org>.\n"
 
-#: src/iconv.c:195
+#: src/iconv.c:196
 #, fuzzy, no-wrap
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
@@ -161,14 +161,14 @@ msgstr ""
 "TIDAK ADA GARANSI, sampai batas yang diijinkan oleh hukum yang berlaku.\n"
 
 #. TRANSLATORS: The %s placeholder expands to an author's name.
-#: src/iconv.c:201
+#: src/iconv.c:202
 #, c-format
 msgid "Written by %s.\n"
 msgstr "Ditulis oleh %s.\n"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:295
+#: src/iconv.c:296
 #, c-format
 msgid ""
 "%s argument: A format directive with a variable width is not allowed here."
@@ -178,7 +178,7 @@ msgstr ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:310
+#: src/iconv.c:311
 #, c-format
 msgid ""
 "%s argument: A format directive with a variable precision is not allowed "
@@ -189,7 +189,7 @@ msgstr ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:326
+#: src/iconv.c:327
 #, c-format
 msgid "%s argument: A format directive with a size is not allowed here."
 msgstr ""
@@ -198,7 +198,7 @@ msgstr ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:368
+#: src/iconv.c:369
 #, c-format
 msgid "%s argument: The string ends in the middle of a directive."
 msgstr "%s argumen: String berakhir ditengah dari sebuah direktif."
@@ -206,7 +206,7 @@ msgstr "%s argumen: String berakhir ditengah dari sebuah direktif."
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
 #. The %c placeholder expands to an unknown format directive.
-#: src/iconv.c:375
+#: src/iconv.c:376
 #, c-format
 msgid "%s argument: The character '%c' is not a valid conversion specifier."
 msgstr ""
@@ -214,7 +214,7 @@ msgstr ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
-#: src/iconv.c:381
+#: src/iconv.c:382
 #, c-format
 msgid ""
 "%s argument: The character that terminates the format directive is not a "
@@ -226,7 +226,7 @@ msgstr ""
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a command-line option.
 #. The %u placeholder expands to the number of arguments consumed by the format string.
-#: src/iconv.c:397
+#: src/iconv.c:398
 #, c-format
 msgid ""
 "%s argument: The format string consumes more than one argument: %u argument."
@@ -239,42 +239,42 @@ msgstr[1] ""
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --byte-subst.
-#: src/iconv.c:455
+#: src/iconv.c:456
 #, c-format
 msgid "cannot convert byte substitution to Unicode: %s"
 msgstr "tidak dapat mengubah substitusi byte ke Unicode: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --unicode-subst.
-#: src/iconv.c:495
+#: src/iconv.c:496
 #, c-format
 msgid "cannot convert unicode substitution to target encoding: %s"
 msgstr "tidak dapat mengubah substitusi unicode ke target pengkodean: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --byte-subst.
-#: src/iconv.c:536
+#: src/iconv.c:537
 #, c-format
 msgid "cannot convert byte substitution to wide string: %s"
 msgstr "tidak dapat mengubah pengganti byte ke string lebar: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --widechar-subst.
-#: src/iconv.c:577
+#: src/iconv.c:578
 #, c-format
 msgid "cannot convert widechar substitution to target encoding: %s"
 msgstr "tidak dapat mengubah pengganti widechar ke target pengkodean: %s"
 
 #. TRANSLATORS: An error message.
 #. The %s placeholder expands to a piece of text, specified through --byte-subst.
-#: src/iconv.c:618
+#: src/iconv.c:619
 #, c-format
 msgid "cannot convert byte substitution to target encoding: %s"
 msgstr "tidak dapat mengubah pengganti byte ke target pengkodean: %s"
 
 #. TRANSLATORS: An error message.
 #. The placeholders expand to the input file name, a line number, and a column number.
-#: src/iconv.c:637
+#: src/iconv.c:638
 #, c-format
 msgid "%s:%u:%u: cannot convert"
 msgstr "%s:%u:%u: tidak dapat mengkonversi"
@@ -283,7 +283,7 @@ msgstr "%s:%u:%u: tidak dapat mengkonversi"
 #. The placeholders expand to the input file name, a line number, and a column number.
 #. A "shift sequence" is a sequence of bytes that changes the state of the converter;
 #. this concept exists only for "stateful" encodings like ISO-2022-JP.
-#: src/iconv.c:651
+#: src/iconv.c:652
 #, c-format
 msgid "%s:%u:%u: incomplete character or shift sequence"
 msgstr "%s:%u:%u: karakter atau urutan shift tidak lengkap"
@@ -291,61 +291,61 @@ msgstr "%s:%u:%u: karakter atau urutan shift tidak lengkap"
 #. TRANSLATORS: The first part of an error message.
 #. It is followed by a colon and a detail message.
 #. The placeholders expand to the input file name, a line number, and a column number.
-#: src/iconv.c:664
+#: src/iconv.c:665
 #, c-format
 msgid "%s:%u:%u"
 msgstr "%s:%u:%u"
 
 #. TRANSLATORS: An error message.
 #. The placeholder expands to the input file name.
-#: src/iconv.c:819
+#: src/iconv.c:826
 #, c-format
 msgid "%s: I/O error"
 msgstr "%s: I/O error"
 
 #. TRANSLATORS: An error message.
 #. The placeholder expands to the encoding name, specified through --from-code.
-#: src/iconv.c:1007
+#: src/iconv.c:1014
 #, c-format
 msgid "conversion from %s unsupported"
 msgstr "konversi dari %s tidak didukung"
 
 #. TRANSLATORS: An error message.
 #. The placeholder expands to the encoding name, specified through --to-code.
-#: src/iconv.c:1013
+#: src/iconv.c:1020
 #, c-format
 msgid "conversion to %s unsupported"
 msgstr "konversi ke %s tidak didukung"
 
 #. TRANSLATORS: An error message.
 #. The placeholders expand to the encoding names, specified through --from-code and --to-code, respectively.
-#: src/iconv.c:1019
+#: src/iconv.c:1026
 #, c-format
 msgid "conversion from %s to %s unsupported"
 msgstr "konversi dari %s to %s tidak didukung"
 
 #. TRANSLATORS: Additional advice after an error message.
 #. The %s placeholder expands to the program name.
-#: src/iconv.c:1024
+#: src/iconv.c:1031
 #, c-format
 msgid "try '%s -l' to get the list of supported encodings"
 msgstr "coba '%s -l' untuk mendapatkan daftar dari pengkodean yang didukung"
 
 #. TRANSLATORS: A filename substitute denoting standard input.
-#: src/iconv.c:1081
+#: src/iconv.c:1088
 msgid "(stdin)"
 msgstr "(stdin)"
 
 #. TRANSLATORS: The first part of an error message.
 #. It is followed by a colon and a detail message.
 #. The %s placeholder expands to the input file name.
-#: src/iconv.c:1093
+#: src/iconv.c:1100
 #, c-format
 msgid "%s"
 msgstr "%s"
 
 #. TRANSLATORS: An error message.
-#: src/iconv.c:1107
+#: src/iconv.c:1114
 #, c-format
 msgid "I/O error"
 msgstr "I/O error"

@@ -1,5 +1,5 @@
-# lib-ld.m4 serial 4 (gettext-0.18)
-dnl Copyright (C) 1996-2003, 2009 Free Software Foundation, Inc.
+# lib-ld.m4 serial 5 (gettext-0.18.2)
+dnl Copyright (C) 1996-2003, 2009-2011 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -31,15 +31,14 @@ AC_REQUIRE([AC_CANONICAL_HOST])dnl
 # Prepare PATH_SEPARATOR.
 # The user is always right.
 if test "${PATH_SEPARATOR+set}" != set; then
-  echo "#! /bin/sh" >conf$$.sh
-  echo  "exit 0"   >>conf$$.sh
-  chmod +x conf$$.sh
-  if (PATH="/nonexistent;."; conf$$.sh) >/dev/null 2>&1; then
-    PATH_SEPARATOR=';'
-  else
-    PATH_SEPARATOR=:
-  fi
-  rm -f conf$$.sh
+  # Determine PATH_SEPARATOR by trying to find /bin/sh in a PATH which
+  # contains only /bin. Note that ksh looks also at the FPATH variable,
+  # so we have to set that as well for the test.
+  PATH_SEPARATOR=:
+  (PATH='/bin;/bin'; FPATH=$PATH; sh -c :) >/dev/null 2>&1 \
+    && { (PATH='/bin:/bin'; FPATH=$PATH; sh -c :) >/dev/null 2>&1 \
+           || PATH_SEPARATOR=';'
+       }
 fi
 ac_prog=ld
 if test "$GCC" = yes; then
@@ -59,7 +58,7 @@ if test "$GCC" = yes; then
       # Canonicalize the path of ld
       ac_prog=`echo $ac_prog| sed 's%\\\\%/%g'`
       while echo $ac_prog | grep "$re_direlt" > /dev/null 2>&1; do
-	ac_prog=`echo $ac_prog| sed "s%$re_direlt%/%"`
+        ac_prog=`echo $ac_prog| sed "s%$re_direlt%/%"`
       done
       test -z "$LD" && LD="$ac_prog"
       ;;
@@ -89,9 +88,9 @@ AC_CACHE_VAL([acl_cv_path_LD],
       # Break only if it was the GNU/non-GNU ld that we prefer.
       case `"$acl_cv_path_LD" -v 2>&1 < /dev/null` in
       *GNU* | *'with BFD'*)
-	test "$with_gnu_ld" != no && break ;;
+        test "$with_gnu_ld" != no && break ;;
       *)
-	test "$with_gnu_ld" != yes && break ;;
+        test "$with_gnu_ld" != yes && break ;;
       esac
     fi
   done

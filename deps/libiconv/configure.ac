@@ -1,4 +1,4 @@
-dnl Copyright (C) 1999-2009 Free Software Foundation, Inc.
+dnl Copyright (C) 1999-2011 Free Software Foundation, Inc.
 dnl This file is part of the GNU LIBICONV Library.
 dnl
 dnl The GNU LIBICONV Library is free software; you can redistribute it
@@ -20,7 +20,7 @@ AC_PREREQ([2.60])
 AC_INIT
 AC_CONFIG_SRCDIR([lib/iconv.c])
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([libiconv], [1.13.1])
+AM_INIT_AUTOMAKE([libiconv], [1.14])
 AC_CONFIG_HEADERS([config.h lib/config.h])
 AC_PROG_MAKE_SET
 
@@ -133,8 +133,11 @@ AC_SUBST([USE_MBSTATE_T])
 
 AC_CACHE_CHECK([whether <wchar.h> is standalone],
   [gl_cv_header_wchar_h_standalone],
-  [AC_COMPILE_IFELSE([[#include <wchar.h>
-wchar_t w;]],
+  [AC_COMPILE_IFELSE(
+     [AC_LANG_PROGRAM(
+        [[#include <wchar.h>
+          wchar_t w;]],
+        [[]])],
     [gl_cv_header_wchar_h_standalone=yes],
     [gl_cv_header_wchar_h_standalone=no])])
 if test $gl_cv_header_wchar_h_standalone = yes; then
@@ -147,6 +150,7 @@ AC_SUBST([BROKEN_WCHAR_H])
 AC_REPLACE_FUNCS([memmove])
 
 AM_LANGINFO_CODESET
+gl_FCNTL_O_FLAGS
 
 AC_EILSEQ
 

@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.11 -*- Autoconf -*-
+# generated automatically by aclocal 1.11.1 -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
 # 2005, 2006, 2007, 2008, 2009  Free Software Foundation, Inc.
@@ -12,6 +12,7 @@
 # PARTICULAR PURPOSE.
 
 m4_include([m4/codeset.m4])
+m4_include([m4/fcntl-o.m4])
 m4_include([m4/glibc21.m4])
 m4_include([m4/libtool.m4])
 m4_include([m4/ltoptions.m4])

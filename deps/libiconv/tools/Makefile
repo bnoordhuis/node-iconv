@@ -90,6 +90,7 @@ ALL = \
  hkscs1999.h \
  hkscs2001.h \
  hkscs2004.h \
+ hkscs2008.h \
  ksc5601.h \
  uhc_1.h \
  uhc_2.h \
@@ -407,6 +408,9 @@ hkscs2001.h : $(TABLESDIR)/big5hkscs/HKSCS-2001_2006-DELTA.TXT cjk_tab_to_h
 
 hkscs2004.h : $(TABLESDIR)/big5hkscs/HKSCS-2004_2006-DELTA.TXT cjk_tab_to_h
 	(echo '#' ; grep -v , $<) | ./cjk_tab_to_h HKSCS:2004 hkscs2004 > $@
+
+hkscs2008.h : $(TABLESDIR)/big5hkscs/HKSCS-2008_2010-DELTA.TXT cjk_tab_to_h
+	(echo '#' ; grep -v , $<) | ./cjk_tab_to_h HKSCS:2008 hkscs2008 > $@
 
 # We use a modified KSC 5601 = KSX 1001 table. Jungshik Shin <jshin@mailaps.org>
 # reports that Prof. GIM Geongseog (KIM Keyongseok) <gimgs@asadal.cs.pusan.ac.kr>

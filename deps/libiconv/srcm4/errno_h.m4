@@ -1,5 +1,5 @@
-# errno_h.m4 serial 6
-dnl Copyright (C) 2004, 2006, 2008, 2009 Free Software Foundation, Inc.
+# errno_h.m4 serial 10
+dnl Copyright (C) 2004, 2006, 2008-2011 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -34,7 +34,16 @@ booboo
 #if !defined ENOTSUP
 booboo
 #endif
+#if !defined ENETRESET
+booboo
+#endif
+#if !defined ECONNABORTED
+booboo
+#endif
 #if !defined ESTALE
+booboo
+#endif
+#if !defined EDQUOT
 booboo
 #endif
 #if !defined ECANCELED
@@ -47,10 +56,11 @@ booboo
   if test $gl_cv_header_errno_h_complete = yes; then
     ERRNO_H=''
   else
-    gl_CHECK_NEXT_HEADERS([errno.h])
+    gl_NEXT_HEADERS([errno.h])
     ERRNO_H='errno.h'
   fi
   AC_SUBST([ERRNO_H])
+  AM_CONDITIONAL([GL_GENERATE_ERRNO_H], [test -n "$ERRNO_H"])
   gl_REPLACE_ERRNO_VALUE([EMULTIHOP])
   gl_REPLACE_ERRNO_VALUE([ENOLINK])
   gl_REPLACE_ERRNO_VALUE([EOVERFLOW])

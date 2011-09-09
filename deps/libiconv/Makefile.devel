@@ -4,8 +4,8 @@
 
 SHELL = /bin/sh
 MAKE = make
-AUTOCONF = autoconf-2.63
-AUTOHEADER = autoheader-2.63
+AUTOCONF = autoconf-2.68
+AUTOHEADER = autoheader-2.68
 AUTOMAKE = automake-1.11
 ACLOCAL = aclocal-1.11
 GPERF = gperf
@@ -67,15 +67,16 @@ config.h.in : configure.ac $(AUTOCONF_FILES)
 GNULIB_MODULES = \
   binary-io \
   error \
-  exit \
   gettext \
   gettext-h \
   mbstate \
   memmove \
   progname \
   relocatable-prog \
+  safe-read \
   sigpipe \
   stdio \
+  stdlib \
   strerror \
   unistd \
   uniwidth/width \
@@ -83,9 +84,9 @@ GNULIB_MODULES = \
   xalloc \
   libiconv-misc
 
-srclib/Makefile.gnulib :
+srclib/Makefile.gnulib : force
 	if test -n "$$GNULIB_TOOL"; then \
-	  $$GNULIB_TOOL --lib=libicrt --source-base=srclib --m4-base=srcm4 --makefile-name=Makefile.gnulib --no-libtool --local-dir=gnulib-local \
+	  $$GNULIB_TOOL --lib=libicrt --source-base=srclib --m4-base=srcm4 --makefile-name=Makefile.gnulib --no-libtool --local-dir=gnulib-local --no-vc-files \
 	    --import $(GNULIB_MODULES); \
 	fi
 
