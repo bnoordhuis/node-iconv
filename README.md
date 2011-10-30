@@ -1,19 +1,14 @@
 # node-iconv
 
 Text recoding in JavaScript for fun and profit!
-
 Powerd by [GNU libiconv-1.9.1](http://ftp.gnu.org/gnu/libiconv/libiconv-1.9.1.tar.gz)
-
 The [libiconv-1.9.1-ja-patch-1.diff.gz](http://www2d.biglobe.ne.jp/~msyk/software/libiconv-1.9.1-patch.html) was applied.
-
 It will solve the problem to Japanese.
 
+---
 in Japanese:
-
 nodeでiconvを利用するためのライブラリです。
-
 GNU libiconv-1.9.1をベースに[libiconv-1.9.1-ja-patch-1.diff.gz](http://www2d.biglobe.ne.jp/~msyk/software/libiconv-1.9.1-patch.html)を適用したものを利用しています。
-
 これにより、libiconvで起こる様々な日本語に対する問題を回避することができます。
 
 
