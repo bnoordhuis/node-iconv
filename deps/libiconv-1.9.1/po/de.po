@@ -1,0 +1,90 @@
+# German messages for GNU libiconv.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# This file is distributed under the same license as the GNU libiconv package.
+# Bruno Haible <bruno@clisp.org>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNU libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2003-05-06 13:32+0200\n"
+"PO-Revision-Date: 2002-04-28 04:26+0200\n"
+"Last-Translator: Bruno Haible <bruno@clisp.org>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/iconv.c:59
+msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Aufruf: iconv [--binary] [-c] [-s]\n"
+"              [-f AUSGANGS-KODIERUNG] [-t ZIEL-KODIERUNG] [DATEI ...]"
+
+#: src/iconv.c:61
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Aufruf: iconv [-c] [-s] [-f AUSGANGS-KODIERUNG] [-t ZIEL-KODIERUNG] "
+"[DATEI ...]"
+
+#: src/iconv.c:64
+msgid "or:    iconv -l"
+msgstr "oder:   iconv -l"
+
+#: src/iconv.c:74
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"Dies ist freie Software; die Kopierbedingungen stehen in den Quellen. Es\n"
+"gibt keine Garantie; auch nicht für VERKAUFBARKEIT oder FÜR SPEZIELLE "
+"ZWECKE.\n"
+
+#: src/iconv.c:77
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Geschrieben von %s.\n"
+
+#: src/iconv.c:114 src/iconv.c:146 src/iconv.c:196
+#, c-format
+msgid "iconv: %s: incomplete character or shift sequence\n"
+msgstr "iconv: %s: unvollständiges Zeichen oder unvollständige Umschaltfolge\n"
+
+#: src/iconv.c:140 src/iconv.c:191
+#, c-format
+msgid "iconv: %s: cannot convert\n"
+msgstr "iconv: %s: Kann nicht umwandeln.\n"
+
+#: src/iconv.c:162 src/iconv.c:201 src/iconv.c:320
+#, c-format
+msgid "iconv: %s: "
+msgstr "iconv: %s: "
+
+#: src/iconv.c:210
+#, c-format
+msgid "iconv: %s: I/O error\n"
+msgstr "iconv: %s: Ein-/Ausgabefehler\n"
+
+#: src/iconv.c:304
+#, c-format
+msgid "iconv: conversion from %s unsupported\n"
+msgstr "iconv: Umwandlung ausgehend von %s ist nicht unterstützt.\n"
+
+#: src/iconv.c:306
+#, c-format
+msgid "iconv: conversion to %s unsupported\n"
+msgstr "iconv: Umwandlung nach %s ist nicht unterstützt.\n"
+
+#: src/iconv.c:308
+#, c-format
+msgid "iconv: conversion from %s to %s unsupported\n"
+msgstr "iconv: Umwandlung von %s nach %s ist nicht unterstützt.\n"
+
+#: src/iconv.c:312
+msgid "(stdin)"
+msgstr "(Standard-Eingabe)"
+
+#: src/iconv.c:333
+msgid "iconv: I/O error\n"
+msgstr "iconv: Ein-/Ausgabefehler\n"

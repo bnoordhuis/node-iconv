@@ -8,7 +8,7 @@ ifeq ($(NODE_INCLUDE_PATH),)
 	NODE_INCLUDE_PATH = $(NODE_PATH)/include/node
 endif
 
-LIBICONV_DIR	=deps/libiconv-1.13.1
+LIBICONV_DIR	=deps/libiconv-1.9.1
 LIBICONV	=$(LIBICONV_DIR)/lib/.libs/libiconv.a
 
 CXXFLAGS	=-I$(LIBICONV_DIR)/include -I$(LIBICONV_DIR)/lib -I$(NODE_INCLUDE_PATH) -D_FORTIFY_SOURCE=2 -DEV_MULTIPLICITY=0 -fPIC -Wall -Wextra -ansi

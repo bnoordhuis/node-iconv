@@ -1,0 +1,87 @@
+# libiconv Turkish translation.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Deniz Akkus Kanca <deniz@arayan.com>, 2002.
+# This file is distributed under the same license as the libiconv package.
+# Deniz Akkus Kanca <deniz@arayan.com>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2003-05-06 13:32+0200\n"
+"PO-Revision-Date: 2002-06-28 11:00+0200\n"
+"Last-Translator: Deniz Akkus Kanca <deniz@arayan.com>\n"
+"Language-Team: Turkish <gnu-tr-u12a@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/iconv.c:59
+msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Kullanım: iconv [--binary] [-c] [-s] [-f kaynakkod] [-t hedefkod] [dosya ...]"
+
+#: src/iconv.c:61
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Kullanım: iconv [-c] [-s] [-f kaynakkod] [-t hedefkod] [dosya ...]"
+
+#: src/iconv.c:64
+msgid "or:    iconv -l"
+msgstr "veya:  iconv -l"
+
+#: src/iconv.c:74
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"Bu bir serbest yazılımdır; kopyalama kuralları için kaynak koduna bakınız.\n"
+"HİÇ BİR garantisi yoktur; hatta SATILABİLİRLİĞİ veya HERHANGİ BİR AMACA\n"
+"UYGUNLUĞU için dahi garanti verilmez.\n"
+
+#: src/iconv.c:77
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Yazan: %s\n"
+
+#: src/iconv.c:114 src/iconv.c:146 src/iconv.c:196
+#, c-format
+msgid "iconv: %s: incomplete character or shift sequence\n"
+msgstr "iconv: %s: eksik karakter ya da shift dizisi\n"
+
+#: src/iconv.c:140 src/iconv.c:191
+#, c-format
+msgid "iconv: %s: cannot convert\n"
+msgstr "iconv: %s: dönüştürülemedi\n"
+
+#: src/iconv.c:162 src/iconv.c:201 src/iconv.c:320
+#, c-format
+msgid "iconv: %s: "
+msgstr "iconv: %s: "
+
+#: src/iconv.c:210
+#, c-format
+msgid "iconv: %s: I/O error\n"
+msgstr "iconv: %s: I/O hatası\n"
+
+#: src/iconv.c:304
+#, c-format
+msgid "iconv: conversion from %s unsupported\n"
+msgstr "iconv: %s'den dönüşüm desteklenmiyor\n"
+
+#: src/iconv.c:306
+#, c-format
+msgid "iconv: conversion to %s unsupported\n"
+msgstr "iconv: %s'e dönüşüm desteklenmiyor\n"
+
+#: src/iconv.c:308
+#, c-format
+msgid "iconv: conversion from %s to %s unsupported\n"
+msgstr "iconv: %s'den %s'e dönüşüm desteklenmiyor\n"
+
+#: src/iconv.c:312
+msgid "(stdin)"
+msgstr "(standart girdi)"
+
+#: src/iconv.c:333
+msgid "iconv: I/O error\n"
+msgstr "iconv: I/O hatası\n"

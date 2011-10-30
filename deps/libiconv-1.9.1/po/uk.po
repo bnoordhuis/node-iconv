@@ -1,0 +1,88 @@
+# libiconv -- Ukrainian translation.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Volodymyr M. Lisivka <lvm@mystery.lviv.net>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2003-05-06 13:32+0200\n"
+"PO-Revision-Date: 2003-02-09 17:27+0200\n"
+"Last-Translator: Volodymyr M. Lisivka <lvm@mystery.lviv.net>\n"
+"Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=KOI8-U\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/iconv.c:59
+msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Використання:\n"
+"  iconv [--binary] [-c] [-s] [-f з_кодування] [-t у_кодування] [файл ...]"
+
+#: src/iconv.c:61
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Використання: iconv [-c] [-s] [-f з_кодування] [-t у_кодування] [файл ...]"
+
+#: src/iconv.c:64
+msgid "or:    iconv -l"
+msgstr "або:   iconv -l"
+
+#: src/iconv.c:74
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"Це в╕льне програмне забезпечення; умови коп╕ювання приведен╕ у\n"
+"джерельних текстах програми.  Нема Н╤ЯКИХ гарант╕й; нав╕ть гарант╕╖ "
+"КОМЕРЦ╤ЙНО╥\n"
+"Ц╤ННОСТ╤ або ПРИДАТНОСТ╤ ДЛЯ КОНКРЕТНО╥ Ц╤Л╤.\n"
+
+#: src/iconv.c:77
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Автор: %s.\n"
+
+#: src/iconv.c:114 src/iconv.c:146 src/iconv.c:196
+#, c-format
+msgid "iconv: %s: incomplete character or shift sequence\n"
+msgstr "iconv: %s: незавершений символ чи посл╕довн╕сть зм╕ни рег╕стру\n"
+
+#: src/iconv.c:140 src/iconv.c:191
+#, c-format
+msgid "iconv: %s: cannot convert\n"
+msgstr "iconv: %s: не вдалося перетворити\n"
+
+#: src/iconv.c:162 src/iconv.c:201 src/iconv.c:320
+#, c-format
+msgid "iconv: %s: "
+msgstr "iconv: %s: "
+
+#: src/iconv.c:210
+#, c-format
+msgid "iconv: %s: I/O error\n"
+msgstr "iconv: %s: помилка В/В\n"
+
+#: src/iconv.c:304
+#, c-format
+msgid "iconv: conversion from %s unsupported\n"
+msgstr "iconv: перетворення з %s не п╕дтриму╓ться\n"
+
+#: src/iconv.c:306
+#, c-format
+msgid "iconv: conversion to %s unsupported\n"
+msgstr "iconv: перетворення у %s не п╕дтриму╓ться\n"
+
+#: src/iconv.c:308
+#, c-format
+msgid "iconv: conversion from %s to %s unsupported\n"
+msgstr "iconv: перетворення з %s у %s не п╕дтриму╓ться\n"
+
+#: src/iconv.c:312
+msgid "(stdin)"
+msgstr "(стд. вв╕д)"
+
+#: src/iconv.c:333
+msgid "iconv: I/O error\n"
+msgstr "incov: помилка В/В\n"

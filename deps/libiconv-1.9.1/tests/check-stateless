@@ -1,0 +1,33 @@
+#!/bin/sh
+# Complete check of a stateless encoding.
+# Usage: check-stateless SRCDIR CHARSET
+srcdir="$1"
+charset="$2"
+set -e
+
+# iconv in one direction.
+./table-from "$charset" > tmp-"$charset".TXT
+
+# iconv in the other direction.
+./table-to "$charset" | sort > tmp-"$charset".INVERSE.TXT
+
+# Check 1: charmap and iconv forward should be identical.
+cmp "${srcdir}"/"$charset".TXT tmp-"$charset".TXT 2> /dev/null
+
+# Check 2: the difference between the charmap and iconv backward.
+sed -e '/	.* 0x/d' < "${srcdir}"/"$charset".TXT > tmp-noprecomposed-"$charset".TXT
+if test -f "${srcdir}"/"$charset".IRREVERSIBLE.TXT; then
+  cat tmp-noprecomposed-"$charset".TXT "${srcdir}"/"$charset".IRREVERSIBLE.TXT | sort | uniq -u > tmp-orig-"$charset".INVERSE.TXT
+else
+  cp tmp-noprecomposed-"$charset".TXT tmp-orig-"$charset".INVERSE.TXT
+fi
+cmp tmp-orig-"$charset".INVERSE.TXT tmp-"$charset".INVERSE.TXT 2> /dev/null
+
+rm -f tmp-"$charset".TXT tmp-"$charset".INVERSE.TXT tmp-noprecomposed-"$charset".TXT tmp-orig-"$charset".INVERSE.TXT
+exit 0
+# For a new encoding:
+# You can create the "$charset".TXT like this:
+#   ./table-from "$charset" > "$charset".TXT
+# You can create the "$charset".IRREVERSIBLE.TXT like this:
+#   ./table-to "$charset" | sort > "$charset".INVERSE.TXT
+#   diff "$charset".TXT "$charset".INVERSE.TXT | grep '^[<>]' | sed -e 's,^. ,,' > "$charset".IRREVERSIBLE.TXT
