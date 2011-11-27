@@ -45,4 +45,9 @@ $(LIBICONV_DIR)/Makefile:
 	cd $(LIBICONV_DIR) && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings
 
 $(LIBICONV):	$(LIBICONV_DIR)/Makefile
+ifeq ($(UNAME),Darwin)
+	# see https://github.com/bnoordhuis/node-iconv/issues/19
+	$(MAKE) -C $(LIBICONV_DIR)
+else
 	$(MAKE) -C $(LIBICONV_DIR) CFLAGS+=-fPIC
+endif
