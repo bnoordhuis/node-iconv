@@ -9,7 +9,7 @@ def make(ctx, rule):
 
 	bin = 'bsd' in sys.platform and 'gmake' or 'make'
 	cmd = '%s %s EXTRA_CXXFLAGS="%s"' % (bin, rule, extra_cxxflags)
-	os.system(cmd)
+	return not os.system(cmd)
 
 def set_options(ctx):
 	pass
@@ -18,4 +18,5 @@ def configure(ctx):
 	ctx.check_tool('node_addon')
 
 def build(ctx):
-	make(ctx, 'all')
+	if not make(ctx, 'all'):
+		raise Error('Build failed.')
