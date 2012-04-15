@@ -5,16 +5,9 @@ Powerd by [GNU libiconv-1.9.1](http://ftp.gnu.org/gnu/libiconv/libiconv-1.9.1.ta
 The [libiconv-1.9.1-ja-patch-1.diff.gz](http://www2d.biglobe.ne.jp/~msyk/software/libiconv-1.9.1-patch.html) was applied.  
 It will solve the problem to Japanese.  
 
----
-in Japanese:  
-nodeでiconvを利用するためのライブラリです。  
-GNU libiconv-1.9.1をベースに[libiconv-1.9.1-ja-patch-1.diff.gz](http://www2d.biglobe.ne.jp/~msyk/software/libiconv-1.9.1-patch.html)を適用したものを利用しています。  
-これにより、libiconvで起こる様々な日本語に対する問題を回避することができます。
-
-
 ## Installing with [npm](http://npmjs.org/)
 
-	npm install iconv-jp
+	npm install iconv
 
 Note that the npm-ified version of node-iconv only
 works with node.js >= v0.3.0.
