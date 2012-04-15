@@ -8,7 +8,7 @@ ifeq ($(EXTRA_CXXFLAGS),)
 	EXTRA_CXXFLAGS = -I$(NODE_PATH)/include/node
 endif
 
-LIBICONV_DIR	=deps/libiconv
+LIBICONV_DIR	=deps/libiconv-1.9.1
 LIBICONV	=$(LIBICONV_DIR)/lib/.libs/libiconv.a
 
 CXXFLAGS	=-I$(LIBICONV_DIR)/include -I$(LIBICONV_DIR)/lib $(EXTRA_CXXFLAGS) -D_FORTIFY_SOURCE=2 -DEV_MULTIPLICITY=0 -fPIC -Wall -Wextra -ansi
@@ -51,3 +51,4 @@ ifeq ($(UNAME),Darwin)
 else
 	$(MAKE) -C $(LIBICONV_DIR) CFLAGS+=-fPIC
 endif
+

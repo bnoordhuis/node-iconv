@@ -1,0 +1,89 @@
+# translation of libiconv to Croatian.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Denis Lackovic <delacko@fly.srk.fer.hr>, 2002.
+# This file is distributed under the same license as the libiconv package.
+# Denis Lackovic <delacko@fly.srk.fer.hr>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2003-05-06 13:32+0200\n"
+"PO-Revision-Date: 2002-06-14 14:48-01\n"
+"Last-Translator: Denis Lackovic <delacko@fly.srk.fer.hr>\n"
+"Language-Team: Croatian <lokalizacija@linux.hr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n==1?0:1);\n"
+"X-Generator: TransDict server\n"
+
+#: src/iconv.c:59
+msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Uporaba: iconv [--binary] [-c] [-s] [-f izkoda] [-t ukod] [datoteka ...]"
+
+#: src/iconv.c:61
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Uporaba: iconv [-c] [-s] [-f izkoda] [-t ukod] [datoteka ...]"
+
+#: src/iconv.c:64
+msgid "or:    iconv -l"
+msgstr "ili:    iconv -l"
+
+#: src/iconv.c:74
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"Ovo je slobodni softver; pogledajte kod kako biste doznali uvjete "
+"kopiranja.  NEMA\n"
+"garancije; čak ni tvrdnje o ISPLATIVOSTI ili POGODNOSTI ZA NEKU SVRHU.\n"
+
+#: src/iconv.c:77
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Napisao %s.\n"
+
+#: src/iconv.c:114 src/iconv.c:146 src/iconv.c:196
+#, c-format
+msgid "iconv: %s: incomplete character or shift sequence\n"
+msgstr "iconv: %s: nezavršena znakovna ili shift sekvenca\n"
+
+#: src/iconv.c:140 src/iconv.c:191
+#, c-format
+msgid "iconv: %s: cannot convert\n"
+msgstr "iconv: %s: ne mogu konvertirati\n"
+
+#: src/iconv.c:162 src/iconv.c:201 src/iconv.c:320
+#, c-format
+msgid "iconv: %s: "
+msgstr "iconv: %s: "
+
+#: src/iconv.c:210
+#, c-format
+msgid "iconv: %s: I/O error\n"
+msgstr "iconv: %s: U/I greška\n"
+
+#: src/iconv.c:304
+#, c-format
+msgid "iconv: conversion from %s unsupported\n"
+msgstr "iconv: konverzija iz %s nije podržana\n"
+
+#: src/iconv.c:306
+#, c-format
+msgid "iconv: conversion to %s unsupported\n"
+msgstr "iconv: konverzija u %s nije podržana\n"
+
+#: src/iconv.c:308
+#, c-format
+msgid "iconv: conversion from %s to %s unsupported\n"
+msgstr "iconv: konverzija iz %s u %s nije podržana\n"
+
+#: src/iconv.c:312
+msgid "(stdin)"
+msgstr "(stdin)"
+
+#: src/iconv.c:333
+msgid "iconv: I/O error\n"
+msgstr "iconv: U/I greška\n"

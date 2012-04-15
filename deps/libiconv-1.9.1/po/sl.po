@@ -1,0 +1,88 @@
+# -*- mode:po; coding:iso-latin-2; -*- Slovenian messages for libiconv.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Primo¾ Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>, 2002.
+# This file is distributed under the same license as the libiconv package.
+# $Id: sl.po,v 1.2 2003/05/17 17:43:02 haible Exp $
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2003-05-06 13:32+0200\n"
+"PO-Revision-Date: 2002-08-13 15:09+0200\n"
+"Last-Translator: Primo¾ Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>\n"
+"Language-Team: Slovenian <translation-team-sl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/iconv.c:59
+msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Uporaba: iconv [--binary] [-c] [-s] [-f vh_nabor] [-t izh_nabor] "
+"[datoteka ...]"
+
+#: src/iconv.c:61
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Uporaba: iconv [-c] [-s] [-f vh_nabor] [-t izh_nabor] [datoteka ...]<"
+
+#: src/iconv.c:64
+msgid "or:    iconv -l"
+msgstr "ali:   iconv -l"
+
+#: src/iconv.c:74
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"To je prost program; pogoji, pod katerimi ga lahko razmno¾ujete in\n"
+"raz¹irjate, so navedeni v izvorni kodi. Za program ni NOBENEGA jamstva,\n"
+"niti jamstev USTREZNOSTI ZA PRODAJO ali PRIMERNOSTI ZA UPORABO.\n"
+
+#: src/iconv.c:77
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Avtor %s.\n"
+
+#: src/iconv.c:114 src/iconv.c:146 src/iconv.c:196
+#, c-format
+msgid "iconv: %s: incomplete character or shift sequence\n"
+msgstr "iconv: %s: nepopolni znak ali pomièno zaporedje\n"
+
+#: src/iconv.c:140 src/iconv.c:191
+#, c-format
+msgid "iconv: %s: cannot convert\n"
+msgstr "iconv: %s: pretvorba ni mogoèa\n"
+
+#: src/iconv.c:162 src/iconv.c:201 src/iconv.c:320
+#, c-format
+msgid "iconv: %s: "
+msgstr "iconv: %s: "
+
+#: src/iconv.c:210
+#, c-format
+msgid "iconv: %s: I/O error\n"
+msgstr "iconv: %s: V/I napaka\n"
+
+#: src/iconv.c:304
+#, c-format
+msgid "iconv: conversion from %s unsupported\n"
+msgstr "iconv: pretvorba iz nabora %s ni podprta\n"
+
+#: src/iconv.c:306
+#, c-format
+msgid "iconv: conversion to %s unsupported\n"
+msgstr "iconv: pretvorba v nabor %s ni podprta\n"
+
+#: src/iconv.c:308
+#, c-format
+msgid "iconv: conversion from %s to %s unsupported\n"
+msgstr "iconv: pretvorba iz nabora %s v nabor %s ni podprta\n"
+
+#: src/iconv.c:312
+msgid "(stdin)"
+msgstr "(stdin)"
+
+#: src/iconv.c:333
+msgid "iconv: I/O error\n"
+msgstr "iconv: V/I napaka\n"

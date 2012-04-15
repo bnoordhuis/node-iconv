@@ -1,0 +1,86 @@
+# Italian localization for libiconv.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Marco Parrone <marc0@autistici.org>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2003-05-06 13:32+0200\n"
+"PO-Revision-Date: 2002-12-02 23:06+0100\n"
+"Last-Translator: Marco Parrone <marc0@autistici.org>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/iconv.c:59
+msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Uso: iconv [--binary] [-c] [-s] [-f dacodice] [-t acodice] [file ...]"
+
+#: src/iconv.c:61
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Uso: iconv [-c] [-s] [-f dacodice] [-t acodice] [file ...]"
+
+#: src/iconv.c:64
+msgid "or:    iconv -l"
+msgstr "o:   iconv -l"
+
+#: src/iconv.c:74
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"Questo è software libero; si vedano i sorgenti per le condizioni di copia.\n"
+"NON c'è alcuna garanzia; neanche di COMMERCIABILITÀ o APPLICABILITÀ PER UNO\n"
+"SCOPO PARTICOLARE.\n"
+
+#: src/iconv.c:77
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Scritto da %s.\n"
+
+#: src/iconv.c:114 src/iconv.c:146 src/iconv.c:196
+#, c-format
+msgid "iconv: %s: incomplete character or shift sequence\n"
+msgstr "iconv: %s: carattere o sequenza di modificatori incompleta\n"
+
+#: src/iconv.c:140 src/iconv.c:191
+#, c-format
+msgid "iconv: %s: cannot convert\n"
+msgstr "iconv: %s: non è possibile convertire\n"
+
+#: src/iconv.c:162 src/iconv.c:201 src/iconv.c:320
+#, c-format
+msgid "iconv: %s: "
+msgstr "iconv: %s: "
+
+#: src/iconv.c:210
+#, c-format
+msgid "iconv: %s: I/O error\n"
+msgstr "iconv: %s: errore di I/O\n"
+
+#: src/iconv.c:304
+#, c-format
+msgid "iconv: conversion from %s unsupported\n"
+msgstr "iconv: la conversione da %s non è supportata\n"
+
+#: src/iconv.c:306
+#, c-format
+msgid "iconv: conversion to %s unsupported\n"
+msgstr "iconv: la conversione verso %s non è supportata\n"
+
+#: src/iconv.c:308
+#, c-format
+msgid "iconv: conversion from %s to %s unsupported\n"
+msgstr "iconv: la conversione da %s verso %s non è supportata\n"
+
+#: src/iconv.c:312
+msgid "(stdin)"
+msgstr "(stdin)"
+
+#: src/iconv.c:333
+msgid "iconv: I/O error\n"
+msgstr "iconv: errore di I/O\n"
