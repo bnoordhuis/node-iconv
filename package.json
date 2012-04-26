@@ -4,11 +4,6 @@
 	"version": "1.1.3",
 	"description": "Text recoding in JavaScript for fun and profit!",
 	"homepage": "https://github.com/bnoordhuis/node-iconv",
-	"author": {
-		"name": "Ben Noordhuis",
-		"email": "info@bnoordhuis.nl",
-		"url": "http://bnoordhuis.nl/"
-	},
 	"scripts": {
 		"preinstall": "node-waf configure",
 		"install": "node-waf build install"

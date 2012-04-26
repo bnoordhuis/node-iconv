@@ -1,0 +1,86 @@
+# Galician translation of libiconv
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Jacobo Tarrio <jtarrio@trasno.net>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2003-05-06 13:32+0200\n"
+"PO-Revision-Date: 2002-05-30 12:06+0200\n"
+"Last-Translator: Jacobo Tarrio <jtarrio@trasno.net>\n"
+"Language-Team: Galician <gpul-traduccion@ceu.fi.udc.es>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/iconv.c:59
+msgid "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr ""
+"Emprego: iconv [--binary] [-c] [-s] [-f decodigo] [-t acodigo] [ficheiro ...]"
+
+#: src/iconv.c:61
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Emprego: iconv [-c] [-s] [-f decodigo] [-t acodigo] [ficheiro ...]"
+
+#: src/iconv.c:64
+msgid "or:    iconv -l"
+msgstr "ou:      iconv -l"
+
+#: src/iconv.c:74
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"Isto é software libre; vexa o código fonte polas condicións de copia. NON "
+"hai\n"
+"garantía; nin sequera de COMERCIABILIDADE ou APTITUDE PARA UN FIN "
+"DETERMINADO.\n"
+
+#: src/iconv.c:77
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Escrito por %s.\n"
+
+#: src/iconv.c:114 src/iconv.c:146 src/iconv.c:196
+#, c-format
+msgid "iconv: %s: incomplete character or shift sequence\n"
+msgstr "iconv: %s: secuencia de caracteres ou desprazamentos incompleta\n"
+
+#: src/iconv.c:140 src/iconv.c:191
+#, c-format
+msgid "iconv: %s: cannot convert\n"
+msgstr "iconv: %s: non se pode converter\n"
+
+#: src/iconv.c:162 src/iconv.c:201 src/iconv.c:320
+#, c-format
+msgid "iconv: %s: "
+msgstr "iconv: %s: "
+
+#: src/iconv.c:210
+#, c-format
+msgid "iconv: %s: I/O error\n"
+msgstr "iconv: %s: erro de E/S\n"
+
+#: src/iconv.c:304
+#, c-format
+msgid "iconv: conversion from %s unsupported\n"
+msgstr "iconv: conversión de %s non soportada\n"
+
+#: src/iconv.c:306
+#, c-format
+msgid "iconv: conversion to %s unsupported\n"
+msgstr "iconv: conversión a %s non soportada\n"
+
+#: src/iconv.c:308
+#, c-format
+msgid "iconv: conversion from %s to %s unsupported\n"
+msgstr "iconv: conversión de %s a %s non soportada\n"
+
+#: src/iconv.c:312
+msgid "(stdin)"
+msgstr "(entrada estándar)"
+
+#: src/iconv.c:333
+msgid "iconv: I/O error\n"
+msgstr "iconv: erro de E/S\n"

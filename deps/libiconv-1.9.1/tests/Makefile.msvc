@@ -1,0 +1,217 @@
+# -*- Makefile -*- for libiconv/tests
+
+#### Start of system configuration section. ####
+
+# Flags that can be set on the nmake command line:
+#   DLL=1     for compiling a .dll with a stub .lib (default is a static .lib)
+#             Note that this works only with MFLAGS=-MD.
+#   MFLAGS={-ML|-MT|-MD} for defining the compilation model
+#     MFLAGS=-ML (the default)  Single-threaded, statically linked - libc.lib
+#     MFLAGS=-MT                Multi-threaded, statically linked  - libcmt.lib
+#     MFLAGS=-MD                Multi-threaded, dynamically linked - msvcrt.lib
+#   DEBUG=1   for compiling with debugging information
+!if !defined(DLL)
+DLL=0
+!endif
+!if !defined(DEBUG)
+DEBUG=0
+!endif
+!if !defined(MFLAGS)
+!if !$(DLL)
+MFLAGS=
+!else
+MFLAGS=-MD
+!endif
+!endif
+
+!if $(DEBUG)
+OPTIMFLAGS = -Od -Z7
+DEBUGFLAGS = -Z7
+!else
+# Some people prefer -O2 -G6 instead of -O1, but -O2 is not reliable in MSVC5.
+OPTIMFLAGS = -D_NDEBUG -O1
+DEBUGFLAGS =
+!endif
+
+# Directories used by "make":
+srcdir = .
+
+# Programs used by "make":
+CC = cl
+CFLAGS = $(MFLAGS) -W1 $(OPTIMFLAGS)
+INCLUDES = -I. -I..\include -I..\lib
+RM = -del
+
+#### End of system configuration section. ####
+
+SHELL = /bin/sh
+
+all :
+
+install : all
+
+installdirs :
+
+uninstall :
+
+check : all table-from.exe table-to.exe ../src/iconv.exe uniq-u.exe
+	$(srcdir)\check-stateless.bat $(srcdir) ASCII
+#	/* General multi-byte encodings */
+	$(CC) $(CFLAGS) $(srcdir)\genutf8.c -Fegenutf8.exe
+	$(RM) genutf8.obj
+	.\genutf8 > UTF-8.TXT
+	$(srcdir)\check-stateless.bat . UTF-8
+	$(RM) genutf8.exe
+	$(RM) UTF-8.TXT
+	$(srcdir)\check-stateful.bat $(srcdir) UCS-2BE
+	$(srcdir)\check-stateful.bat $(srcdir) UCS-2LE
+	$(srcdir)\check-stateful.bat $(srcdir) UCS-4BE
+	$(srcdir)\check-stateful.bat $(srcdir) UCS-4LE
+	$(srcdir)\check-stateful.bat $(srcdir) UTF-16
+	$(srcdir)\check-stateful.bat $(srcdir) UTF-16BE
+	$(srcdir)\check-stateful.bat $(srcdir) UTF-16LE
+	$(srcdir)\check-stateful.bat $(srcdir) UTF-32
+	$(srcdir)\check-stateful.bat $(srcdir) UTF-32BE
+	$(srcdir)\check-stateful.bat $(srcdir) UTF-32LE
+	$(srcdir)\check-stateful.bat $(srcdir) UTF-7
+#	/* 8-bit encodings */
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-1
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-2
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-3
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-4
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-5
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-6
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-7
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-8
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-9
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-10
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-13
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-14
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-15
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-8859-16
+	$(srcdir)\check-stateless.bat $(srcdir) KOI8-R
+	$(srcdir)\check-stateless.bat $(srcdir) KOI8-U
+	$(srcdir)\check-stateless.bat $(srcdir) KOI8-RU
+	$(srcdir)\check-stateless.bat $(srcdir) CP1250
+	$(srcdir)\check-stateless.bat $(srcdir) CP1251
+	$(srcdir)\check-stateless.bat $(srcdir) CP1252
+	$(srcdir)\check-stateless.bat $(srcdir) CP1253
+	$(srcdir)\check-stateless.bat $(srcdir) CP1254
+	$(srcdir)\check-stateless.bat $(srcdir) CP1255
+	$(srcdir)\check-stateful.bat $(srcdir) CP1255
+	$(srcdir)\check-stateless.bat $(srcdir) CP1256
+	$(srcdir)\check-stateless.bat $(srcdir) CP1257
+	$(srcdir)\check-stateless.bat $(srcdir) CP1258
+	$(srcdir)\check-stateful.bat $(srcdir) CP1258
+	$(srcdir)\check-stateless.bat $(srcdir) CP850
+	$(srcdir)\check-stateless.bat $(srcdir) CP862
+	$(srcdir)\check-stateless.bat $(srcdir) CP866
+	$(srcdir)\check-stateless.bat $(srcdir) MacRoman
+	$(srcdir)\check-stateless.bat $(srcdir) MacCentralEurope
+	$(srcdir)\check-stateless.bat $(srcdir) MacIceland
+	$(srcdir)\check-stateless.bat $(srcdir) MacCroatian
+	$(srcdir)\check-stateless.bat $(srcdir) MacRomania
+	$(srcdir)\check-stateless.bat $(srcdir) MacCyrillic
+	$(srcdir)\check-stateless.bat $(srcdir) MacUkraine
+	$(srcdir)\check-stateless.bat $(srcdir) MacGreek
+	$(srcdir)\check-stateless.bat $(srcdir) MacTurkish
+	$(srcdir)\check-stateless.bat $(srcdir) MacHebrew
+	$(srcdir)\check-stateless.bat $(srcdir) MacArabic
+	$(srcdir)\check-stateless.bat $(srcdir) MacThai
+	$(srcdir)\check-stateless.bat $(srcdir) HP-ROMAN8
+	$(srcdir)\check-stateless.bat $(srcdir) NEXTSTEP
+	$(srcdir)\check-stateless.bat $(srcdir) ARMSCII-8
+	$(srcdir)\check-stateless.bat $(srcdir) Georgian-Academy
+	$(srcdir)\check-stateless.bat $(srcdir) Georgian-PS
+	$(srcdir)\check-stateless.bat $(srcdir) KOI8-T
+	$(srcdir)\check-stateless.bat $(srcdir) MuleLao-1
+	$(srcdir)\check-stateless.bat $(srcdir) CP1133
+	$(srcdir)\check-stateless.bat $(srcdir) TIS-620
+	$(srcdir)\check-stateless.bat $(srcdir) CP874
+	$(srcdir)\check-stateless.bat $(srcdir) VISCII
+	$(srcdir)\check-stateless.bat $(srcdir) TCVN
+	$(srcdir)\check-stateful.bat $(srcdir) TCVN
+#	/* CJK character sets */
+	$(srcdir)\check-stateless.bat $(srcdir) ISO646-JP
+	$(srcdir)\check-stateless.bat $(srcdir) JIS_X0201
+#	$(srcdir)\check-stateless.bat $(srcdir) JIS_X0208 # redundant, see EUC-JP
+#	$(srcdir)\check-stateless.bat $(srcdir) JIS_X0212 # redundant, see EUC-JP
+	$(srcdir)\check-stateless.bat $(srcdir) ISO646-CN
+#	$(srcdir)\check-stateless.bat $(srcdir) GB_2312-80 # redundant, see EUC-CN
+	$(srcdir)\check-stateless.bat $(srcdir) ISO-IR-165
+#	$(srcdir)\check-stateless.bat $(srcdir) KSC_5601 # redundant, see EUC-KR
+#	/* CJK encodings */
+	$(srcdir)\check-stateless.bat $(srcdir) EUC-JP
+	$(srcdir)\check-stateless.bat $(srcdir) EUCJP-MS
+	$(srcdir)\check-stateless.bat $(srcdir) SHIFT_JIS
+	$(srcdir)\check-stateless.bat $(srcdir) CP932
+	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-JP
+	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-JP-2
+	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-JP-1
+	$(srcdir)\check-stateless.bat $(srcdir) EUC-CN
+	$(srcdir)\check-stateless.bat $(srcdir) GBK
+	$(srcdir)\check-stateless.bat $(srcdir) GB18030
+	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-CN
+	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-CN-EXT
+	$(srcdir)\check-stateful.bat $(srcdir) HZ
+	$(srcdir)\check-stateless.bat $(srcdir) EUC-TW
+	$(srcdir)\check-stateless.bat $(srcdir) BIG5
+	$(srcdir)\check-stateless.bat $(srcdir) CP950
+	$(srcdir)\check-stateless.bat $(srcdir) BIG5-HKSCS
+	$(srcdir)\check-stateless.bat $(srcdir) EUC-KR
+	$(srcdir)\check-stateless.bat $(srcdir) CP949
+	$(srcdir)\check-stateless.bat $(srcdir) JOHAB
+	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-KR
+#	/* DOS encodings */
+	$(srcdir)\check-stateless.bat $(srcdir) CP437
+	$(srcdir)\check-stateless.bat $(srcdir) CP737
+	$(srcdir)\check-stateless.bat $(srcdir) CP775
+	$(srcdir)\check-stateless.bat $(srcdir) CP852
+	$(srcdir)\check-stateless.bat $(srcdir) CP853
+	$(srcdir)\check-stateless.bat $(srcdir) CP855
+	$(srcdir)\check-stateless.bat $(srcdir) CP857
+	$(srcdir)\check-stateless.bat $(srcdir) CP858
+	$(srcdir)\check-stateless.bat $(srcdir) CP860
+	$(srcdir)\check-stateless.bat $(srcdir) CP861
+	$(srcdir)\check-stateless.bat $(srcdir) CP863
+	$(srcdir)\check-stateless.bat $(srcdir) CP864
+	$(srcdir)\check-stateless.bat $(srcdir) CP865
+	$(srcdir)\check-stateless.bat $(srcdir) CP869
+	$(srcdir)\check-stateless.bat $(srcdir) CP1125
+#	/* transliteration */
+	$(srcdir)\check-translit.bat $(srcdir) Quotes UTF-8 ISO-8859-1
+	$(srcdir)\check-translit.bat $(srcdir) Quotes UTF-8 ASCII
+	$(srcdir)\check-translit.bat $(srcdir) Translit1 ISO-8859-1 ASCII
+
+table-from.exe : $(srcdir)/table-from.c ../lib/iconv.lib
+	$(CC) $(INCLUDES) $(CFLAGS) $(srcdir)/table-from.c ../lib/iconv.lib -Fetable-from.exe
+	$(RM) table-from.obj
+!if $(DLL)
+	copy ..\lib\iconv.dll iconv.dll
+!endif
+
+table-to.exe : $(srcdir)/table-to.c ../lib/iconv.lib
+	$(CC) $(INCLUDES) $(CFLAGS) $(srcdir)/table-to.c ../lib/iconv.lib -Fetable-to.exe
+	$(RM) table-to.obj
+!if $(DLL)
+	copy ..\lib\iconv.dll iconv.dll
+!endif
+
+uniq-u.exe : $(srcdir)/uniq-u.c
+	$(CC) $(CFLAGS) $(srcdir)/uniq-u.c -Feuniq-u.exe
+	$(RM) uniq-u.obj
+
+mostlyclean : clean
+
+clean : force
+	$(RM) *.obj
+	$(RM) *.dll
+	$(RM) *.exe
+	$(RM) tmp*
+	$(RM) UTF-8.TXT
+
+distclean : clean
+
+maintainer-clean : distclean
+
+force :

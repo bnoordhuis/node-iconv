@@ -1,0 +1,143 @@
+dnl Copyright (C) 1999-2003 Free Software Foundation, Inc.
+dnl This file is part of the GNU LIBICONV Library.
+dnl
+dnl The GNU LIBICONV Library is free software; you can redistribute it
+dnl and/or modify it under the terms of the GNU Library General Public
+dnl License as published by the Free Software Foundation; either version 2
+dnl of the License, or (at your option) any later version.
+dnl
+dnl The GNU LIBICONV Library is distributed in the hope that it will be
+dnl useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+dnl Library General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU Library General Public
+dnl License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+dnl If not, write to the Free Software Foundation, Inc., 59 Temple Place -
+dnl Suite 330, Boston, MA 02111-1307, USA.  */
+
+AC_PREREQ(2.52)
+AC_INIT
+AC_CONFIG_SRCDIR(lib/iconv.c)
+AC_CONFIG_AUX_DIR(autoconf)
+AM_INIT_AUTOMAKE(libiconv, 1.9)
+AC_CONFIG_HEADERS(config.h lib/config.h)
+AC_PROG_MAKE_SET
+
+dnl           installation directories
+
+dnl Prefer modern Filesystem Hierarchy Standard over antiquated GNU standards.
+test "$mandir" != '${prefix}/man' || mandir='${datadir}/man'
+
+dnl           checks for basic programs
+
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_GCC_TRADITIONAL
+AC_PROG_INSTALL
+
+dnl           check for host type
+
+AC_CANONICAL_HOST
+
+dnl           checks for installer options
+
+AC_RELOCATABLE
+
+AC_ARG_ENABLE([extra-encodings],
+  [AC_HELP_STRING([--enable-extra-encodings],
+                  [add support for a few rarely used encodings])],
+  [AC_DEFINE([ENABLE_EXTRA], 1,
+             [Define to 1 to enable a few rarely used encodings.])
+   USE_EXTRA_ENCODINGS=yes],
+  [USE_EXTRA_ENCODINGS=no])
+AC_SUBST([USE_EXTRA_ENCODINGS])
+
+dnl           checks for programs
+
+AC_PROG_RANLIB
+CL_PROG_CP
+CL_PROG_LN
+AC_PROG_LN_S
+
+dnl           checks for UNIX variants that set DEFS
+
+AC_GNU_SOURCE
+AC_AIX
+AC_MINIX
+AC_ISC_POSIX
+
+dnl           checks for compiler output filename suffixes
+
+AC_OBJEXT
+AC_EXEEXT
+
+dnl           check for build configuration
+
+AC_DISABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
+AC_PROG_LIBTOOL
+AM_ICONV
+AM_GNU_GETTEXT([external])
+
+dnl           checks for header files
+
+AC_HEADER_STDC
+AC_CHECK_HEADERS([locale.h stddef.h stdlib.h string.h])
+
+dnl           checks for typedefs
+
+AC_MBSTATE_T
+
+dnl           checks for functions and declarations
+
+if test "$am_cv_func_iconv" = yes -a -z "$am_cv_proto_iconv_arg1"; then
+  ICONV_CONST=""
+else
+  ICONV_CONST="const"
+fi
+AC_SUBST(ICONV_CONST)
+
+AC_CHECK_FUNCS([getc_unlocked mbrtowc wcrtomb mbsinit setlocale])
+AC_REPLACE_FUNCS([memmove])
+
+AM_LANGINFO_CODESET
+
+AC_EILSEQ
+
+CL_WORDS_LITTLEENDIAN
+
+gl_FUNC_ALLOCA
+gl_CANONICALIZE
+jm_FUNC_GLIBC_UNLOCKED_IO
+gt_FUNC_ERROR_AT_LINE
+gl_PATHMAX
+gt_FUNC_SETENV
+gt_STDBOOL_H
+gl_FUNC_STRERROR
+gl_XREADLINK
+
+dnl           check whether OS supports plug libraries
+
+OS=""
+case "$host_os" in
+  linux*)   OS="linux" ;;
+  solaris*) OS="solaris" ;;
+  osf*)     OS="osf" ;;
+esac
+if test -n "$OS"; then
+  AC_SUBST(OS)
+  AC_SUBST(GCC)
+  PLUGLIB="libiconv_plug.so"
+else
+  PLUGLIB=""
+fi
+AC_SUBST(PLUGLIB)
+
+if test -d "${srcdir}/tests"; then
+  TESTS_MAKEFILE=tests/Makefile
+else
+  TESTS_MAKEFILE=""
+fi
+AC_CONFIG_SUBDIRS(libcharset)
+AC_OUTPUT(Makefile lib/Makefile srclib/Makefile src/Makefile po/Makefile.in man/Makefile ${TESTS_MAKEFILE} include/iconv.h)
