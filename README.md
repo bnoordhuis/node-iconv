@@ -2,6 +2,8 @@
 
 Text recoding in JavaScript for fun and profit!
 
+Note that node-iconv does not support Windows.
+
 ## Installing with [npm](http://npmjs.org/)
 
 	npm install iconv
