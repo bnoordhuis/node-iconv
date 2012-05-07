@@ -1,5 +1,2 @@
-.lock-wscript
-.project
 build/
-*.o
-*.node
+node_modules/
