@@ -1,7 +1,7 @@
 assert = require('assert');
 constants = require('constants');
 
-Iconv = require('iconv').Iconv;
+Iconv = require('./build/Release/iconv').Iconv;
 Buffer = require('buffer').Buffer;
 SlowBuffer = require('buffer').SlowBuffer;
 
