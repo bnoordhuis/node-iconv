@@ -6,7 +6,6 @@
 #include <node_buffer.h>
 
 #include <stdlib.h>
-#include <strings.h>  // strcasecmp + strncasecmp
 #include <string.h>
 #include <errno.h>
 
@@ -187,10 +186,15 @@ Handle<Value> Iconv::Convert(const Arguments& args) {
 
 // workaround for shortcoming in libiconv: "UTF-8" is recognized but "UTF8" isn't
 Handle<String> FixEncodingName(Handle<String> name) {
-  String::AsciiValue s(name);
+  String::AsciiValue str(name);
+  const char* s = *str;
 
-  if (!strncasecmp(*s, "UTF", 3) && (*s)[3] != '-') {
-    std::string rv = std::string("UTF-") + (*s + 3);
+  if ((s[0] == 'U' || s[0] == 'u') &&
+      (s[1] == 'T' || s[1] == 't') &&
+      (s[2] == 'F' || s[2] == 'f') &&
+      (s[3] != '-'))
+  {
+    std::string rv = std::string("UTF-") + &s[3];
     return String::New(rv.c_str());
   }
 
