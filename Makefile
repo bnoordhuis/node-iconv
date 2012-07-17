@@ -37,7 +37,7 @@ clean:
 	rm -f iconv.o iconv.node
 
 distclean:	clean
-	$(MAKE) -C $(LIBICONV_DIR) distclean
+	[ ! -f $(LIBICONV_DIR)/Makefile ] || $(MAKE) -C $(LIBICONV_DIR) distclean
 
 iconv.o:	iconv.cc
 
