@@ -234,5 +234,5 @@ void Iconv::Initialize(Handle<Object>& target) {
 extern "C" void init(Handle<Object> target) {
   Iconv::Initialize(target);
 }
-
+NODE_MODULE(iconv, init);
 } // namespace

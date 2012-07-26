@@ -23,23 +23,23 @@ debug:	build
 release:	CXXFLAGS += $(CXXFLAGS_RELEASE)
 release:	build
 
-build:	$(LIBICONV) iconv.o
+build:	$(LIBICONV) binding.o
 ifeq ($(UNAME),Darwin)
-	$(CXX) -flat_namespace -undefined suppress -shared -o iconv.node iconv.o $(LIBICONV)
+	$(CXX) -flat_namespace -undefined suppress -shared -o iconv.node binding.o $(LIBICONV)
 else
-	$(CXX) -shared -o iconv.node iconv.o $(LIBICONV)
+	$(CXX) -shared -o iconv.node binding.o $(LIBICONV)
 endif
 
 install:	all
 	mkdir -p $(HOME)/.node_libraries && cp iconv.node $(HOME)/.node_libraries
 
 clean:
-	rm -f iconv.o iconv.node
+	rm -f binding.o iconv.node
 
 distclean:	clean
 	[ ! -f $(LIBICONV_DIR)/Makefile ] || $(MAKE) -C $(LIBICONV_DIR) distclean
 
-iconv.o:	iconv.cc
+binding.o:	binding.cc
 
 $(LIBICONV_DIR)/Makefile:
 	cd $(LIBICONV_DIR) && ./configure --disable-shared --enable-static --enable-relocatable --enable-extra-encodings
