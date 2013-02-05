@@ -33,8 +33,19 @@ Encode from one character encoding to another:
     assert.equals(buffer.inspect(), buffer2.inspect());
     // do something useful with the buffers
 
-Look at test.js for more examples and node-iconv's behaviour under error
-conditions.
+A simple ISO-8859-1 to UTF-8 conversion TCP service:
+
+    var net = require('net');
+    var Iconv = require('iconv').Iconv;
+    var server = net.createServer(function(conn) {
+      var iconv = new Iconv('latin1', 'utf-8');
+      conn.pipe(iconv).pipe(conn);
+    });
+    server.listen(8000);
+    console.log('Listening on tcp://0.0.0.0:8000/');
+
+Look at test/test-basic.js and test/test-stream.js for more examples
+and node-iconv's behaviour under error conditions.
 
 ## Notes
 

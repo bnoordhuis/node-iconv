@@ -17,7 +17,7 @@
       'sources': [
         'deps/libiconv/libcharset/lib/localcharset.c',
         'deps/libiconv/lib/iconv.c',
-        'binding.cc'
+        'src/iconv.cc'
       ],
       'conditions': [
         ['OS == "win"', {
