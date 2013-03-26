@@ -3,7 +3,7 @@
 Text recoding in JavaScript for fun and profit!
 
 node-iconv may or may not work on Windows. Please try it and report any issues
-you have.
+you have. (Python required)
 
 ## Installing with [npm](http://npmjs.org/)
 
