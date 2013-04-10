@@ -24,7 +24,7 @@
 
 #include "node_version.h"
 
-#if 1 // NODE_MAJOR_VERSION == 0 && NODE_MINOR_VERSION <= 8
+#if NODE_MAJOR_VERSION == 0 && NODE_MINOR_VERSION <= 10
 # define GetAlignedPointerFromInternalField GetPointerFromInternalField
 # define SetAlignedPointerInInternalField SetPointerInInternalField
 #endif
