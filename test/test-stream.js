@@ -66,3 +66,14 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
     });
   });
 })();
+
+(function() {
+  var ok = false;
+  var stream = Iconv('utf-8', 'utf-7');
+  stream.on('data', function(s) {
+    assert.equal(s, '+AOc-x+AOc-');
+    ok = true;
+  });
+  stream.write('çxç');  // String should get converted to buffer.
+  assert(ok);
+})();
