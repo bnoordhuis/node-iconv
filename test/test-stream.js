@@ -77,3 +77,39 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
   stream.write('çxç');  // String should get converted to buffer.
   assert(ok);
 })();
+
+(function() {
+  var num_data_events = 0;
+  var num_end_events = 0;
+  var stream = Iconv('utf-8', 'ascii');
+  stream.on('data', function(s) {
+    assert.equal(num_data_events, 0);
+    assert.equal(num_end_events, 0);
+    assert.equal(s, 'test');
+    num_data_events += 1;
+  });
+  stream.on('end', function() {
+    assert.equal(num_data_events, 1);
+    assert.equal(num_end_events, 0);
+    num_end_events += 1;
+  });
+  stream.end('test');
+  assert.equal(num_data_events, 1);
+  assert.equal(num_end_events, 1);
+})();
+
+(function() {
+  var stream = Iconv('utf-8', 'ascii//translit');
+  var ok = false;
+  stream.on('data', function() {
+    assert.equal(ok, false);
+  });
+  stream.on('end', function() {
+    assert.equal(ok, false);
+    ok = true;
+  });
+  fs.createReadStream(__filename).pipe(stream);
+  process.on('exit', function() {
+    assert(ok);
+  });
+})();
