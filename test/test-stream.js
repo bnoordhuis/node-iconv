@@ -113,3 +113,35 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
     assert(ok);
   });
 })();
+
+(function() {
+  var ok = false;
+  var stream = Iconv('utf-8', 'iso-8859-1');
+  stream.on('data', function(buf) {
+    assert.equal(buf.length, 1);
+    assert.equal(buf[0], 0xA9);
+    ok = true;
+  });
+  stream.write(Buffer([0xC2]));
+  stream.write(Buffer([0xA9]));
+  assert(ok);
+})();
+
+(function() {
+  var ok = false;
+  var stream = Iconv('utf-8', 'iso-8859-1');
+  stream.once('data', step1);
+  function step1(buf) {
+    assert.equal(buf.length, 1);
+    assert.equal(buf[0], 0xAE);
+    stream.once('data', step2);
+  }
+  function step2(buf) {
+    assert.equal(buf.length, 1);
+    assert.equal(buf[0], 0xA9);
+    ok = true;
+  }
+  stream.write(Buffer([0xC2,0xAE,0xC2]));
+  stream.write(Buffer([0xA9]));
+  assert(ok);
+})();
