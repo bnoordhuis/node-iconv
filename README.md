@@ -61,9 +61,9 @@ You must accumulate the small buffers into a single large buffer before
 performing the conversion. If you don't, you will get unexpected results with
 multi-byte and stateful character sets like UTF-8 and ISO-2022-JP.
 
-[node-buffertools](http://github.com/bnoordhuis/node-buffertools) lets you
-concatenate buffers painlessly. See the description of `buffertools.concat()`
-for details.
+The above only applies when you are calling `Iconv#convert()` yourself.
+If you use the streaming interface, node-iconv takes care of stitching
+partial character sequences together again.
 
 ### Dealing with untranslatable characters
 
