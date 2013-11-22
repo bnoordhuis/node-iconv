@@ -112,3 +112,6 @@ assert.throws(function() { iconv.convert('ça va が'); }); // untranslatable
 
 iconv = new Iconv('utf-8', 'ascii//translit//ignore');
 assert.equal(iconv.convert('ça va が').toString(), 'ca va ');
+
+iconv = Iconv('utf-8', 'iso-8859-1');
+assert.equal(iconv.convert('b2s=', 'base64').toString(), 'ok');

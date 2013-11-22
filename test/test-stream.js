@@ -145,3 +145,25 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
   stream.write(Buffer([0xA9]));
   assert(ok);
 })();
+
+(function() {
+  var ok = false;
+  var stream = Iconv('utf-8', 'iso-8859-1');
+  stream.once('data', function(buf) {
+    assert.equal(buf.toString(), 'ok');
+    ok = true;
+  });
+  stream.write('b2s=', 'base64');
+  assert(ok);
+})();
+
+(function() {
+  var ok = false;
+  var stream = Iconv('utf-8', 'iso-8859-1');
+  stream.once('data', function(buf) {
+    assert.equal(buf.toString(), 'ok');
+    ok = true;
+  });
+  stream.end('b2s=', 'base64');
+  assert(ok);
+})();
