@@ -29,7 +29,10 @@
             '-Wno-unused-function',
             '-Wno-unused-parameter',
             '-Wno-unused-variable',
-          ],
+            '-Wno-missing-field-initializers',
+            '-Wno-type-limits',
+            '-Wno-sign-compare',
+	   ],
         }],
       ],
     }
