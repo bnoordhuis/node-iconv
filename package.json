@@ -16,5 +16,8 @@
     "node": ">=0.8.0"
   },
   "license": "ISC",
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "nan": "~0.7.0"
+  }
 }

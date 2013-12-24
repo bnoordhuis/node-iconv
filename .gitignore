@@ -1,5 +1,6 @@
+*.node
+*.o
 .lock-wscript
 .project
-build/
-*.o
-*.node
+/build/
+/node_modules/
