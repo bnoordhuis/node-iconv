@@ -13,6 +13,7 @@
       'include_dirs': [
         'deps/libiconv/srclib',
         'support',
+        '<!(node -e "require(\'nan\')")',
       ],
       'sources': [
         'deps/libiconv/libcharset/lib/localcharset.c',

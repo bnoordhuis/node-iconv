@@ -15,29 +15,19 @@
  */
 
 #include "iconv.h"
-#include "node.h"
-#include "v8.h"
+#include "nan.h"
 
 #include <errno.h>
 #include <assert.h>
 #include <stdint.h>
 
-#include "node_version.h"
-
-#if NODE_MAJOR_VERSION == 0 && NODE_MINOR_VERSION <= 10
-# define GetAlignedPointerFromInternalField GetPointerFromInternalField
-# define SetAlignedPointerInInternalField SetPointerInInternalField
-#endif
-
 namespace
 {
 
-using v8::Arguments;
 using v8::Array;
 using v8::Boolean;
 using v8::FunctionTemplate;
 using v8::Handle;
-using v8::HandleScope;
 using v8::Integer;
 using v8::Local;
 using v8::Null;
@@ -64,10 +54,10 @@ struct Iconv
 
   static void Initialize(Handle<Object> obj)
   {
-    HandleScope scope;
+    NanScope();
     Local<ObjectTemplate> t = ObjectTemplate::New();
-    object_template = Persistent<ObjectTemplate>::New(t);
-    object_template->SetInternalFieldCount(1);
+    t->SetInternalFieldCount(1);
+    NanAssignPersistent(ObjectTemplate, object_template, t);
     obj->Set(String::New("make"),
              FunctionTemplate::New(Make)->GetFunction());
     obj->Set(String::New("convert"),
@@ -79,34 +69,34 @@ struct Iconv
 #undef EXPORT_ERRNO
   }
 
-  static void WeakCallback(Persistent<Value> val, void* arg)
+  static NAN_WEAK_CALLBACK(Iconv*, WeakCallback)
   {
-    delete static_cast<Iconv*>(arg);
-    val.Dispose();
-    val.Clear();
+    delete NAN_WEAK_CALLBACK_DATA(Iconv*);
+    NAN_WEAK_CALLBACK_OBJECT.Dispose();
+    NAN_WEAK_CALLBACK_OBJECT.Clear();
   }
 
-  static Handle<Value> Make(const Arguments& args)
+  static NAN_METHOD(Make)
   {
-    HandleScope scope;
+    NanScope();
     String::AsciiValue from_encoding(args[0]);
     String::AsciiValue to_encoding(args[1]);
     iconv_t conv = iconv_open(*to_encoding, *from_encoding);
-    if (conv == reinterpret_cast<iconv_t>(-1)) return Null();
+    if (conv == reinterpret_cast<iconv_t>(-1)) NanReturnValue(Null());
     Iconv* iv = new Iconv(conv);
-    Local<Object> t = object_template->NewInstance();
-    Persistent<Object> obj = Persistent<Object>::New(t);
-    obj->SetAlignedPointerInInternalField(0, iv);
-    obj.MakeWeak(iv, WeakCallback);
+    Local<Object> t = NanPersistentToLocal(object_template)->NewInstance();
+    NanInitPersistent(Object, obj, t);
+    NanSetInternalFieldPointer(t, 0, iv);
+    NanMakeWeak(obj, iv, WeakCallback);
     obj.MarkIndependent();
-    return scope.Close(obj);
+    NanReturnValue(obj);
   }
 
-  static Handle<Value> Convert(const Arguments& args)
+  static NAN_METHOD(Convert)
   {
-    HandleScope scope;
+    NanScope();
     Iconv* iv = static_cast<Iconv*>(
-        args[0].As<Object>()->GetAlignedPointerFromInternalField(0));
+        NanGetInternalFieldPointer(args[0].As<Object>(), 0));
     const char* input_buf = static_cast<const char*>(  // NULL on flush.
         args[1].As<Object>()->GetIndexedPropertiesExternalArrayData());
     size_t input_start = args[2]->Uint32Value();
@@ -131,7 +121,7 @@ struct Iconv
     output_consumed -= output_size;
     rc->Set(0, Integer::NewFromUnsigned(input_consumed));
     rc->Set(1, Integer::NewFromUnsigned(output_consumed));
-    return scope.Close(Integer::New(errorno));
+    NanReturnValue(Integer::New(errorno));
   }
 
   // Forbid implicit copying.
