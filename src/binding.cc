@@ -110,13 +110,15 @@ struct Iconv
     output_buf += output_start;
     size_t input_consumed = input_size;
     size_t output_consumed = output_size;
-    errno = 0;
     size_t nconv = iconv(iv->conv_,
                          &input_buf,
                          &input_size,
                          &output_buf,
                          &output_size);
-    int errorno = errno;
+    int errorno = 0;
+    if (nconv == static_cast<size_t>(-1)) {
+      errorno = errno;
+    }
     input_consumed -= input_size;
     output_consumed -= output_size;
     rc->Set(0, Integer::NewFromUnsigned(input_consumed));
