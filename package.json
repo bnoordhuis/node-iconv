@@ -1,12 +1,12 @@
 {
-  "name": "iconv",
+  "name": "iconv-aklt",
   "main": "./lib/iconv",
   "version": "2.0.7",
   "description": "Text recoding in JavaScript for fun and profit!",
   "homepage": "https://github.com/bnoordhuis/node-iconv",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bnoordhuis/node-iconv.git"
+    "url": "git://github.com/aklt/node-iconv.git"
   },
   "author": {
     "name": "Ben Noordhuis",
