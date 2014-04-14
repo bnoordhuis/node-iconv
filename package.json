@@ -18,6 +18,6 @@
   "license": "ISC",
   "readmeFilename": "README.md",
   "dependencies": {
-    "nan": "~0.7.0"
+    "nan": "~0.8.0"
   }
 }
