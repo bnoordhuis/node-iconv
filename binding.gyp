@@ -38,10 +38,7 @@
         'deps/libiconv/srclib',
         'support',
       ],
-      'sources': [
-        'deps/libiconv/libcharset/lib/localcharset.c',
-        'deps/libiconv/lib/iconv.c',
-      ],
+      'sources': ['deps/libiconv/lib/iconv.c'],
       'conditions': [
         ['OS == "win"', {
           'defines': ['WIN32_NATIVE=1'],

@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
-#include "localcharset.h"
 
 #ifdef __CYGWIN__
 #include <cygwin/version.h>
