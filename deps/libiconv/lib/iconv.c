@@ -179,7 +179,7 @@ static const struct alias sysdep_aliases[] = {
 #ifdef __GNUC__
 __inline
 #endif
-const struct alias *
+static const struct alias *
 aliases2_lookup (register const char *str)
 {
   const struct alias * ptr;
