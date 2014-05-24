@@ -37,12 +37,6 @@ using v8::Persistent;
 using v8::String;
 using v8::Value;
 
-// Can be moved back into Iconv after upgrading to nan 1.1.0.
-NAN_WEAK_CALLBACK(WeakCallback)
-{
-  delete data.GetParameter();
-}
-
 struct Iconv
 {
   static Persistent<ObjectTemplate> object_template;
@@ -121,6 +115,11 @@ struct Iconv
     rc->Set(0, NanNew<Integer>(input_consumed));
     rc->Set(1, NanNew<Integer>(output_consumed));
     NanReturnValue(NanNew<Integer>(errorno));
+  }
+
+  NAN_WEAK_CALLBACK(WeakCallback)
+  {
+    delete data.GetParameter();
   }
 
   // Forbid implicit copying.
