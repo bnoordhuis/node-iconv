@@ -37,6 +37,12 @@ using v8::Persistent;
 using v8::String;
 using v8::Value;
 
+// Can be moved back into Iconv after upgrading to nan 1.1.0.
+NAN_WEAK_CALLBACK(WeakCallback)
+{
+  delete data.GetParameter();
+}
+
 struct Iconv
 {
   static Persistent<ObjectTemplate> object_template;
@@ -57,38 +63,29 @@ struct Iconv
     NanScope();
     Local<ObjectTemplate> t = ObjectTemplate::New();
     t->SetInternalFieldCount(1);
-    NanAssignPersistent(ObjectTemplate, object_template, t);
-    obj->Set(String::New("make"),
-             FunctionTemplate::New(Make)->GetFunction());
-    obj->Set(String::New("convert"),
-             FunctionTemplate::New(Convert)->GetFunction());
-#define EXPORT_ERRNO(err) obj->Set(String::New(#err), Integer::New(err))
+    NanAssignPersistent(object_template, t);
+    obj->Set(NanNew<String>("make"),
+             NanNew<FunctionTemplate>(Make)->GetFunction());
+    obj->Set(NanNew<String>("convert"),
+             NanNew<FunctionTemplate>(Convert)->GetFunction());
+#define EXPORT_ERRNO(err) obj->Set(NanNew<String>(#err), NanNew<Integer>(err))
     EXPORT_ERRNO(EINVAL);
     EXPORT_ERRNO(EILSEQ);
     EXPORT_ERRNO(E2BIG);
 #undef EXPORT_ERRNO
   }
 
-  static NAN_WEAK_CALLBACK(Iconv*, WeakCallback)
-  {
-    delete NAN_WEAK_CALLBACK_DATA(Iconv*);
-    NAN_WEAK_CALLBACK_OBJECT.Dispose();
-    NAN_WEAK_CALLBACK_OBJECT.Clear();
-  }
-
   static NAN_METHOD(Make)
   {
     NanScope();
-    String::AsciiValue from_encoding(args[0]);
-    String::AsciiValue to_encoding(args[1]);
+    String::Utf8Value from_encoding(args[0]);
+    String::Utf8Value to_encoding(args[1]);
     iconv_t conv = iconv_open(*to_encoding, *from_encoding);
-    if (conv == reinterpret_cast<iconv_t>(-1)) NanReturnValue(Null());
+    if (conv == reinterpret_cast<iconv_t>(-1)) NanReturnNull();
     Iconv* iv = new Iconv(conv);
-    Local<Object> t = NanPersistentToLocal(object_template)->NewInstance();
-    NanInitPersistent(Object, obj, t);
-    NanSetInternalFieldPointer(t, 0, iv);
-    NanMakeWeak(obj, iv, WeakCallback);
-    obj.MarkIndependent();
+    Local<Object> obj = NanNew<ObjectTemplate>(object_template)->NewInstance();
+    NanSetInternalFieldPointer(obj, 0, iv);
+    NanMakeWeakPersistent(obj, iv, WeakCallback<Object, Iconv>);
     NanReturnValue(obj);
   }
 
@@ -121,9 +118,9 @@ struct Iconv
     }
     input_consumed -= input_size;
     output_consumed -= output_size;
-    rc->Set(0, Integer::NewFromUnsigned(input_consumed));
-    rc->Set(1, Integer::NewFromUnsigned(output_consumed));
-    NanReturnValue(Integer::New(errorno));
+    rc->Set(0, NanNew<Integer>(input_consumed));
+    rc->Set(1, NanNew<Integer>(output_consumed));
+    NanReturnValue(NanNew<Integer>(errorno));
   }
 
   // Forbid implicit copying.
