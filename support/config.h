@@ -1,3 +1,3 @@
 #ifndef locale_charset
-#define locale_charset(s) ("")
+#define locale_charset() ("")
 #endif
