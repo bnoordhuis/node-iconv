@@ -26,14 +26,7 @@
       'direct_dependent_settings': {
         'include_dirs':  ['support'],
       },
-      'defines': [
-        'ICONV_CONST=const',
-        'USE_AIX=1',
-        'USE_DOS=1',
-        'USE_EXTRA=1',
-        'USE_OSF1=1',
-        'LIBDIR="."', # not actually used
-      ],
+      'defines': ['ICONV_CONST=const', 'USE_EXTRA=1'],
       'include_dirs': [
         'deps/libiconv/srclib',
         'support',
