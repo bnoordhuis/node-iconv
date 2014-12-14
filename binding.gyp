@@ -40,6 +40,16 @@
           'cflags!': ['-W', '-Wall', '-Wextra'],
         }],
       ],
+      'msvs_settings': {
+        'VCCLCompilerTool': {
+          'DisableSpecificWarnings': [
+            '4018',  # Signed/unsigned comparison.
+            '4090',  # Const/non-const mismatch.
+            '4244',  # Narrowing cast.
+            '4267',  # Narrowing cast.
+          ],
+        },
+      },
       'xcode_settings': {
         'WARNING_CFLAGS!': ['-W', '-Wall', '-Wextra'],
         'WARNING_CFLAGS': [
