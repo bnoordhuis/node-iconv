@@ -18,7 +18,7 @@
   "license": "ISC",
   "readmeFilename": "README.md",
   "dependencies": {
-    "nan": "~1.4.3"
+    "nan": "~1.6.2"
   },
   "devDependencies": {
     "tap": "~0.4.8"
