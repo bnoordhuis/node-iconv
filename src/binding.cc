@@ -119,8 +119,8 @@ struct Iconv
     }
     input_consumed -= input_size;
     output_consumed -= output_size;
-    rc->Set(0, NanNew<Integer>(input_consumed));
-    rc->Set(1, NanNew<Integer>(output_consumed));
+    rc->Set(0, NanNew<Integer>(static_cast<uint32_t>(input_consumed)));
+    rc->Set(1, NanNew<Integer>(static_cast<uint32_t>(output_consumed)));
     NanReturnValue(NanNew<Integer>(errorno));
   }
 
