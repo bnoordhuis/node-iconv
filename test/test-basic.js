@@ -115,3 +115,14 @@ assert.equal(iconv.convert('ça va が').toString(), 'ca va ');
 
 iconv = Iconv('utf-8', 'iso-8859-1');
 assert.equal(iconv.convert('b2s=', 'base64').toString(), 'ok');
+
+var aixEncodings =
+    'CP856 CP922 CP943 CP1046 CP1124 CP1129 CP1161 CP1162 CP1163';
+
+var dosEncodings =
+    'CP437 CP737 CP775 CP852 CP853 CP855 CP857 CP858 CP860 CP861 ' +
+    'CP863 CP864 CP865 CP869 CP1125';
+
+// Check that AIX and DOS encodings are available.
+aixEncodings.split(' ').forEach(function(name) { Iconv(name, 'utf-8'); })
+dosEncodings.split(' ').forEach(function(name) { Iconv(name, 'utf-8'); })
