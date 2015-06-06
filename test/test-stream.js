@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+'use strict';
+
 var Iconv = require('../lib/iconv').Iconv;
 var assert = require('assert');
 var stream = require('stream');
