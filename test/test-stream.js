@@ -169,3 +169,30 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
   stream.end('b2s=', 'base64');
   assert(ok);
 })();
+
+(function() {
+  var ok = false;
+  var stream = Iconv('gb18030', 'utf-8');
+  stream.once('error', function(e) {
+    assert.equal(e.message, 'Incomplete character sequence.');
+    assert.equal(e.code, 'EINVAL');
+    ok = true;
+  });
+  var octets = [
+    0x00, 0xf1, 0x52, 0x00, 0x00, 0x78, 0x51, 0xd9, 0xf7, 0x78, 0x51, 0xd9
+  ];
+  stream.end(new Buffer(octets));
+  assert(ok);
+})();
+
+(function() {
+  var ok = false;
+  var stream = Iconv('utf-8', 'utf-16');
+  stream.once('error', function(e) {
+    assert.equal(e.message, 'Incomplete character sequence.');
+    assert.equal(e.code, 'EINVAL');
+    ok = true;
+  });
+  stream.end(new Buffer([0xc3]));
+  assert(ok);
+})();
