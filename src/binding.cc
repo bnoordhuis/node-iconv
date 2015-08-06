@@ -16,6 +16,7 @@
 
 #include "iconv.h"
 #include "nan.h"
+#include "node_buffer.h"
 
 #include <errno.h>
 #include <assert.h>
@@ -33,14 +34,13 @@ using v8::Local;
 using v8::Null;
 using v8::Object;
 using v8::ObjectTemplate;
-using v8::Persistent;
 using v8::String;
 using v8::Value;
 
 
 struct Iconv
 {
-  static Persistent<ObjectTemplate> object_template;
+  static Nan::Persistent<ObjectTemplate> object_template;
   iconv_t conv_;
 
   Iconv(iconv_t conv)
@@ -53,23 +53,22 @@ struct Iconv
     iconv_close(conv_);
   }
 
-  NAN_WEAK_CALLBACK(WeakCallback)
+  static void WeakCallback(const Nan::WeakCallbackInfo<Iconv>& data)
   {
     delete data.GetParameter();
   }
 
-
   static void Initialize(Handle<Object> obj)
   {
-    NanScope();
     Local<ObjectTemplate> t = ObjectTemplate::New();
     t->SetInternalFieldCount(1);
-    NanAssignPersistent(object_template, t);
-    obj->Set(NanNew<String>("make"),
-             NanNew<FunctionTemplate>(Make)->GetFunction());
-    obj->Set(NanNew<String>("convert"),
-             NanNew<FunctionTemplate>(Convert)->GetFunction());
-#define EXPORT_ERRNO(err) obj->Set(NanNew<String>(#err), NanNew<Integer>(err))
+    object_template.Reset(t);
+    obj->Set(Nan::New<String>("make").ToLocalChecked(),
+             Nan::New<FunctionTemplate>(Make)->GetFunction());
+    obj->Set(Nan::New<String>("convert").ToLocalChecked(),
+             Nan::New<FunctionTemplate>(Convert)->GetFunction());
+#define EXPORT_ERRNO(err) \
+    obj->Set(Nan::New<String>(#err).ToLocalChecked(), Nan::New<Integer>(err))
     EXPORT_ERRNO(EINVAL);
     EXPORT_ERRNO(EILSEQ);
     EXPORT_ERRNO(E2BIG);
@@ -78,32 +77,34 @@ struct Iconv
 
   static NAN_METHOD(Make)
   {
-    NanScope();
-    String::Utf8Value from_encoding(args[0]);
-    String::Utf8Value to_encoding(args[1]);
+    String::Utf8Value from_encoding(info[0]);
+    String::Utf8Value to_encoding(info[1]);
     iconv_t conv = iconv_open(*to_encoding, *from_encoding);
-    if (conv == reinterpret_cast<iconv_t>(-1)) NanReturnNull();
+    if (conv == reinterpret_cast<iconv_t>(-1)) {
+      return info.GetReturnValue().SetNull();
+    }
     Iconv* iv = new Iconv(conv);
-    Local<Object> obj = NanNew<ObjectTemplate>(object_template)->NewInstance();
-    NanSetInternalFieldPointer(obj, 0, iv);
-    NanMakeWeakPersistent(obj, iv, &WeakCallback);
-    NanReturnValue(obj);
+    Local<Object> obj =
+        Nan::New<ObjectTemplate>(object_template)->NewInstance();
+    Nan::SetInternalFieldPointer(obj, 0, iv);
+    Nan::Persistent<Object> persistent(obj);
+    persistent.SetWeak(iv, WeakCallback, Nan::WeakCallbackType::kParameter);
+    info.GetReturnValue().Set(obj);
   }
 
   static NAN_METHOD(Convert)
   {
-    NanScope();
     Iconv* iv = static_cast<Iconv*>(
-        NanGetInternalFieldPointer(args[0].As<Object>(), 0));
-    const char* input_buf = static_cast<const char*>(  // NULL on flush.
-        args[1].As<Object>()->GetIndexedPropertiesExternalArrayData());
-    size_t input_start = args[2]->Uint32Value();
-    size_t input_size = args[3]->Uint32Value();
-    char* output_buf = static_cast<char*>(  // Never NULL.
-        args[4].As<Object>()->GetIndexedPropertiesExternalArrayData());
-    size_t output_start = args[5]->Uint32Value();
-    size_t output_size = args[6]->Uint32Value();
-    Local<Array> rc = args[7].As<Array>();
+        Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
+    const bool is_flush = info[8]->BooleanValue();
+    const char* input_buf =
+        is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
+    size_t input_start = info[2]->Uint32Value();
+    size_t input_size = info[3]->Uint32Value();
+    char* output_buf = node::Buffer::Data(info[4].As<Object>());
+    size_t output_start = info[5]->Uint32Value();
+    size_t output_size = info[6]->Uint32Value();
+    Local<Array> rc = info[7].As<Array>();
     if (input_buf != NULL) input_buf += input_start;
     output_buf += output_start;
     size_t input_consumed = input_size;
@@ -119,9 +120,9 @@ struct Iconv
     }
     input_consumed -= input_size;
     output_consumed -= output_size;
-    rc->Set(0, NanNew<Integer>(static_cast<uint32_t>(input_consumed)));
-    rc->Set(1, NanNew<Integer>(static_cast<uint32_t>(output_consumed)));
-    NanReturnValue(NanNew<Integer>(errorno));
+    rc->Set(0, Nan::New<Integer>(static_cast<uint32_t>(input_consumed)));
+    rc->Set(1, Nan::New<Integer>(static_cast<uint32_t>(output_consumed)));
+    info.GetReturnValue().Set(errorno);
   }
 
   // Forbid implicit copying.
@@ -129,7 +130,7 @@ struct Iconv
   void operator=(const Iconv&);
 };
 
-Persistent<ObjectTemplate> Iconv::object_template;
+Nan::Persistent<ObjectTemplate> Iconv::object_template;
 
 } // namespace
 
