@@ -72,8 +72,13 @@ module.
 ## Compiling from source
 
     $ git clone git://github.com/bnoordhuis/node-iconv.git
-    $ node-gyp configure build
-    $ npm install .
+    $ cd node-iconv
+    $ npm install
+
+If you have a specific node.js source checkout that you want to build against,
+replace the last command with:
+
+    $ npm install --nodedir=/path/to/node
 
 ## Usage
 
