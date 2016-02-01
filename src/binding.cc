@@ -79,6 +79,8 @@ struct Iconv
   {
     String::Utf8Value from_encoding(info[0]);
     String::Utf8Value to_encoding(info[1]);
+    String::Utf8Value locale(info[2]);
+    std::setlocale(LC_ALL, *locale);
     iconv_t conv = iconv_open(*to_encoding, *from_encoding);
     if (conv == reinterpret_cast<iconv_t>(-1)) {
       return info.GetReturnValue().SetNull();
@@ -97,8 +99,7 @@ struct Iconv
     Iconv* iv = static_cast<Iconv*>(
         Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
     const bool is_flush = info[8]->BooleanValue();
-    const char* input_buf =
-        is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
+    const char* input_buf = is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
     size_t input_start = info[2]->Uint32Value();
     size_t input_size = info[3]->Uint32Value();
     char* output_buf = node::Buffer::Data(info[4].As<Object>());
@@ -109,11 +110,7 @@ struct Iconv
     output_buf += output_start;
     size_t input_consumed = input_size;
     size_t output_consumed = output_size;
-    size_t nconv = iconv(iv->conv_,
-                         &input_buf,
-                         &input_size,
-                         &output_buf,
-                         &output_size);
+    size_t nconv = iconv(iv->conv_, (char**)&input_buf, &input_size, (char**)&output_buf, &output_size);
     int errorno = 0;
     if (nconv == static_cast<size_t>(-1)) {
       errorno = errno;
