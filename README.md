@@ -2,6 +2,18 @@
 
 Text recoding in JavaScript for fun and profit!
 
+Fork from [bnoordhuis/node-iconv](https://github.com/bnoordhuis/node-iconv)
+
+This fork admits use locales for better transliterations. It changes the API, the bindings implementations and it uses the SO library instead of the supplied library in the repo.
+
+It adds a new (third) parameter in the contructor. 
+It needs to be a valid locale for LC_ALL in the `std::setLocale(LC_ALL, locale)` C++ function.
+
+``` javascript
+    var iconv = new Iconv('UTF-8', 'ASCII', 'de_DE.UTF-8'); //'en_US.UTF-8' is the locations. Can be undefined or a valid LANG value.
+    iconv.convert('ü  ä  ö  ß  Ü  Ä  Ö ç ñ').toString(); //ue  ae  oe  ss  UE  AE  OE c n
+```
+
 ## Supported encodings
 
     European languages
@@ -89,7 +101,7 @@ Encode from one character encoding to another:
     var Iconv  = require('iconv').Iconv;
     var assert = require('assert');
 
-    var iconv = new Iconv('UTF-8', 'ISO-8859-1');
+    var iconv = new Iconv('UTF-8', 'ISO-8859-1', 'en_US.UTF-8');
     var buffer = iconv.convert('Hello, world!');
     var buffer2 = iconv.convert(new Buffer('Hello, world!'));
     assert.equals(buffer.inspect(), buffer2.inspect());
@@ -100,7 +112,7 @@ A simple ISO-8859-1 to UTF-8 conversion TCP service:
     var net = require('net');
     var Iconv = require('iconv').Iconv;
     var server = net.createServer(function(conn) {
-      var iconv = new Iconv('latin1', 'utf-8');
+      var iconv = new Iconv('latin1', 'utf-8', 'en_US.UTF-8');
       conn.pipe(iconv).pipe(conn);
     });
     server.listen(8000);
@@ -148,16 +160,16 @@ encountered but this can be customized. Quoting the `iconv_open(3)` man page:
 
 Example usage:
 
-    var iconv = new Iconv('UTF-8', 'ASCII');
+    var iconv = new Iconv('UTF-8', 'ASCII', 'en_US.UTF-8');
     iconv.convert('ça va'); // throws EILSEQ
 
-    var iconv = new Iconv('UTF-8', 'ASCII//IGNORE');
+    var iconv = new Iconv('UTF-8', 'ASCII//IGNORE', 'en_US.UTF-8');
     iconv.convert('ça va'); // returns "a va"
 
-    var iconv = new Iconv('UTF-8', 'ASCII//TRANSLIT');
+    var iconv = new Iconv('UTF-8', 'ASCII//TRANSLIT', 'en_US.UTF-8');
     iconv.convert('ça va'); // "ca va"
 
-    var iconv = new Iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE');
+    var iconv = new Iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', 'en_US.UTF-8');
     iconv.convert('ça va が'); // "ca va "
 
 ### EINVAL
