@@ -15,6 +15,7 @@
  */
 
 #include "iconv.h"
+#include "iostream"
 #include "nan.h"
 #include "node_buffer.h"
 
@@ -58,10 +59,15 @@ struct Iconv
     delete data.GetParameter();
   }
 
+  static void WeakCallback(const Nan::WeakCallbackInfo<std::string>& data)
+  {
+    delete data.GetParameter();
+  }
+
   static void Initialize(Handle<Object> obj)
   {
     Local<ObjectTemplate> t = ObjectTemplate::New();
-    t->SetInternalFieldCount(1);
+    t->SetInternalFieldCount(2);
     object_template.Reset(t);
     obj->Set(Nan::New<String>("make").ToLocalChecked(),
              Nan::New<FunctionTemplate>(Make)->GetFunction());
@@ -80,24 +86,45 @@ struct Iconv
     String::Utf8Value from_encoding(info[0]);
     String::Utf8Value to_encoding(info[1]);
     String::Utf8Value locale(info[2]);
-    std::setlocale(LC_ALL, *locale);
+
+    std::string *lang = new std::string(*locale);
+    std::string undefined = std::string("undefined");
+
+    if(0 == lang->compare(undefined)){
+      lang->assign("C");
+    }else {
+      lang->assign(*locale);
+    }
+
+
     iconv_t conv = iconv_open(*to_encoding, *from_encoding);
     if (conv == reinterpret_cast<iconv_t>(-1)) {
       return info.GetReturnValue().SetNull();
     }
     Iconv* iv = new Iconv(conv);
-    Local<Object> obj =
-        Nan::New<ObjectTemplate>(object_template)->NewInstance();
+
+    Local<Object> obj = Nan::New<ObjectTemplate>(object_template)->NewInstance();
+
     Nan::SetInternalFieldPointer(obj, 0, iv);
+    Nan::SetInternalFieldPointer(obj, 1, lang);
+
     Nan::Persistent<Object> persistent(obj);
+
     persistent.SetWeak(iv, WeakCallback, Nan::WeakCallbackType::kParameter);
+    persistent.SetWeak(lang, WeakCallback, Nan::WeakCallbackType::kParameter);
+    
     info.GetReturnValue().Set(obj);
   }
 
   static NAN_METHOD(Convert)
   {
-    Iconv* iv = static_cast<Iconv*>(
-        Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
+    Iconv* iv = static_cast<Iconv*>(Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
+    std::string* lang = static_cast<std::string*>(Nan::GetInternalFieldPointer(info[0].As<Object>(), 1));
+
+    char* toRestoreLocale = std::setlocale(LC_ALL, NULL);
+
+    std::setlocale(LC_ALL, lang->c_str());
+
     const bool is_flush = info[8]->BooleanValue();
     const char* input_buf = is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
     size_t input_start = info[2]->Uint32Value();
@@ -120,6 +147,8 @@ struct Iconv
     rc->Set(0, Nan::New<Integer>(static_cast<uint32_t>(input_consumed)));
     rc->Set(1, Nan::New<Integer>(static_cast<uint32_t>(output_consumed)));
     info.GetReturnValue().Set(errorno);
+    
+    std::setlocale(LC_ALL, toRestoreLocale);
   }
 
   // Forbid implicit copying.
