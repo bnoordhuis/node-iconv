@@ -23,7 +23,7 @@ var net = require('net');
 var fs = require('fs');
 var PORT = 12345;
 
-assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
+assert(new Iconv('ascii', 'ascii', 'de_DE.UTF-8') instanceof stream.Stream);
 
 (function() {
   var infile = __dirname + '/fixtures/lorem-ipsum.txt';

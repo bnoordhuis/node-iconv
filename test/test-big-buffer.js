@@ -19,7 +19,7 @@
 var Iconv = require('../lib/iconv').Iconv;
 var assert = require('assert');
 
-var iconv = new Iconv('UTF-8', 'UTF-16LE');
+var iconv = new Iconv('UTF-8', 'UTF-16LE', 'de_DE.UTF-8');
 
 var utf8 = new Buffer(20000000);
 for (var i = 0; i < utf8.length; i++) {
