@@ -19,6 +19,7 @@
 #include "nan.h"
 #include "node_buffer.h"
 
+#include <locale.h>
 #include <errno.h>
 #include <assert.h>
 #include <stdint.h>
@@ -121,9 +122,8 @@ struct Iconv
     Iconv* iv = static_cast<Iconv*>(Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
     std::string* lang = static_cast<std::string*>(Nan::GetInternalFieldPointer(info[0].As<Object>(), 1));
 
-    char* toRestoreLocale = std::setlocale(LC_ALL, NULL);
-
-    std::setlocale(LC_ALL, lang->c_str());
+    locale_t locale = newlocale(LC_ALL_MASK, lang->c_str(), NULL);
+    locale_t old_locale = uselocale(locale);
 
     const bool is_flush = info[8]->BooleanValue();
     const char* input_buf = is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
@@ -148,7 +148,8 @@ struct Iconv
     rc->Set(1, Nan::New<Integer>(static_cast<uint32_t>(output_consumed)));
     info.GetReturnValue().Set(errorno);
     
-    std::setlocale(LC_ALL, toRestoreLocale);
+    uselocale(old_locale);
+    freelocale(locale);
   }
 
   // Forbid implicit copying.
