@@ -78,8 +78,8 @@ It supports most common encodings and doesn't require a compiler to install.
 
     $ npm install iconv
 
-Note that you do not need to have a copy of libiconv installed to use this
-module.
+_Note that **you need to have a copy** of libiconv installed to use this
+module._
 
 ## Compiling from source
 
