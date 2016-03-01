@@ -7,7 +7,8 @@ Fork from [bnoordhuis/node-iconv](https://github.com/bnoordhuis/node-iconv)
 This fork admits use locales for better transliterations. It changes the API, the bindings implementations and it uses the SO library instead of the supplied library in the repo.
 
 It adds a new (third) parameter in the contructor. 
-It needs to be a valid locale for LC_ALL in the `std::setLocale(LC_ALL, locale)` C++ function.
+It needs to be a valid locale for LC_ALL in the C++ `locale_t newlocale(int category_mask, const char *locale,
+                          locale_t base);` function. [Link](http://man7.org/linux/man-pages/man3/newlocale.3.html)
 
 ``` javascript
     var iconv = new Iconv('UTF-8', 'ASCII', 'de_DE.UTF-8'); //'en_US.UTF-8' is the locations. Can be undefined or a valid LANG value.
