@@ -125,7 +125,7 @@ struct Iconv
     locale_t locale = newlocale(LC_ALL_MASK, lang->c_str(), NULL);
 
     if(locale == (locale_t) 0){
-      std::out << "Error in locale, used locale: " << lang->c_str() << std::endl;
+      std::cerr << "Error at configuring locale for iconv, used locale: \"" << lang->c_str() << "\"" << std::endl;
       return;
     }
 
