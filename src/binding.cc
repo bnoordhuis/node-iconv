@@ -22,6 +22,10 @@
 #include <assert.h>
 #include <stdint.h>
 
+#ifndef ICONV_CONST
+#define ICONV_CONST
+#endif  // ICONV_CONST
+
 namespace
 {
 
@@ -97,7 +101,7 @@ struct Iconv
     Iconv* iv = static_cast<Iconv*>(
         Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
     const bool is_flush = info[8]->BooleanValue();
-    const char* input_buf =
+    ICONV_CONST char* input_buf =
         is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
     size_t input_start = info[2]->Uint32Value();
     size_t input_size = info[3]->Uint32Value();
