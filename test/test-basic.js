@@ -30,6 +30,9 @@ new Iconv('utf16',   'utf32');
 new Iconv('utf16le', 'utf16be');
 new Iconv('utf32le', 'utf32be');
 
+// https://github.com/bnoordhuis/node-iconv/issues/152
+new Iconv('windows-31J', 'windows-31j');
+
 var iconv = new Iconv('utf-8', 'iso-8859-1');
 assert.throws(function() { iconv.convert() });
 assert.throws(function() { iconv.convert(1) });
