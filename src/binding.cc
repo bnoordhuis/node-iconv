@@ -114,10 +114,6 @@ struct Iconv
 
     Nan::Persistent<Object> persistent(obj);
     persistent.SetWeak(iv, WeakCallback, Nan::WeakCallbackType::kParameter);
-
-
-
-
     persistent.SetWeak(lang, WeakCallback, Nan::WeakCallbackType::kParameter);
     
     info.GetReturnValue().Set(obj);
