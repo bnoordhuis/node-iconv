@@ -24,6 +24,10 @@
 #include <assert.h>
 #include <stdint.h>
 
+#ifndef ICONV_CONST
+#define ICONV_CONST
+#endif  // ICONV_CONST
+
 namespace
 {
 
@@ -103,15 +107,17 @@ struct Iconv
       return info.GetReturnValue().SetNull();
     }
     Iconv* iv = new Iconv(conv);
-
-    Local<Object> obj = Nan::New<ObjectTemplate>(object_template)->NewInstance();
-
+    Local<Object> obj =
+        Nan::New<ObjectTemplate>(object_template)->NewInstance();
     Nan::SetInternalFieldPointer(obj, 0, iv);
     Nan::SetInternalFieldPointer(obj, 1, lang);
 
     Nan::Persistent<Object> persistent(obj);
-
     persistent.SetWeak(iv, WeakCallback, Nan::WeakCallbackType::kParameter);
+
+
+
+
     persistent.SetWeak(lang, WeakCallback, Nan::WeakCallbackType::kParameter);
     
     info.GetReturnValue().Set(obj);
@@ -119,7 +125,8 @@ struct Iconv
 
   static NAN_METHOD(Convert)
   {
-    Iconv* iv = static_cast<Iconv*>(Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
+    Iconv* iv = static_cast<Iconv*>(
+        Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
     std::string* lang = static_cast<std::string*>(Nan::GetInternalFieldPointer(info[0].As<Object>(), 1));
 
     locale_t locale = newlocale(LC_ALL_MASK, lang->c_str(), NULL);
@@ -132,7 +139,8 @@ struct Iconv
     locale_t old_locale = uselocale(locale);
 
     const bool is_flush = info[8]->BooleanValue();
-    const char* input_buf = is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
+    ICONV_CONST char* input_buf =
+        is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
     size_t input_start = info[2]->Uint32Value();
     size_t input_size = info[3]->Uint32Value();
     char* output_buf = node::Buffer::Data(info[4].As<Object>());
@@ -143,7 +151,11 @@ struct Iconv
     output_buf += output_start;
     size_t input_consumed = input_size;
     size_t output_consumed = output_size;
-    size_t nconv = iconv(iv->conv_, (char**)&input_buf, &input_size, (char**)&output_buf, &output_size);
+    size_t nconv = iconv(iv->conv_,
+                         &input_buf,
+                         &input_size,
+                         &output_buf,
+                         &output_size);
     int errorno = 0;
     if (nconv == static_cast<size_t>(-1)) {
       errorno = errno;
