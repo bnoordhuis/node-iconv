@@ -111,11 +111,9 @@ struct Iconv
         Nan::New<ObjectTemplate>(object_template)->NewInstance();
     Nan::SetInternalFieldPointer(obj, 0, iv);
     Nan::SetInternalFieldPointer(obj, 1, lang);
-
     Nan::Persistent<Object> persistent(obj);
     persistent.SetWeak(iv, WeakCallback, Nan::WeakCallbackType::kParameter);
     persistent.SetWeak(lang, WeakCallback, Nan::WeakCallbackType::kParameter);
-    
     info.GetReturnValue().Set(obj);
   }
 
