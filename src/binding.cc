@@ -64,7 +64,7 @@ struct Iconv
 
   static void Initialize(Handle<Object> obj)
   {
-    Local<ObjectTemplate> t = ObjectTemplate::New();
+    Local<ObjectTemplate> t = Nan::New<ObjectTemplate>();
     t->SetInternalFieldCount(1);
     object_template.Reset(t);
     obj->Set(Nan::New<String>("make").ToLocalChecked(),
