@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2002 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2002, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -40,7 +39,7 @@
 #include "flushwc.h"
 
 static int
-euc_jisx0213_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+euc_jisx0213_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   ucs4_t last_wc = conv->istate;
   if (last_wc) {
@@ -144,7 +143,7 @@ static const struct { unsigned short base; unsigned short composed; } euc_jisx02
 };
 
 static int
-euc_jisx0213_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+euc_jisx0213_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   int count = 0;
   unsigned short lasttwo = conv->ostate;
@@ -252,7 +251,7 @@ euc_jisx0213_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
 }
 
 static int
-euc_jisx0213_reset (conv_t conv, unsigned char *r, int n)
+euc_jisx0213_reset (conv_t conv, unsigned char *r, size_t n)
 {
   state_t lasttwo = conv->ostate;
 

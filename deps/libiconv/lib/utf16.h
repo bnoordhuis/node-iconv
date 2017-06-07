@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001, 2008 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2001, 2008, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -32,11 +31,11 @@
    The default is big-endian. */
 /* The state is 0 if big-endian, 1 if little-endian. */
 static int
-utf16_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+utf16_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   state_t state = conv->istate;
   int count = 0;
-  for (; n >= 2;) {
+  for (; n >= 2 && count <= RET_COUNT_MAX && count <= INT_MAX-2;) {
     ucs4_t wc = (state ? s[0] + (s[1] << 8) : (s[0] << 8) + s[1]);
     if (wc == 0xfeff) {
     } else if (wc == 0xfffe) {
@@ -74,7 +73,7 @@ ilseq:
    long as the above utf16_mbtowc function is used. */
 /* The state is 0 at the beginning, 1 after the BOM has been written. */
 static int
-utf16_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+utf16_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   if (wc != 0xfffe && !(wc >= 0xd800 && wc < 0xe000)) {
     int count = 0;

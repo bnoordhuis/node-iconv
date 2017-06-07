@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2002, 2004-2010 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2002, 2004-2011, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* This file defines all the converters. */
@@ -34,14 +33,16 @@ typedef struct conv_struct * conv_t;
  * Data type for conversion multibyte -> unicode
  */
 struct mbtowc_funcs {
-  int (*xxx_mbtowc) (conv_t conv, ucs4_t *pwc, unsigned char const *s, int n);
+  int (*xxx_mbtowc) (conv_t conv, ucs4_t *pwc, unsigned char const *s, size_t n);
   /*
-   * int xxx_mbtowc (conv_t conv, ucs4_t *pwc, unsigned char const *s, int n)
+   * int xxx_mbtowc (conv_t conv, ucs4_t *pwc, unsigned char const *s, size_t n)
    * converts the byte sequence starting at s to a wide character. Up to n bytes
    * are available at s. n is >= 1.
    * Result is number of bytes consumed (if a wide character was read),
-   * or -1 if invalid, or -2 if n too small, or -2-(number of bytes consumed)
-   * if only a shift sequence was read.
+   * or -1 if invalid, or -2 if n too small,
+   * or RET_SHIFT_ILSEQ(number of bytes consumed) if invalid input after a shift
+   * sequence was read,
+   * or RET_TOOFEW(number of bytes consumed) if only a shift sequence was read.
    */
   int (*xxx_flushwc) (conv_t conv, ucs4_t *pwc);
   /*
@@ -61,21 +62,23 @@ struct mbtowc_funcs {
 /* Retrieve the n from the encoded RET_... value. */
 #define DECODE_SHIFT_ILSEQ(r)  ((unsigned int)(RET_SHIFT_ILSEQ(0) - (r)) / 2)
 #define DECODE_TOOFEW(r)       ((unsigned int)(RET_TOOFEW(0) - (r)) / 2)
+/* Maximum value of n that may be used as argument to RET_SHIFT_ILSEQ or RET_TOOFEW. */
+#define RET_COUNT_MAX       ((INT_MAX / 2) - 1)
 
 /*
  * Data type for conversion unicode -> multibyte
  */
 struct wctomb_funcs {
-  int (*xxx_wctomb) (conv_t conv, unsigned char *r, ucs4_t wc, int n);
+  int (*xxx_wctomb) (conv_t conv, unsigned char *r, ucs4_t wc, size_t n);
   /*
-   * int xxx_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+   * int xxx_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
    * converts the wide character wc to the character set xxx, and stores the
    * result beginning at r. Up to n bytes may be written at r. n is >= 1.
    * Result is number of bytes written, or -1 if invalid, or -2 if n too small.
    */
-  int (*xxx_reset) (conv_t conv, unsigned char *r, int n);
+  int (*xxx_reset) (conv_t conv, unsigned char *r, size_t n);
   /*
-   * int xxx_reset (conv_t conv, unsigned char *r, int n)
+   * int xxx_reset (conv_t conv, unsigned char *r, size_t n)
    * stores a shift sequences returning to the initial state beginning at r.
    * Up to n bytes may be written at r. n is >= 0.
    * Result is number of bytes written, or -2 if n too small.
@@ -228,6 +231,7 @@ typedef struct {
 #include "iso2022_jp.h"
 #include "iso2022_jp1.h"
 #include "iso2022_jp2.h"
+#include "iso2022_jpms.h"
 
 #include "euc_cn.h"
 #include "ces_gbk.h"

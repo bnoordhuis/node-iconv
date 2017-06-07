@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2001, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,7 +24,7 @@
 /* Specification: Unicode 3.1 Standard Annex #19 */
 
 static int
-utf32le_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+utf32le_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   if (n >= 4) {
     ucs4_t wc = s[0] + (s[1] << 8) + (s[2] << 16) + (s[3] << 24);
@@ -39,7 +38,7 @@ utf32le_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
 }
 
 static int
-utf32le_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+utf32le_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   if (wc < 0x110000 && !(wc >= 0xd800 && wc < 0xe000)) {
     if (n >= 4) {

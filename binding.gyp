@@ -24,19 +24,12 @@
       'conditions': [
         ['node_iconv_use_system_libiconv==0', {
           'defines': ['ICONV_CONST=const', 'ENABLE_EXTRA=1'],
-          'include_dirs': [
-            'deps/libiconv/srclib',
-            'support',
+          'include_dirs': ['support'],
+          'sources': [
+            'deps/libiconv/lib/iconv.c',
+            'support/localcharset.c',
           ],
-          'sources': ['deps/libiconv/lib/iconv.c'],
-          'conditions': [
-            ['OS == "win"', {
-              'defines': ['WIN32_NATIVE=1'],
-            }, {
-              'defines': ['HAVE_WORKING_O_NOFOLLOW=1'],
-              'cflags!': ['-W', '-Wall', '-Wextra'],
-            }],
-          ],
+          'cflags!': ['-W', '-Wall', '-Wextra'],
           'msvs_settings': {
             'VCCLCompilerTool': {
               'DisableSpecificWarnings': [

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001, 2008, 2011 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2001, 2008, 2011, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -26,11 +25,11 @@
    in the stream, not just at the beginning. The default is big-endian. */
 /* The state is 0 if big-endian, 1 if little-endian. */
 static int
-ucs4_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+ucs4_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   state_t state = conv->istate;
   int count = 0;
-  for (; n >= 4;) {
+  for (; n >= 4 && count <= RET_COUNT_MAX && count <= INT_MAX-4;) {
     ucs4_t wc = (state
                   ? s[0] + (s[1] << 8) + (s[2] << 16) + (s[3] << 24)
                   : (s[0] << 24) + (s[1] << 16) + (s[2] << 8) + s[3]);
@@ -53,7 +52,7 @@ ucs4_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
 
 /* But we output UCS-4 in big-endian order, without byte-order mark. */
 static int
-ucs4_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+ucs4_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   if (wc <= 0x7fffffff) {
     if (n >= 4) {

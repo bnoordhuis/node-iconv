@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001, 2005 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2001, 2005, 2012, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -168,7 +167,7 @@ static const unsigned short gb18030uni_ranges[206] = {
 };
 
 static int
-gb18030uni_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+gb18030uni_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   unsigned char c1 = s[0];
   if (c1 >= 0x81 && c1 <= 0x84) {
@@ -183,22 +182,26 @@ gb18030uni_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
               if (c4 >= 0x30 && c4 <= 0x39) {
                 unsigned int i = (((c1 - 0x81) * 10 + (c2 - 0x30)) * 126 + (c3 - 0x81)) * 10 + (c4 - 0x30);
                 if (i >= 0 && i <= 39419) {
-                  unsigned int k1 = 0;
-                  unsigned int k2 = 205;
-                  while (k1 < k2) {
-                    unsigned int k = (k1 + k2) / 2;
-                    if (i <= gb18030uni_charset2uni_ranges[2*k+1])
-                      k2 = k;
-                    else if (i >= gb18030uni_charset2uni_ranges[2*k+2])
-                      k1 = k + 1;
-                    else
-                      return RET_ILSEQ;
+                  if (i == 7457) {
+                    *pwc = 0xe7c7;
+                  } else {
+                    unsigned int k1 = 0;
+                    unsigned int k2 = 205;
+                    while (k1 < k2) {
+                      unsigned int k = (k1 + k2) / 2;
+                      if (i <= gb18030uni_charset2uni_ranges[2*k+1])
+                        k2 = k;
+                      else if (i >= gb18030uni_charset2uni_ranges[2*k+2])
+                        k1 = k + 1;
+                      else
+                        return RET_ILSEQ;
+                    }
+                    {
+                      unsigned int diff = gb18030uni_ranges[k1];
+                      *pwc = (ucs4_t) (i + diff);
+                    }
                   }
-                  {
-                    unsigned int diff = gb18030uni_ranges[k1];
-                    *pwc = (ucs4_t) (i + diff);
-                    return 4;
-                  }
+                  return 4;
                 }
               }
               return RET_ILSEQ;
@@ -217,31 +220,35 @@ gb18030uni_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
 }
 
 static int
-gb18030uni_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+gb18030uni_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   if (n >= 4) {
     unsigned int i = wc;
     if (i >= 0x0080 && i <= 0xffff) {
-      unsigned int k1 = 0;
-      unsigned int k2 = 205;
-      while (k1 < k2) {
-        unsigned int k = (k1 + k2) / 2;
-        if (i <= gb18030uni_uni2charset_ranges[2*k+1])
-          k2 = k;
-        else if (i >= gb18030uni_uni2charset_ranges[2*k+2])
-          k1 = k + 1;
-        else
-          return RET_ILUNI;
+      if (i == 0xe7c7) {
+        i = 7457;
+      } else {
+        unsigned int k1 = 0;
+        unsigned int k2 = 205;
+        while (k1 < k2) {
+          unsigned int k = (k1 + k2) / 2;
+          if (i <= gb18030uni_uni2charset_ranges[2*k+1])
+            k2 = k;
+          else if (i >= gb18030uni_uni2charset_ranges[2*k+2])
+            k1 = k + 1;
+          else
+            return RET_ILUNI;
+        }
+        {
+          unsigned int diff = gb18030uni_ranges[k1];
+          i -= diff;
+        }
       }
-      {
-        unsigned int diff = gb18030uni_ranges[k1];
-        i -= diff;
-        r[3] = (i % 10) + 0x30; i = i / 10;
-        r[2] = (i % 126) + 0x81; i = i / 126;
-        r[1] = (i % 10) + 0x30; i = i / 10;
-        r[0] = i + 0x81;
-        return 4;
-      }
+      r[3] = (i % 10) + 0x30; i = i / 10;
+      r[2] = (i % 126) + 0x81; i = i / 126;
+      r[1] = (i % 10) + 0x30; i = i / 10;
+      r[0] = i + 0x81;
+      return 4;
     }
     return RET_ILUNI;
   }
