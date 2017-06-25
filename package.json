@@ -20,10 +20,7 @@
   "dependencies": {
     "nan": "^2.3.5"
   },
-  "devDependencies": {
-    "tap": "~0.4.8"
-  },
   "scripts": {
-    "test": "tap test/test-*.js"
+    "test": "node test/run-tests.js"
   }
 }
