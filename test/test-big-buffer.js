@@ -21,7 +21,7 @@ var assert = require('assert');
 
 var iconv = new Iconv('UTF-8', 'UTF-16LE');
 
-var utf8 = new Buffer(20000000);
+var utf8 = Buffer.alloc(20000000);
 for (var i = 0; i < utf8.length; i++) {
   utf8[i] = 97 + i % 26; // cycle from 'a' to 'z'.
 }

@@ -181,7 +181,7 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
   var octets = [
     0x00, 0xf1, 0x52, 0x00, 0x00, 0x78, 0x51, 0xd9, 0xf7, 0x78, 0x51, 0xd9
   ];
-  stream.end(new Buffer(octets));
+  stream.end(Buffer.from(octets));
   assert(ok);
 })();
 
@@ -193,6 +193,6 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
     assert.equal(e.code, 'EINVAL');
     ok = true;
   });
-  stream.end(new Buffer([0xc3]));
+  stream.end(Buffer.from([0xc3]));
   assert(ok);
 })();
