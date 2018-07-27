@@ -18,7 +18,7 @@
   "license": "ISC",
   "readmeFilename": "README.md",
   "dependencies": {
-    "nan": "^2.3.5"
+    "nan": "^2.10.0"
   },
   "scripts": {
     "test": "node test/run-tests.js"
