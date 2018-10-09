@@ -18,6 +18,7 @@
 
 var assert = require('assert');
 var Iconv = require('../lib/iconv').Iconv;
+var Buffer = require('safer-buffer').Buffer;
 
 // unknown source/target encoding
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });
@@ -38,13 +39,13 @@ assert.throws(function() { iconv.convert() });
 assert.throws(function() { iconv.convert(1) });
 assert.throws(function() { iconv.convert({}) });
 
-assert(iconv.convert(new Buffer('xxx')) instanceof Buffer);
-assert(iconv.convert('xxx') instanceof Buffer);
+assert(Buffer.isBuffer(iconv.convert(Buffer.from('xxx'))));
+assert(Buffer.isBuffer(iconv.convert('xxx')));
 
-assert.deepEqual(iconv.convert('xxx'), new Buffer('xxx'));
-assert.deepEqual(iconv.convert(new Buffer('xxx')), new Buffer('xxx'));
+assert.deepEqual(iconv.convert('xxx'), Buffer.from('xxx'));
+assert.deepEqual(iconv.convert(Buffer.from('xxx')), Buffer.from('xxx'));
 
-var buffer = new Buffer(1); buffer[0] = 235; // ë
+var buffer = Buffer.alloc(1); buffer[0] = 235; // ë
 assert.deepEqual(iconv.convert('ë'), buffer);
 
 // test conversion error messages
@@ -68,7 +69,7 @@ try {
 }
 
 // partial character sequence should throw EINVAL
-buffer = new Buffer(1); buffer[0] = 195;
+buffer = Buffer.alloc(1); buffer[0] = 195;
 try {
   iconv.convert(buffer);
 } catch (e) {
@@ -76,20 +77,20 @@ try {
 }
 
 // belongs to partial character sequence test - new input should be recoded without issues
-buffer = new Buffer(1); buffer[0] = 235; // ë
+buffer = Buffer.alloc(1); buffer[0] = 235; // ë
 assert.deepEqual(iconv.convert('ë'), buffer);
 
 // stateful encodings should do the Right Thing
 iconv = new Iconv('iso-2022-jp', 'utf-8');
-buffer = new Buffer(5);
+buffer = Buffer.alloc(5);
 buffer[0] = 0x1b;  // start escape sequence
 buffer[1] = 0x24;
 buffer[2] = 0x40;
 buffer[3] = 0x24;  // start character sequence
 buffer[4] = 0x2c;
-assert.deepEqual(iconv.convert(buffer), new Buffer('が'));
+assert.deepEqual(iconv.convert(buffer), Buffer.from('が'));
 
-buffer = new Buffer(4);
+buffer = Buffer.alloc(4);
 buffer[0] = 0x1b;  // start escape sequence
 buffer[1] = 0x24;
 buffer[2] = 0x40;
