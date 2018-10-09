@@ -18,7 +18,7 @@
   "license": "ISC",
   "readmeFilename": "README.md",
   "dependencies": {
-    "nan": "^2.3.5",
+    "nan": "^2.11.1",
     "safer-buffer": "^2.1.2"
   },
   "scripts": {
