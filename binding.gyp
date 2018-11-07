@@ -6,7 +6,24 @@
   'targets': [
     {
       'target_name': 'iconv',
-      'include_dirs': ['<!(node -e "require(\'nan\')")'],
+      'cflags!': [ '-fno-exceptions' ],
+      'cflags_cc!': [ '-fno-exceptions' ],
+      'xcode_settings': { 
+        'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
+        'CLANG_CXX_LIBRARY': 'libc++',
+        'MACOSX_DEPLOYMENT_TARGET': '10.7',
+        'GCC_ENABLE_CPP_RTTI': 'NO',
+        'WARNING_CFLAGS': ['-Wall', '-Wextra', '-Wno-unused-parameter'],
+      },
+      'msvs_settings': {
+        'VCCLCompilerTool': { 'ExceptionHandling': 1 },
+      },
+      'include_dirs': [
+        '<!@(node -p "require(\'node-addon-api\').include")',
+        'support'
+      ],
+      'dependencies': [
+          "<!(node -p \"require('node-addon-api').gyp\")"],
       'sources': ['src/binding.cc'],
       'ccflags': [
         '-Wall',
@@ -15,12 +32,6 @@
         '-fno-exceptions',
         '-fno-rtti',
       ],
-      # Have to repeat flags on mac because of gyp's xcode emulation "feature".
-      'xcode_settings': {
-        'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',
-        'GCC_ENABLE_CPP_RTTI': 'NO',
-        'WARNING_CFLAGS': ['-Wall', '-Wextra', '-Wno-unused-parameter'],
-      },
       'conditions': [
         ['node_iconv_use_system_libiconv==0', {
           'defines': ['ICONV_CONST=const', 'ENABLE_EXTRA=1'],

@@ -18,7 +18,7 @@
   "license": "ISC",
   "readmeFilename": "README.md",
   "dependencies": {
-    "nan": "^2.11.1",
+    "node-addon-api": "1.6.0",
     "safer-buffer": "^2.1.2"
   },
   "scripts": {
