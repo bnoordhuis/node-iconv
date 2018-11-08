@@ -87,11 +87,11 @@ struct Iconv: Napi::ObjectWrap<Iconv>
     const bool is_flush = info[8].As<Napi::Boolean>().Value();
     ICONV_CONST char* input_buf =
         is_flush ? NULL : info[1].As<Napi::Buffer<ICONV_CONST char>>().Data();
-    size_t input_start = info[2].As<Napi::Number>().Uint32Value();
-    size_t input_size = info[3].As<Napi::Number>().Uint32Value();
+    size_t input_start = info[2].IsNumber() ? info[2].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
+    size_t input_size = info[3].IsNumber() ? info[3].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
     char* output_buf = info[4].As<Napi::Buffer<char>>().Data();
-    size_t output_start = info[5].As<Napi::Number>().Uint32Value();
-    size_t output_size = info[6].As<Napi::Number>().Uint32Value();
+    size_t output_start = info[5].IsNumber() ? info[5].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
+    size_t output_size = info[6].IsNumber() ? info[6].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
     Napi::Array rc = info[7].As<Napi::Array>();
     if (input_buf != NULL) input_buf += input_start;
     output_buf += output_start;
