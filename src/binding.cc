@@ -71,7 +71,7 @@ struct Iconv
 
   static void Initialize(Handle<Object> obj)
   {
-    Local<ObjectTemplate> t = ObjectTemplate::New();
+    Local<ObjectTemplate> t = Nan::New<ObjectTemplate>();
     t->SetInternalFieldCount(2);
     object_template.Reset(t);
     obj->Set(Nan::New<String>("make").ToLocalChecked(),
@@ -88,8 +88,8 @@ struct Iconv
 
   static NAN_METHOD(Make)
   {
-    String::Utf8Value from_encoding(info[0]);
-    String::Utf8Value to_encoding(info[1]);
+    Nan::Utf8String from_encoding(info[0]);
+    Nan::Utf8String to_encoding(info[1]);
     String::Utf8Value locale(info[2]);
 
     std::string *lang = new std::string(*locale);
@@ -132,14 +132,14 @@ struct Iconv
 
     locale_t old_locale = uselocale(locale);
 
-    const bool is_flush = info[8]->BooleanValue();
+    const bool is_flush = Nan::To<bool>(info[8]).FromJust();
     ICONV_CONST char* input_buf =
         is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
-    size_t input_start = info[2]->Uint32Value();
-    size_t input_size = info[3]->Uint32Value();
+    size_t input_start = Nan::To<uint32_t>(info[2]).FromJust();
+    size_t input_size = Nan::To<uint32_t>(info[3]).FromJust();
     char* output_buf = node::Buffer::Data(info[4].As<Object>());
-    size_t output_start = info[5]->Uint32Value();
-    size_t output_size = info[6]->Uint32Value();
+    size_t output_start = Nan::To<uint32_t>(info[5]).FromJust();
+    size_t output_size = Nan::To<uint32_t>(info[6]).FromJust();
     Local<Array> rc = info[7].As<Array>();
     if (input_buf != NULL) input_buf += input_start;
     output_buf += output_start;

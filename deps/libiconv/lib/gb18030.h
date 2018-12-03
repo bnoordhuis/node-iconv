@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001, 2005 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2001, 2005, 2012, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -145,7 +144,7 @@
  *   p. 12        0xA7C2..0xA7D0                      U+E7A0..U+E7AE
  *   p. 12        0xA7F2..0xA7FE                      U+E7AF..U+E7BB
  *   p. 82        0xA896..0xA8A0                      U+E7BC..U+E7C6
- *   p. 12        0xA8BC [glyphs here!!]              U+E7C7
+ *   p. 12        0x8135F437                          U+E7C7
  *   p. 255       0x8336C830                          U+E7C8
  *   p. 12        0xA8C1..0xA8C4                      U+E7C9..U+E7CC
  *   p. 12        0xA8EA..0xA8FE                      U+E7CD..U+E7E1
@@ -186,7 +185,7 @@
 #include "gb18030uni.h"
 
 static int
-gb18030_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+gb18030_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   int ret;
 
@@ -267,7 +266,7 @@ gb18030_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
   }
 }
 
-static const unsigned short gb18030_pua2charset[32*3] = {
+static const unsigned short gb18030_pua2charset[31*3] = {
 /* Unicode range   GB18030 range */
   0xe766, 0xe76b,  0xa2ab, /*.. 0xa2b0, */
   0xe76d, 0xe76d,  0xa2e4,
@@ -283,7 +282,6 @@ static const unsigned short gb18030_pua2charset[32*3] = {
   0xe7a0, 0xe7ae,  0xa7c2, /*.. 0xa7d0, */
   0xe7af, 0xe7bb,  0xa7f2, /*.. 0xa7fe, */
   0xe7bc, 0xe7c6,  0xa896, /*.. 0xa8a0, */
-  0xe7c7, 0xe7c7,  0xa8bc,
   0xe7c9, 0xe7cc,  0xa8c1, /*.. 0xa8c4, */
   0xe7cd, 0xe7e1,  0xa8ea, /*.. 0xa8fe, */
   0xe7e2, 0xe7e2,  0xa958,
@@ -304,7 +302,7 @@ static const unsigned short gb18030_pua2charset[32*3] = {
 };
 
 static int
-gb18030_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+gb18030_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   int ret;
 
@@ -341,7 +339,7 @@ gb18030_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
       } else {
         /* User-defined characters, two-byte part of range U+E766..U+E864 */
         unsigned int k1 = 0;
-        unsigned int k2 = 32;
+        unsigned int k2 = 31;
         /* Invariant: We know that if wc occurs in Unicode interval in
            gb18030_pua2charset, it does so at a k with  k1 <= k < k2. */
         while (k1 < k2) {

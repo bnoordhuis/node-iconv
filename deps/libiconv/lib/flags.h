@@ -104,6 +104,7 @@
 #define ei_iso2022_jp_oflags (HAVE_ACCENTS | HAVE_QUOTATION_MARKS)
 #define ei_iso2022_jp1_oflags (HAVE_ACCENTS | HAVE_QUOTATION_MARKS)
 #define ei_iso2022_jp2_oflags (HAVE_ACCENTS | HAVE_QUOTATION_MARKS | HAVE_HANGUL_JAMO)
+#define ei_iso2022_jpms_oflags (HAVE_ACCENTS | HAVE_QUOTATION_MARKS)
 #define ei_euc_cn_oflags (HAVE_QUOTATION_MARKS)
 #define ei_ces_gbk_oflags (HAVE_QUOTATION_MARKS)
 #define ei_cp936_oflags (HAVE_QUOTATION_MARKS)

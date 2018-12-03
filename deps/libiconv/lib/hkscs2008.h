@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2010 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2010, 2012, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -53,7 +52,7 @@ static const ucs4_t hkscs2008_2uni_upages[50] = {
 };
 
 static int
-hkscs2008_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+hkscs2008_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   unsigned char c1 = s[0];
   if ((c1 == 0x87)) {
@@ -364,7 +363,7 @@ static const Summary16 hkscs2008_uni2indx_page2ad[16] = {
 };
 
 static int
-hkscs2008_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+hkscs2008_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   if (n >= 2) {
     const Summary16 *summary = NULL;
@@ -449,9 +448,9 @@ hkscs2008_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
       unsigned int i = wc & 0x0f;
       if (used & ((unsigned short) 1 << i)) {
         unsigned short c;
-        /* Keep in `used' only the bits 0..i-1. */
+        /* Keep in 'used' only the bits 0..i-1. */
         used &= ((unsigned short) 1 << i) - 1;
-        /* Add `summary->indx' and the number of bits set in `used'. */
+        /* Add 'summary->indx' and the number of bits set in 'used'. */
         used = (used & 0x5555) + ((used & 0xaaaa) >> 1);
         used = (used & 0x3333) + ((used & 0xcccc) >> 2);
         used = (used & 0x0f0f) + ((used & 0xf0f0) >> 4);

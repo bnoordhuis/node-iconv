@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2001, 2016 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -14,8 +14,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with the GNU LIBICONV Library; see the file COPYING.LIB.
- * If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
- * Fifth Floor, Boston, MA 02110-1301, USA.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -33,7 +32,7 @@
 #include "gb12345ext.h"
 
 static int
-gb12345_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
+gb12345_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, size_t n)
 {
   int ret;
 
@@ -48,7 +47,7 @@ gb12345_mbtowc (conv_t conv, ucs4_t *pwc, const unsigned char *s, int n)
 }
 
 static int
-gb12345_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
+gb12345_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, size_t n)
 {
   int ret;
 

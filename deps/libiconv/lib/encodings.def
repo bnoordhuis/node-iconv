@@ -1,4 +1,4 @@
-/* Copyright (C) 1999-2010 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2011 Free Software Foundation, Inc.
    This file is part of the GNU LIBICONV Library.
 
    The GNU LIBICONV Library is free software; you can redistribute it
@@ -13,8 +13,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with the GNU LIBICONV Library; see the file COPYING.LIB.
-   If not, write to the Free Software Foundation, Inc., 51 Franklin Street,
-   Fifth Floor, Boston, MA 02110-1301, USA.  */
+   If not, see <http://www.gnu.org/licenses/>.  */
 
 /* The list of all system independent user-visible encodings. */
 
@@ -365,6 +364,7 @@ DEFENCODING(( "ISO-8859-13",            /* IANA, glibc */
               "LATIN7",                 /* glibc */
               "L7",                     /* glibc */
               "ISO8859-13",             /* glibc, FreeBSD */
+            /*"CP28603",                   Windows */
             ),
             iso8859_13,
             { iso8859_13_mbtowc, NULL },  { iso8859_13_wctomb, NULL })
@@ -424,6 +424,7 @@ DEFENCODING(( "KOI8-U",                 /* IANA, RFC 2319 */
             { koi8_u_mbtowc, NULL },      { koi8_u_wctomb, NULL })
 
 DEFENCODING(( "KOI8-RU",
+            /*"CP21866",                   Windows */
             ),
             koi8_ru,
             { koi8_ru_mbtowc, NULL },     { koi8_ru_wctomb, NULL })
@@ -867,6 +868,13 @@ DEFENCODING(( "ISO-2022-JP-2",          /* IANA, RFC 1554 */
             iso2022_jp2,
             { iso2022_jp2_mbtowc, NULL }, { iso2022_jp2_wctomb, iso2022_jp2_reset })
 
+DEFENCODING(( "ISO-2022-JP-MS",
+              "CP50221",
+            /*"ISO-2022-JP-ESC",           Windows */
+            ),
+            iso2022_jpms,
+            { iso2022_jpms_mbtowc, NULL }, { iso2022_jpms_wctomb, iso2022_jpms_reset })
+
 DEFENCODING(( "EUC-CN",                 /* glibc */
               "EUCCN",                  /* glibc, IRIX */
               "GB2312",                 /* IANA */
@@ -922,6 +930,7 @@ DEFENCODING(( "ISO-2022-CN-EXT",        /* IANA, RFC 1922 */
 
 DEFENCODING(( "HZ",                     /* RFC 1843 */
               "HZ-GB-2312",             /* IANA, RFC 1842 */
+            /*"CP52936",                   Windows */
             ),
             hz,
             { hz_mbtowc, NULL },          { hz_wctomb, hz_reset })
@@ -1024,6 +1033,7 @@ DEFALIAS(     "KO_KR.JOHAP92",          /* Solaris */
 DEFENCODING(( "ISO-2022-KR",            /* IANA, RFC 1557 */
               "csISO2022KR",            /* IANA */
             /*"ISO2022KR",                 JDK 1.1 */
+            /*"CP50225",                   Windows */
             ),
             iso2022_kr,
             { iso2022_kr_mbtowc, NULL },  { iso2022_kr_wctomb, iso2022_kr_reset })
