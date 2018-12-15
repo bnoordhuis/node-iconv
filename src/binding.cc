@@ -32,7 +32,6 @@ namespace
 using v8::Array;
 using v8::Boolean;
 using v8::FunctionTemplate;
-using v8::Handle;
 using v8::Integer;
 using v8::Local;
 using v8::Null;
@@ -62,7 +61,7 @@ struct Iconv
     delete data.GetParameter();
   }
 
-  static void Initialize(Handle<Object> obj)
+  static void Initialize(Local<Object> obj)
   {
     Local<ObjectTemplate> t = Nan::New<ObjectTemplate>();
     t->SetInternalFieldCount(1);
