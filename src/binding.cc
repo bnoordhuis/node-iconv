@@ -25,17 +25,14 @@
 #define ICONV_CONST
 #endif  // ICONV_CONST
 
-namespace 
-{
-
 struct Iconv: Napi::ObjectWrap<Iconv>
 {
   static Napi::FunctionReference object_template; // iconv_constructor
 
-  explicit Iconv(const Napi::CallbackInfo& info):Napi::ObjectWrap<Iconv>(info) 
-  {
-    conv_ = info[0].As<Napi::External<iconv_t>>().Data();
-  }
+  Iconv(const Napi::CallbackInfo& info): 
+    Napi::ObjectWrap<Iconv>(info) {
+      conv_ = info[0].As<Napi::External<iconv_t>>().Data();
+    }
   iconv_t conv_;
 
   ~Iconv()
@@ -43,8 +40,7 @@ struct Iconv: Napi::ObjectWrap<Iconv>
     iconv_close(conv_);
   }
 
-  static void Init(Napi::Env env) 
-  {
+  static void Init(Napi::Env env) {
     Napi::Function func = DefineClass(env, "Iconv", {});
     Iconv::object_template = Napi::Persistent(func);
     Iconv::object_template.SuppressDestruct();
@@ -86,11 +82,11 @@ struct Iconv: Napi::ObjectWrap<Iconv>
     const bool is_flush = info[8].As<Napi::Boolean>().Value();
     ICONV_CONST char* input_buf =
         is_flush ? NULL : info[1].As<Napi::Buffer<ICONV_CONST char>>().Data();
-    size_t input_start = info[2].As<Napi::Number>().Uint32Value();
-    size_t input_size = info[3].As<Napi::Number>().Uint32Value();
+    size_t input_start = info[2].IsNumber() ? info[2].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
+    size_t input_size = info[3].IsNumber() ? info[3].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
     char* output_buf = info[4].As<Napi::Buffer<char>>().Data();
-    size_t output_start = info[5].As<Napi::Number>().Uint32Value();
-    size_t output_size = info[6].As<Napi::Number>().Uint32Value();
+    size_t output_start = info[5].IsNumber() ? info[5].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
+    size_t output_size = info[6].IsNumber() ? info[6].As<Napi::Number>().Uint32Value() : static_cast<uint32_t>(0);
     Napi::Array rc = info[7].As<Napi::Array>();
     if (input_buf != NULL) input_buf += input_start;
     output_buf += output_start;
@@ -119,11 +115,8 @@ struct Iconv: Napi::ObjectWrap<Iconv>
 
 Napi::FunctionReference Iconv::object_template; // iconv_constructor
 
-Napi::Object InitAll(Napi::Env env, Napi::Object exports) 
-{
+Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
   return Iconv::Initialize(env, exports);
 }
-
-} // namespace
 
 NODE_API_MODULE(iconv, InitAll)
