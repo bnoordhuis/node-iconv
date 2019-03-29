@@ -66,12 +66,18 @@ struct Iconv
     Local<ObjectTemplate> t = Nan::New<ObjectTemplate>();
     t->SetInternalFieldCount(1);
     object_template.Reset(t);
-    obj->Set(Nan::New<String>("make").ToLocalChecked(),
-             Nan::New<FunctionTemplate>(Make)->GetFunction());
-    obj->Set(Nan::New<String>("convert").ToLocalChecked(),
-             Nan::New<FunctionTemplate>(Convert)->GetFunction());
-#define EXPORT_ERRNO(err) \
-    obj->Set(Nan::New<String>(#err).ToLocalChecked(), Nan::New<Integer>(err))
+    Nan::Set(obj,
+             Nan::New<String>("make").ToLocalChecked(),
+             Nan::GetFunction(
+               Nan::New<FunctionTemplate>(Make)).ToLocalChecked());
+    Nan::Set(obj,
+             Nan::New<String>("convert").ToLocalChecked(),
+             Nan::GetFunction(
+               Nan::New<FunctionTemplate>(Convert)).ToLocalChecked());
+#define EXPORT_ERRNO(err)                                                     \
+    Nan::Set(obj,                                                             \
+             Nan::New<String>(#err).ToLocalChecked(),                         \
+             Nan::New<Integer>(err))
     EXPORT_ERRNO(EINVAL);
     EXPORT_ERRNO(EILSEQ);
     EXPORT_ERRNO(E2BIG);
@@ -88,7 +94,8 @@ struct Iconv
     }
     Iconv* iv = new Iconv(conv);
     Local<Object> obj =
-        Nan::New<ObjectTemplate>(object_template)->NewInstance();
+        Nan::NewInstance(Nan::New<ObjectTemplate>(object_template))
+        .ToLocalChecked();
     Nan::SetInternalFieldPointer(obj, 0, iv);
     Nan::Persistent<Object> persistent(obj);
     persistent.SetWeak(iv, WeakCallback, Nan::WeakCallbackType::kParameter);
@@ -123,8 +130,8 @@ struct Iconv
     }
     input_consumed -= input_size;
     output_consumed -= output_size;
-    rc->Set(0, Nan::New<Integer>(static_cast<uint32_t>(input_consumed)));
-    rc->Set(1, Nan::New<Integer>(static_cast<uint32_t>(output_consumed)));
+    Nan::Set(rc, 0, Nan::New<Integer>(static_cast<uint32_t>(input_consumed)));
+    Nan::Set(rc, 1, Nan::New<Integer>(static_cast<uint32_t>(output_consumed)));
     info.GetReturnValue().Set(errorno);
   }
 
