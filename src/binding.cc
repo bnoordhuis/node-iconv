@@ -31,7 +31,6 @@ namespace
 
 using v8::Array;
 using v8::Boolean;
-using v8::FunctionTemplate;
 using v8::Integer;
 using v8::Local;
 using v8::Null;
@@ -66,14 +65,8 @@ struct Iconv
     Local<ObjectTemplate> t = Nan::New<ObjectTemplate>();
     t->SetInternalFieldCount(1);
     object_template.Reset(t);
-    Nan::Set(obj,
-             Nan::New<String>("make").ToLocalChecked(),
-             Nan::GetFunction(
-               Nan::New<FunctionTemplate>(Make)).ToLocalChecked());
-    Nan::Set(obj,
-             Nan::New<String>("convert").ToLocalChecked(),
-             Nan::GetFunction(
-               Nan::New<FunctionTemplate>(Convert)).ToLocalChecked());
+    Nan::SetMethod(obj, "make", Make);
+    Nan::SetMethod(obj, "convert", Convert);
 #define EXPORT_ERRNO(err)                                                     \
     Nan::Set(obj,                                                             \
              Nan::New<String>(#err).ToLocalChecked(),                         \
