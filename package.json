@@ -1,7 +1,7 @@
 {
   "name": "iconv",
   "main": "./lib/iconv",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "Text recoding in JavaScript for fun and profit!",
   "homepage": "https://github.com/bnoordhuis/node-iconv",
   "repository": {
@@ -18,7 +18,7 @@
   "license": "ISC",
   "readmeFilename": "README.md",
   "dependencies": {
-    "nan": "^2.13.1",
+    "nan": "^2.14.0",
     "safer-buffer": "^2.1.2"
   },
   "scripts": {
