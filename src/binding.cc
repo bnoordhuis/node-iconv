@@ -15,8 +15,7 @@
  */
 
 #include "iconv.h"
-#include "nan.h"
-#include "node_buffer.h"
+#include "napi.h"
 
 #include <errno.h>
 #include <assert.h>
@@ -26,85 +25,73 @@
 #define ICONV_CONST
 #endif  // ICONV_CONST
 
-namespace
+namespace 
 {
 
-using v8::Array;
-using v8::Integer;
-using v8::Local;
-using v8::Object;
-using v8::ObjectTemplate;
-using v8::String;
-
-
-struct Iconv
+struct Iconv: Napi::ObjectWrap<Iconv>
 {
-  static Nan::Persistent<ObjectTemplate> object_template;
-  iconv_t conv_;
+  static Napi::FunctionReference object_template; // iconv_constructor
 
-  Iconv(iconv_t conv)
+  explicit Iconv(const Napi::CallbackInfo& info):Napi::ObjectWrap<Iconv>(info) 
   {
-    conv_ = conv;
+    conv_ = info[0].As<Napi::External<iconv_t>>().Data();
   }
+  iconv_t conv_;
 
   ~Iconv()
   {
     iconv_close(conv_);
   }
 
-  static void WeakCallback(const Nan::WeakCallbackInfo<Iconv>& data)
+  static void Init(Napi::Env env) 
   {
-    delete data.GetParameter();
+    Napi::Function func = DefineClass(env, "Iconv", {});
+    Iconv::object_template = Napi::Persistent(func);
+    Iconv::object_template.SuppressDestruct();
   }
 
-  static void Initialize(Local<Object> obj)
+  static Napi::Object Initialize(Napi::Env env, Napi::Object exports)
   {
-    Local<ObjectTemplate> t = Nan::New<ObjectTemplate>();
-    t->SetInternalFieldCount(1);
-    object_template.Reset(t);
-    Nan::SetMethod(obj, "make", Make);
-    Nan::SetMethod(obj, "convert", Convert);
-#define EXPORT_ERRNO(err)                                                     \
-    Nan::Set(obj,                                                             \
-             Nan::New<String>(#err).ToLocalChecked(),                         \
-             Nan::New<Integer>(err))
+    Iconv::Init(env);
+    exports.Set(Napi::String::New(env, "make"), 
+                Napi::Function::New(env, Make));
+    exports.Set(Napi::String::New(env, "convert"),
+                Napi::Function::New(env, Convert));
+#define EXPORT_ERRNO(err) \
+    exports.Set(Napi::String::New(env, #err), Napi::Number::New(env, err))
     EXPORT_ERRNO(EINVAL);
     EXPORT_ERRNO(EILSEQ);
     EXPORT_ERRNO(E2BIG);
 #undef EXPORT_ERRNO
+    return exports;
   }
 
-  static NAN_METHOD(Make)
+  static Napi::Value Make(const Napi::CallbackInfo& info)
   {
-    Nan::Utf8String from_encoding(info[0]);
-    Nan::Utf8String to_encoding(info[1]);
-    iconv_t conv = iconv_open(*to_encoding, *from_encoding);
+    std::string from_encoding = info[0].As<Napi::String>();
+    std::string to_encoding = info[1].As<Napi::String>();
+    iconv_t conv = iconv_open(to_encoding.c_str(), from_encoding.c_str());
     if (conv == reinterpret_cast<iconv_t>(-1)) {
-      return info.GetReturnValue().SetNull();
+      return info.Env().Null();
     }
-    Iconv* iv = new Iconv(conv);
-    Local<Object> obj =
-        Nan::NewInstance(Nan::New<ObjectTemplate>(object_template))
-        .ToLocalChecked();
-    Nan::SetInternalFieldPointer(obj, 0, iv);
-    Nan::Persistent<Object> persistent(obj);
-    persistent.SetWeak(iv, WeakCallback, Nan::WeakCallbackType::kParameter);
-    info.GetReturnValue().Set(obj);
+    Napi::Value param = Napi::External<void>::New(info.Env(), conv);
+    return Iconv::object_template.New({param});
   }
 
-  static NAN_METHOD(Convert)
+  static Napi::Value Convert(const Napi::CallbackInfo& info)
   {
-    Iconv* iv = static_cast<Iconv*>(
-        Nan::GetInternalFieldPointer(info[0].As<Object>(), 0));
-    const bool is_flush = Nan::To<bool>(info[8]).FromJust();
+    Napi::Env env = info.Env();
+    Iconv* iv = Iconv::Unwrap(info[0].As<Napi::Object>());
+
+    const bool is_flush = info[8].As<Napi::Boolean>().Value();
     ICONV_CONST char* input_buf =
-        is_flush ? NULL : node::Buffer::Data(info[1].As<Object>());
-    size_t input_start = Nan::To<uint32_t>(info[2]).FromJust();
-    size_t input_size = Nan::To<uint32_t>(info[3]).FromJust();
-    char* output_buf = node::Buffer::Data(info[4].As<Object>());
-    size_t output_start = Nan::To<uint32_t>(info[5]).FromJust();
-    size_t output_size = Nan::To<uint32_t>(info[6]).FromJust();
-    Local<Array> rc = info[7].As<Array>();
+        is_flush ? NULL : info[1].As<Napi::Buffer<ICONV_CONST char>>().Data();
+    size_t input_start = info[2].As<Napi::Number>().Uint32Value();
+    size_t input_size = info[3].As<Napi::Number>().Uint32Value();
+    char* output_buf = info[4].As<Napi::Buffer<char>>().Data();
+    size_t output_start = info[5].As<Napi::Number>().Uint32Value();
+    size_t output_size = info[6].As<Napi::Number>().Uint32Value();
+    Napi::Array rc = info[7].As<Napi::Array>();
     if (input_buf != NULL) input_buf += input_start;
     output_buf += output_start;
     size_t input_consumed = input_size;
@@ -120,9 +107,9 @@ struct Iconv
     }
     input_consumed -= input_size;
     output_consumed -= output_size;
-    Nan::Set(rc, 0, Nan::New<Integer>(static_cast<uint32_t>(input_consumed)));
-    Nan::Set(rc, 1, Nan::New<Integer>(static_cast<uint32_t>(output_consumed)));
-    info.GetReturnValue().Set(errorno);
+    rc.Set(static_cast<uint32_t>(0), Napi::Number::New(env, static_cast<uint32_t>(input_consumed)));
+    rc.Set(static_cast<uint32_t>(1), Napi::Number::New(env, static_cast<uint32_t>(output_consumed)));
+    return Napi::Number::New(env, errorno);
   }
 
   // Forbid implicit copying.
@@ -130,8 +117,13 @@ struct Iconv
   void operator=(const Iconv&);
 };
 
-Nan::Persistent<ObjectTemplate> Iconv::object_template;
+Napi::FunctionReference Iconv::object_template; // iconv_constructor
+
+Napi::Object InitAll(Napi::Env env, Napi::Object exports) 
+{
+  return Iconv::Initialize(env, exports);
+}
 
 } // namespace
 
-NODE_MODULE(iconv, Iconv::Initialize);
+NODE_API_MODULE(iconv, InitAll)
