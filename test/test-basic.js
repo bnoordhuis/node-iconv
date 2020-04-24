@@ -16,8 +16,8 @@
 
 'use strict';
 
-var assert = require('assert');
-var Iconv = require('../').Iconv;
+const assert = require('assert');
+const Iconv = require('../').Iconv;
 
 // unknown source/target encoding
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });
@@ -33,7 +33,7 @@ new Iconv('utf32le', 'utf32be');
 // https://github.com/bnoordhuis/node-iconv/issues/152
 new Iconv('windows-31J', 'windows-31j');
 
-var iconv = new Iconv('utf-8', 'iso-8859-1');
+let iconv = new Iconv('utf-8', 'iso-8859-1');
 assert.throws(function() { iconv.convert() });
 assert.throws(function() { iconv.convert(1) });
 assert.throws(function() { iconv.convert({}) });
@@ -44,11 +44,11 @@ assert(Buffer.isBuffer(iconv.convert('xxx')));
 assert.deepEqual(iconv.convert('xxx'), Buffer.from('xxx'));
 assert.deepEqual(iconv.convert(Buffer.from('xxx')), Buffer.from('xxx'));
 
-var buffer = Buffer.alloc(1); buffer[0] = 235; // ë
+let buffer = Buffer.alloc(1); buffer[0] = 235; // ë
 assert.deepEqual(iconv.convert('ë'), buffer);
 
 // test conversion error messages
-var unknown_conv = 'whatchimajig';
+const unknown_conv = 'whatchimajig';
 try {
   new Iconv('utf-8', unknown_conv);
   assert.fail('unreachable');
@@ -141,10 +141,10 @@ assert.equal(iconv.convert('ça va が').toString(), 'ca va ');
 iconv = Iconv('utf-8', 'iso-8859-1');
 assert.equal(iconv.convert('b2s=', 'base64').toString(), 'ok');
 
-var aixEncodings =
+const aixEncodings =
     'CP856 CP922 CP943 CP1046 CP1124 CP1129 CP1161 CP1162 CP1163';
 
-var dosEncodings =
+const dosEncodings =
     'CP437 CP737 CP775 CP852 CP853 CP855 CP857 CP858 CP860 CP861 ' +
     'CP863 CP864 CP865 CP869 CP1125';
 

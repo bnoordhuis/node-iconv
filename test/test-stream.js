@@ -16,29 +16,29 @@
 
 'use strict';
 
-var Iconv = require('../').Iconv;
-var assert = require('assert');
-var stream = require('stream');
-var net = require('net');
-var fs = require('fs');
-var PORT = 12345;
+const Iconv = require('../').Iconv;
+const assert = require('assert');
+const stream = require('stream');
+const net = require('net');
+const fs = require('fs');
+const PORT = 12345;
 
 assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 
 (function() {
-  var infile = __dirname + '/fixtures/lorem-ipsum.txt';
-  var input = fs.createReadStream(infile,
+  const infile = __dirname + '/fixtures/lorem-ipsum.txt';
+  const input = fs.createReadStream(infile,
                                   { bufferSize: 64,
                                     lowWaterMark: 0,
                                     highWaterMark: 64 });
-  var outfile = __dirname + '/tmp/lorem-ipsum.txt';
-  var output = fs.createWriteStream(outfile);
+  const outfile = __dirname + '/tmp/lorem-ipsum.txt';
+  const output = fs.createWriteStream(outfile);
   input.pipe(Iconv('ascii', 'utf-16le')).pipe(output);
 
   output.on('end', function() {
-    var input = fs.readFileSync(infile);
-    var output = fs.readFileSync(outfile);
-    for (var i = 0; i < input.length; ++i) {
+    const input = fs.readFileSync(infile);
+    const output = fs.readFileSync(outfile);
+    for (let i = 0; i < input.length; ++i) {
       assert.equal(output[i * 2 + 0], input[i]);
       assert.equal(output[i * 2 + 1], 0);
     }
@@ -46,19 +46,19 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
+  let ok = false;
 
   process.on('exit', function() {
     assert(ok);
   });
 
-  var server = net.createServer(function(conn) {
+  const server = net.createServer(function(conn) {
     conn.pipe(Iconv('utf-8', 'utf-7')).pipe(conn);
     server.close();
   });
 
   server.listen(PORT, function() {
-    var conn = net.createConnection(PORT);
+    const conn = net.createConnection(PORT);
     conn.setEncoding('utf-8');
     conn.write('çxç');
     conn.on('data', function(s) {
@@ -70,8 +70,8 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
-  var stream = Iconv('utf-8', 'utf-7');
+  let ok = false;
+  const stream = Iconv('utf-8', 'utf-7');
   stream.on('data', function(s) {
     assert.equal(s, '+AOc-x+AOc-');
     ok = true;
@@ -81,9 +81,9 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var num_data_events = 0;
-  var num_end_events = 0;
-  var stream = Iconv('utf-8', 'ascii');
+  let num_data_events = 0;
+  let num_end_events = 0;
+  const stream = Iconv('utf-8', 'ascii');
   stream.on('data', function(s) {
     assert.equal(num_data_events, 0);
     assert.equal(num_end_events, 0);
@@ -101,8 +101,8 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var stream = Iconv('utf-8', 'ascii//translit');
-  var ok = false;
+  const stream = Iconv('utf-8', 'ascii//translit');
+  let ok = false;
   stream.on('data', function() {
     assert.equal(ok, false);
   });
@@ -117,8 +117,8 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
-  var stream = Iconv('utf-8', 'iso-8859-1');
+  let ok = false;
+  const stream = Iconv('utf-8', 'iso-8859-1');
   stream.on('data', function(buf) {
     assert.equal(buf.length, 1);
     assert.equal(buf[0], 0xA9);
@@ -130,8 +130,8 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
-  var stream = Iconv('utf-8', 'iso-8859-1');
+  let ok = false;
+  const stream = Iconv('utf-8', 'iso-8859-1');
   stream.once('data', step1);
   function step1(buf) {
     assert.equal(buf.length, 1);
@@ -149,8 +149,8 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
-  var stream = Iconv('utf-8', 'iso-8859-1');
+  let ok = false;
+  const stream = Iconv('utf-8', 'iso-8859-1');
   stream.once('data', function(buf) {
     assert.equal(buf.toString(), 'ok');
     ok = true;
@@ -160,8 +160,8 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
-  var stream = Iconv('utf-8', 'iso-8859-1');
+  let ok = false;
+  const stream = Iconv('utf-8', 'iso-8859-1');
   stream.once('data', function(buf) {
     assert.equal(buf.toString(), 'ok');
     ok = true;
@@ -171,14 +171,14 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
-  var stream = Iconv('gb18030', 'utf-8');
+  let ok = false;
+  const stream = Iconv('gb18030', 'utf-8');
   stream.once('error', function(e) {
     assert.equal(e.message, 'Incomplete character sequence.');
     assert.equal(e.code, 'EINVAL');
     ok = true;
   });
-  var octets = [
+  const octets = [
     0x00, 0xf1, 0x52, 0x00, 0x00, 0x78, 0x51, 0xd9, 0xf7, 0x78, 0x51, 0xd9
   ];
   stream.end(Buffer.from(octets));
@@ -186,8 +186,8 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
 })();
 
 (function() {
-  var ok = false;
-  var stream = Iconv('utf-8', 'utf-16');
+  let ok = false;
+  const stream = Iconv('utf-8', 'utf-16');
   stream.once('error', function(e) {
     assert.equal(e.message, 'Incomplete character sequence.');
     assert.equal(e.code, 'EINVAL');

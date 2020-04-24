@@ -18,10 +18,10 @@
 
 exports.Iconv = Iconv;
 
-var stream = require('stream');
-var util = require('util');
+const stream = require('stream');
+const util = require('util');
 
-var bindings;
+let bindings;
 try {
   bindings = require('./build/Release/iconv.node');
 }
@@ -30,12 +30,12 @@ catch (e) {
   bindings = require('./build/Debug/iconv.node');
 }
 
-var E2BIG = bindings.E2BIG | 0;
-var EILSEQ = bindings.EILSEQ | 0;
-var EINVAL = bindings.EINVAL | 0;
+const E2BIG = bindings.E2BIG | 0;
+const EILSEQ = bindings.EILSEQ | 0;
+const EINVAL = bindings.EINVAL | 0;
 
 // Marker object.
-var FLUSH = Buffer.alloc(0);
+const FLUSH = Buffer.alloc(0);
 
 function Iconv(fromEncoding, toEncoding)
 {
@@ -46,15 +46,15 @@ function Iconv(fromEncoding, toEncoding)
   stream.Stream.call(this);
   this.writable = true;
 
-  var conv = bindings.make(fixEncoding(fromEncoding),
-                           fixEncoding(toEncoding));
+  const conv = bindings.make(fixEncoding(fromEncoding),
+                             fixEncoding(toEncoding));
   if (conv === null) {
     throw new Error('Conversion from ' +
                     fromEncoding + ' to ' +
                     toEncoding + ' is not supported.');
   }
 
-  var context_ = { trailer: null };
+  const context_ = { trailer: null };
 
   this.convert = function(input, encoding) {
     if (typeof(input) === 'string') {
@@ -67,8 +67,9 @@ function Iconv(fromEncoding, toEncoding)
     if (typeof(input) === 'string') {
       input = Buffer.from(input, encoding || 'utf8');
     }
+    let buf;
     try {
-      var buf = convert(conv, input, context_);
+      buf = convert(conv, input, context_);
     }
     catch (e) {
       this.emit('error', e);
@@ -112,31 +113,31 @@ function convert(conv, input, context) {
       context.trailer = null;
     } else {
       // Prepend input buffer with trailer from last chunk.
-      var newbuf = Buffer.alloc(context.trailer.length + input.length);
+      const newbuf = Buffer.alloc(context.trailer.length + input.length);
       context.trailer.copy(newbuf, 0, 0, context.trailer.length);
       input.copy(newbuf, context.trailer.length, 0, input.length);
       context.trailer = null;
       input = newbuf;
     }
   }
-  var output = Buffer.alloc(input.length * 2);  // To a first approximation.
-  var input_start = 0;
-  var output_start = 0;
-  var input_size = input.length;
-  var output_size = output.length;
-  var inout = [0,0];
+  let output = Buffer.alloc(input.length * 2);  // To a first approximation.
+  let input_start = 0;
+  let output_start = 0;
+  let input_size = input.length;
+  let output_size = output.length;
+  const inout = [0,0];
   for (;;) {
     inout[0] = input_size;
     inout[1] = output_size;
-    var errno = bindings.convert(input === FLUSH,
+    const errno = bindings.convert(input === FLUSH,
                                  conv,
                                  input,
                                  input_start,
                                  output,
                                  output_start,
                                  inout);
-    var input_consumed = input_size - inout[0];
-    var output_consumed = output_size - inout[1];
+    const input_consumed = input_size - inout[0];
+    const output_consumed = output_size - inout[1];
     input_start += input_consumed;
     input_size -= input_consumed;
     output_start += output_consumed;
@@ -144,7 +145,7 @@ function convert(conv, input, context) {
     if (errno) {
       if (errno === E2BIG) {
         output_size += output.length;
-        var newbuf = Buffer.alloc(output.length * 2);
+        const newbuf = Buffer.alloc(output.length * 2);
         output.copy(newbuf, 0, 0, output_start);
         output = newbuf;
         continue;
@@ -178,7 +179,7 @@ function convert(conv, input, context) {
 
 function errnoException(code, errmsg)
 {
-  var err = new Error(errmsg);
+  const err = new Error(errmsg);
   err.code = code;
   return err;
 }

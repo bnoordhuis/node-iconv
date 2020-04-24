@@ -16,20 +16,20 @@
 
 'use strict';
 
-var Iconv = require('../').Iconv;
-var assert = require('assert');
+const Iconv = require('../').Iconv;
+const assert = require('assert');
 
-var iconv = new Iconv('UTF-8', 'UTF-16LE');
+const iconv = new Iconv('UTF-8', 'UTF-16LE');
 
-var utf8 = Buffer.alloc(20000000);
-for (var i = 0; i < utf8.length; i++) {
+const utf8 = Buffer.alloc(20000000);
+for (let i = 0; i < utf8.length; i++) {
   utf8[i] = 97 + i % 26; // cycle from 'a' to 'z'.
 }
-var utf16 = iconv.convert(utf8);
+const utf16 = iconv.convert(utf8);
 
 assert.equal(utf16.length, utf8.length * 2);
 
-for (i = 0; i < utf8.length; ++i) {
+for (let i = 0; i < utf8.length; ++i) {
   assert.equal(utf16[i * 2], utf8[i]);
   assert.equal(utf16[i * 2 + 1], 0);
 }
