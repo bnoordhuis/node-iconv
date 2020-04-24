@@ -18,7 +18,6 @@
 
 var assert = require('assert');
 var Iconv = require('../lib/iconv').Iconv;
-var Buffer = require('safer-buffer').Buffer;
 
 // unknown source/target encoding
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });

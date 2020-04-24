@@ -18,7 +18,6 @@
 
 var Iconv = require('../lib/iconv').Iconv;
 var assert = require('assert');
-var Buffer = require('safer-buffer').Buffer;
 
 var iconv = new Iconv('UTF-8', 'UTF-16LE');
 

@@ -21,7 +21,6 @@ var assert = require('assert');
 var stream = require('stream');
 var net = require('net');
 var fs = require('fs');
-var Buffer = require('safer-buffer').Buffer;
 var PORT = 12345;
 
 assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
