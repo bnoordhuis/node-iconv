@@ -1,6 +1,6 @@
 {
   "name": "iconv",
-  "version": "2.3.5",
+  "version": "3.0.0",
   "description": "Text recoding in JavaScript for fun and profit!",
   "homepage": "https://github.com/bnoordhuis/node-iconv",
   "repository": {
