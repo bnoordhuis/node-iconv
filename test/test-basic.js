@@ -17,7 +17,7 @@
 'use strict';
 
 var assert = require('assert');
-var Iconv = require('../lib/iconv').Iconv;
+var Iconv = require('../').Iconv;
 
 // unknown source/target encoding
 assert.throws(function() { new Iconv('utf-8', 'xxx'); });

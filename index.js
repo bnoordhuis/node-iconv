@@ -23,11 +23,11 @@ var util = require('util');
 
 var bindings;
 try {
-  bindings = require('../build/Release/iconv.node');
+  bindings = require('./build/Release/iconv.node');
 }
 catch (e) {
   if (e.code !== 'MODULE_NOT_FOUND') throw e;
-  bindings = require('../build/Debug/iconv.node');
+  bindings = require('./build/Debug/iconv.node');
 }
 
 var E2BIG = bindings.E2BIG | 0;

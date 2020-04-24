@@ -16,7 +16,7 @@
 
 'use strict';
 
-var Iconv = require('../lib/iconv').Iconv;
+var Iconv = require('../').Iconv;
 var assert = require('assert');
 var stream = require('stream');
 var net = require('net');

@@ -16,7 +16,7 @@
 
 'use strict';
 
-var Iconv = require('../lib/iconv').Iconv;
+var Iconv = require('../').Iconv;
 var assert = require('assert');
 
 var iconv = new Iconv('UTF-8', 'UTF-16LE');
