@@ -70,20 +70,23 @@ Note that you do not need to have a copy of libiconv installed to use this
 module.
 
 ## Compiling from source
-
+```bash
     $ git clone git://github.com/bnoordhuis/node-iconv.git
     $ cd node-iconv
     $ npm install
-
+    
+    ```
 If you have a specific node.js source checkout that you want to build against,
 replace the last command with:
-
+```bash
     $ npm install --nodedir=/path/to/node
+    
+    ```
 
 ## Usage
 
 Encode from one character encoding to another:
-
+```javascript
     // convert from UTF-8 to ISO-8859-1
     var Buffer = require('buffer').Buffer;
     var Iconv  = require('iconv').Iconv;
@@ -94,9 +97,10 @@ Encode from one character encoding to another:
     var buffer2 = iconv.convert(Buffer.from('Hello, world!'));
     assert.equal(buffer.inspect(), buffer2.inspect());
     // do something useful with the buffers
+```
 
 A simple ISO-8859-1 to UTF-8 conversion TCP service:
-
+```javascript
     var net = require('net');
     var Iconv = require('iconv').Iconv;
     var server = net.createServer(function(conn) {
@@ -105,6 +109,7 @@ A simple ISO-8859-1 to UTF-8 conversion TCP service:
     });
     server.listen(8000);
     console.log('Listening on tcp://0.0.0.0:8000/');
+```
 
 Look at test/test-basic.js and test/test-stream.js for more examples
 and node-iconv's behaviour under error conditions.
@@ -147,7 +152,7 @@ encountered but this can be customized. Quoting the `iconv_open(3)` man page:
     represented in the target character set will be silently discarded.
 
 Example usage:
-
+```javascript
     var iconv = new Iconv('UTF-8', 'ASCII');
     iconv.convert('ça va'); // throws EILSEQ
 
@@ -159,6 +164,7 @@ Example usage:
 
     var iconv = new Iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE');
     iconv.convert('ça va が'); // "ca va "
+```
 
 ### EINVAL
 
