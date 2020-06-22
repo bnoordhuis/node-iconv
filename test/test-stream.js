@@ -73,7 +73,7 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
   let ok = false;
   const stream = Iconv('utf-8', 'utf-7');
   stream.on('data', function(s) {
-    assert.equal(s, '+AOc-x+AOc-');
+    assert.equal(s.toString(), '+AOc-x+AOc-');
     ok = true;
   });
   stream.write('çxç');  // String should get converted to buffer.
@@ -87,7 +87,7 @@ assert(new Iconv('ascii', 'ascii') instanceof stream.Stream);
   stream.on('data', function(s) {
     assert.equal(num_data_events, 0);
     assert.equal(num_end_events, 0);
-    assert.equal(s, 'test');
+    assert.equal(s.toString(), 'test');
     num_data_events += 1;
   });
   stream.on('end', function() {
