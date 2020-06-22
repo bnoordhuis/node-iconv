@@ -68,6 +68,7 @@ It supports most common encodings and doesn't require a compiler to install.
 
 Note that you do not need to have a copy of libiconv installed to use this
 module.
+For newer versions of node (e.g. 4.0) you need a C++11-capable compiler.
 
 ## Compiling from source
 
