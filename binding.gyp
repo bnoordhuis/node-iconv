@@ -28,6 +28,7 @@
                 '4090',  # Const/non-const mismatch.
                 '4244',  # Narrowing cast.
                 '4267',  # Narrowing cast.
+                '4311',  # https://github.com/bnoordhuis/node-iconv/issues/174
               ],
             },
           },
