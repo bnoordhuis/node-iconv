@@ -6,8 +6,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-16.04, ubuntu-18.04, windows-latest]
-        node: [10.x, 12.x, 13.x, 14.x]
+        os: [macos-latest, ubuntu-18.04, ubuntu-20.04, windows-latest]
+        node: [12.x, 14.x, 16.x]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
