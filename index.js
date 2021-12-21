@@ -94,6 +94,47 @@ util.inherits(Iconv, stream.Stream);
 function fixEncoding(encoding)
 {
   if (/^windows-31j$/i.test(encoding)) return 'cp932';
+
+  // Obsolete (but not yet extinct) aliases.
+  if ('5601' === encoding) return 'euc-kr';
+  if ('646' === encoding) return 'ascii';
+  if (/^ansi-1251$/i.test(encoding)) return 'cp1251';
+  if (/^cns11643$/i.test(encoding)) return 'euc-tw';
+  if (/^dechanyu$/i.test(encoding)) return 'dec-hanyu';
+  if (/^dechanzi$/i.test(encoding)) return 'euc-cn';
+  if (/^deckanji$/i.test(encoding)) return 'dec-kanji';
+  if (/^deckorean$/i.test(encoding)) return 'euc-kr';
+  if (/^hp15cn$/i.test(encoding)) return 'euc-cn';
+  if (/^ibm-1046$/i.test(encoding)) return 'cp1046';
+  if (/^ibm-1124$/i.test(encoding)) return 'cp1124';
+  if (/^ibm-1129$/i.test(encoding)) return 'cp1129';
+  if (/^ibm-1131$/i.test(encoding)) return 'cp1131';
+  if (/^ibm-1252$/i.test(encoding)) return 'cp1252';
+  if (/^ibm-850$/i.test(encoding)) return 'cp850';
+  if (/^ibm-856$/i.test(encoding)) return 'cp856';
+  if (/^ibm-921$/i.test(encoding)) return 'iso8859-13';
+  if (/^ibm-922$/i.test(encoding)) return 'cp922';
+  if (/^ibm-932$/i.test(encoding)) return 'cp932';
+  if (/^ibm-943$/i.test(encoding)) return 'cp943';
+  if (/^ibm-euccn$/i.test(encoding)) return 'euc-cn';
+  if (/^ibm-eucjp$/i.test(encoding)) return 'euc-jp';
+  if (/^ibm-euckr$/i.test(encoding)) return 'euc-kr';
+  if (/^ibm-euctw$/i.test(encoding)) return 'euc-tw';
+  if (/^iso88591$/i.test(encoding)) return 'iso8859-1';
+  if (/^iso885915$/i.test(encoding)) return 'iso8859-15';
+  if (/^iso88592$/i.test(encoding)) return 'iso8859-2';
+  if (/^iso88595$/i.test(encoding)) return 'iso8859-5';
+  if (/^iso88596$/i.test(encoding)) return 'iso8859-6';
+  if (/^iso88597$/i.test(encoding)) return 'iso8859-7';
+  if (/^iso88598$/i.test(encoding)) return 'iso8859-8';
+  if (/^iso88599$/i.test(encoding)) return 'iso8859-9';
+  if (/^ko_kr[.]johap92$/i.test(encoding)) return 'johab';
+  if (/^ksc5601$/i.test(encoding)) return 'cp949';
+  if (/^pck$/i.test(encoding)) return 'sjis';
+  if (/^sdeckanji$/i.test(encoding)) return 'euc-jp';
+  if (/^tactis$/i.test(encoding)) return 'tis620';
+  if (/^tis620[.]2533$/i.test(encoding)) return 'tis620';
+
   // Convert "utf8" to "utf-8".
   return /^utf[^-]/i.test(encoding) ? 'utf-' + encoding.substr(3) : encoding;
 }

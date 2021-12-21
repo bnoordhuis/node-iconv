@@ -151,3 +151,43 @@ const dosEncodings =
 // Check that AIX and DOS encodings are available.
 aixEncodings.split(' ').forEach(function(name) { Iconv(name, 'utf-8'); })
 dosEncodings.split(' ').forEach(function(name) { Iconv(name, 'utf-8'); })
+
+// https://github.com/bnoordhuis/node-iconv/issues/172
+new Iconv('5601', 'euc-kr'); new Iconv('euc-kr', '5601');
+new Iconv('646', 'ascii'); new Iconv('ascii', '646');
+new Iconv('ansi-1251', 'cp1251'); new Iconv('cp1251', 'ansi-1251');
+new Iconv('cns11643', 'euc-tw'); new Iconv('euc-tw', 'cns11643');
+new Iconv('dechanyu', 'dec-hanyu'); new Iconv('dec-hanyu', 'dechanyu');
+new Iconv('dechanzi', 'euc-cn'); new Iconv('euc-cn', 'dechanzi');
+new Iconv('deckanji', 'dec-kanji'); new Iconv('dec-kanji', 'deckanji');
+new Iconv('deckorean', 'euc-kr'); new Iconv('euc-kr', 'deckorean');
+new Iconv('hp15cn', 'euc-cn'); new Iconv('euc-cn', 'hp15cn');
+new Iconv('ibm-1046', 'cp1046'); new Iconv('cp1046', 'ibm-1046');
+new Iconv('ibm-1124', 'cp1124'); new Iconv('cp1124', 'ibm-1124');
+new Iconv('ibm-1129', 'cp1129'); new Iconv('cp1129', 'ibm-1129');
+new Iconv('ibm-1131', 'cp1131'); new Iconv('cp1131', 'ibm-1131');
+new Iconv('ibm-1252', 'cp1252'); new Iconv('cp1252', 'ibm-1252');
+new Iconv('ibm-850', 'cp850'); new Iconv('cp850', 'ibm-850');
+new Iconv('ibm-856', 'cp856'); new Iconv('cp856', 'ibm-856');
+new Iconv('ibm-921', 'iso8859-13'); new Iconv('iso8859-13', 'ibm-921');
+new Iconv('ibm-922', 'cp922'); new Iconv('cp922', 'ibm-922');
+new Iconv('ibm-932', 'cp932'); new Iconv('cp932', 'ibm-932');
+new Iconv('ibm-943', 'cp943'); new Iconv('cp943', 'ibm-943');
+new Iconv('ibm-euccn', 'euc-cn'); new Iconv('euc-cn', 'ibm-euccn');
+new Iconv('ibm-eucjp', 'euc-jp'); new Iconv('euc-jp', 'ibm-eucjp');
+new Iconv('ibm-euckr', 'euc-kr'); new Iconv('euc-kr', 'ibm-euckr');
+new Iconv('ibm-euctw', 'euc-tw'); new Iconv('euc-tw', 'ibm-euctw');
+new Iconv('iso88591', 'iso8859-1'); new Iconv('iso8859-1', 'iso88591');
+new Iconv('iso885915', 'iso8859-15'); new Iconv('iso8859-15', 'iso885915');
+new Iconv('iso88592', 'iso8859-2'); new Iconv('iso8859-2', 'iso88592');
+new Iconv('iso88595', 'iso8859-5'); new Iconv('iso8859-5', 'iso88595');
+new Iconv('iso88596', 'iso8859-6'); new Iconv('iso8859-6', 'iso88596');
+new Iconv('iso88597', 'iso8859-7'); new Iconv('iso8859-7', 'iso88597');
+new Iconv('iso88598', 'iso8859-8'); new Iconv('iso8859-8', 'iso88598');
+new Iconv('iso88599', 'iso8859-9'); new Iconv('iso8859-9', 'iso88599');
+new Iconv('ko_kr.johap92', 'johab'); new Iconv('johab', 'ko_kr.johap92');
+new Iconv('ksc5601', 'cp949'); new Iconv('cp949', 'ksc5601');
+new Iconv('pck', 'sjis'); new Iconv('sjis', 'pck');
+new Iconv('sdeckanji', 'euc-jp'); new Iconv('euc-jp', 'sdeckanji');
+new Iconv('tactis', 'tis620'); new Iconv('tis620', 'tactis');
+new Iconv('tis620.2533', 'tis620'); new Iconv('tis620', 'tis620.2533');
