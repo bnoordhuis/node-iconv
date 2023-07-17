@@ -18,5 +18,8 @@
   "readmeFilename": "README.md",
   "scripts": {
     "test": "node test/run-tests.js"
+  },
+  "devDependencies": {
+    "node-gyp": "^9.4.0"
   }
 }
